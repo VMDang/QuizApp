@@ -1,0 +1,22 @@
+{
+    "questions": [
+        {
+            "category_id": 1,
+            "id": 1,
+            "level": 1,
+            "title": "Question A"
+        },
+        {
+            "category_id": 2,
+            "id": 2,
+            "level": 2,
+            "title": "Updated Question Title"
+        },
+        {
+            "category_id": 1,
+            "id": 3,
+            "level": 3,
+            "title": "Question C"
+        }
+    ]
+}

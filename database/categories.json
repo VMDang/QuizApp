@@ -1,0 +1,19 @@
+{
+    "categories": [
+        {
+            "id": 1,
+            "name": "Category A",
+            "slug": "#"
+        },
+        {
+            "id": 2,
+            "name": "Category B",
+            "slug": "#"
+        },
+        {
+            "id": 3,
+            "name": "Category C",
+            "slug": "#"
+        }
+    ]
+}
