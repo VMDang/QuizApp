@@ -1,0 +1,76 @@
+{
+    "users": [
+        {
+            "email": "admin1@example.com",
+            "id": 1,
+            "name": "Admin1",
+            "password": "1234",
+            "role": "Admin",
+            "status": 1
+        },
+        {
+            "email": "admin2@example.com",
+            "id": 2,
+            "name": "Admin2",
+            "password": "1234",
+            "role": "Admin",
+            "status": 1
+        },
+        {
+            "email": "duong@example.com",
+            "id": 3,
+            "name": "Duong",
+            "password": "1234",
+            "role": "User",
+            "status": 1
+        },
+        {
+            "email": "dang@example.com",
+            "id": 4,
+            "name": "Dang",
+            "password": "1234",
+            "role": "User",
+            "status": 1
+        },
+        {
+            "email": "dat@example.com",
+            "id": 5,
+            "name": "Dat",
+            "password": "1234",
+            "role": "User",
+            "status": 1
+        },
+        {
+            "email": "std1@example.com",
+            "id": 6,
+            "name": "Std1",
+            "password": "1234",
+            "role": "User",
+            "status": 1
+        },
+        {
+            "email": "std2@example.com",
+            "id": 7,
+            "name": "Std2",
+            "password": "1234",
+            "role": "User",
+            "status": 1
+        },
+        {
+            "email": "std3@example.com",
+            "id": 8,
+            "name": "Std3",
+            "password": "1234",
+            "role": "User",
+            "status": 1
+        },
+        {
+            "email": "std4@example.com",
+            "id": 9,
+            "name": "Std4",
+            "password": "1234",
+            "role": "User",
+            "status": 0
+        }
+    ]
+}
