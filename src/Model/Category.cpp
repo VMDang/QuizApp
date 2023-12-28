@@ -1,3 +1,4 @@
+#include "Category.hpp"
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -5,25 +6,28 @@
 #include "../../library/json.hpp"
 
 using json = nlohmann::json;
-std::string source = "../../database/categories.json";
-class Category
+
+Category::Category() = default;
+
+Category::Category(const std::string &name, const std::string &slug)
+    : name(name), slug(slug)
 {
-public:
-    int id;
-    std::string name;
-    std::string slug;
+    // Auto-increment id based on the last category's id
+    std::vector<Category> categories = getAll();
 
-    Category() = default;
+    if (!categories.empty())
+    {
+        id = categories.back().id + 1;
+    }
+    else
+    {
+        id = 1;
+    }
+}
 
-    Category(int id, const std::string &name, const std::string &slug)
-        : id(id), name(name), slug(slug) {}
-
-    static std::vector<Category> getAll();
-    static Category findById(int categoryId);
-    static void edit(const Category &updatedCategory);
-    static void create(const Category &newCategory);
-    static void deleteCategory(const Category &categoryToDelete);
-};
+// Constructor without auto-increase id
+Category::Category(int id, const std::string &name, const std::string &slug)
+    : id(id), name(name), slug(slug) {}
 
 std::vector<Category> Category::getAll()
 {
@@ -31,7 +35,7 @@ std::vector<Category> Category::getAll()
 
     // Load existing categories from JSON
     json jsonData;
-    std::ifstream inputFile(source);
+    std::ifstream inputFile("../../database/categories.json");
     inputFile >> jsonData;
     inputFile.close();
 
@@ -52,7 +56,7 @@ Category Category::findById(int categoryId)
 {
     // Load existing categories from JSON
     json jsonData;
-    std::ifstream inputFile(source);
+    std::ifstream inputFile("../../database/categories.json");
     inputFile >> jsonData;
     inputFile.close();
 
@@ -73,11 +77,11 @@ Category Category::findById(int categoryId)
     return Category();
 }
 
-void Category::edit(const Category &updatedCategory)
+Category Category::edit(Category &updatedCategory)
 {
     // Load existing categories from JSON
     json jsonData;
-    std::ifstream inputFile(source);
+    std::ifstream inputFile("../../database/categories.json");
     inputFile >> jsonData;
     inputFile.close();
 
@@ -93,16 +97,18 @@ void Category::edit(const Category &updatedCategory)
     }
 
     // Write the updated data back to JSON file
-    std::ofstream outputFile(source);
+    std::ofstream outputFile("../../database/categories.json");
     outputFile << std::setw(4) << jsonData;
     outputFile.close();
+
+    return updatedCategory;
 }
 
-void Category::create(const Category &newCategory)
+Category Category::create(const Category &newCategory)
 {
     // Load existing categories from JSON
     json jsonData;
-    std::ifstream inputFile(source);
+    std::ifstream inputFile("../../database/categories.json");
     inputFile >> jsonData;
     inputFile.close();
 
@@ -115,16 +121,18 @@ void Category::create(const Category &newCategory)
     jsonData["categories"].push_back(newCategoryJson);
 
     // Write the updated data back to JSON file
-    std::ofstream outputFile(source);
+    std::ofstream outputFile("../../database/categories.json");
     outputFile << std::setw(4) << jsonData;
     outputFile.close();
+
+    return newCategory;
 }
 
-void Category::deleteCategory(const Category &categoryToDelete)
+void Category::Delete(const Category &categoryToDelete)
 {
     // Load existing categories from JSON
     json jsonData;
-    std::ifstream inputFile(source);
+    std::ifstream inputFile("../../database/categories.json");
     inputFile >> jsonData;
     inputFile.close();
 
@@ -133,77 +141,12 @@ void Category::deleteCategory(const Category &categoryToDelete)
     categoriesArray.erase(std::remove_if(categoriesArray.begin(), categoriesArray.end(),
                                          [&categoryToDelete](const auto &categoryData)
                                          {
-                                             return categoryData["id"] == categoryToDelete.id &&
-                                                    categoryData["name"] == categoryToDelete.name &&
-                                                    categoryData["slug"] == categoryToDelete.slug;
+                                             return categoryData["id"] == categoryToDelete.id;
                                          }),
                           categoriesArray.end());
 
     // Write the updated data back to JSON file
-    std::ofstream outputFile(source);
+    std::ofstream outputFile("../../database/categories.json");
     outputFile << std::setw(4) << jsonData;
     outputFile.close();
-}
-
-int main()
-{
-    // Testing getAll function
-    std::cout << "getAll() Function Test:\n";
-    std::vector<Category> allCategories = Category::getAll();
-    for (const auto &category : allCategories)
-    {
-        std::cout << "Category ID: " << category.id << ", Name: " << category.name << "\n";
-    }
-    std::cout << "\n";
-
-    // Testing findById function
-    std::cout << "findById() Function Test:\n";
-    int categoryIdToFind = 2;
-    Category foundCategory = Category::findById(categoryIdToFind);
-    if (foundCategory.id != 0)
-    {
-        std::cout << "Found Category - ID: " << foundCategory.id << ", Name: " << foundCategory.name << "\n";
-    }
-    else
-    {
-        std::cout << "Category with ID " << categoryIdToFind << " not found.\n";
-    }
-    std::cout << "\n";
-
-    // Testing edit function
-    std::cout << "edit() Function Test:\n";
-    Category categoryToEdit = foundCategory; // Use the category found in the previous test
-    categoryToEdit.name = "Updated Category Name";
-    categoryToEdit.slug = "updated-slug";
-    Category::edit(categoryToEdit);
-    std::cout << "Category after editing:\n";
-    Category editedCategory = Category::findById(categoryIdToFind);
-    std::cout << "Edited Category - ID: " << editedCategory.id << ", Name: " << editedCategory.name << "\n";
-    std::cout << "\n";
-
-    // Testing create function
-    std::cout << "create() Function Test:\n";
-    Category newCategory(4, "New Category", "new-slug");
-    Category::create(newCategory);
-    std::cout << "Newly Created Category:\n";
-    Category createdCategory = Category::findById(4);
-    std::cout << "Created Category - ID: " << createdCategory.id << ", Name: " << createdCategory.name << "\n";
-    std::cout << "\n";
-
-    // Testing deleteCategory function
-    std::cout << "deleteCategory() Function Test:\n";
-    Category categoryToDelete = createdCategory; // Use the category created in the previous test
-    Category::deleteCategory(categoryToDelete);
-    std::cout << "Category after deleting:\n";
-    Category deletedCategory = Category::findById(4);
-    if (deletedCategory.id != 0)
-    {
-        std::cout << "Category still found after deletion. Something went wrong!\n";
-    }
-    else
-    {
-        std::cout << "Category successfully deleted.\n";
-    }
-
-    return 0;
 }

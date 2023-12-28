@@ -1,3 +1,4 @@
+#include "Question.hpp"
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -5,26 +6,24 @@
 #include "../../library/json.hpp"
 
 using json = nlohmann::json;
-std::string source = "../../database/questions.json";
-class Question
-{
-public:
-    int id;
-    std::string title;
-    int level;
-    int category_id;
 
-    Question() = default;
+Question::Question() = default;
 
-    Question(int id, const std::string &title, int level, int category_id)
-        : id(id), title(title), level(level), category_id(category_id) {}
+// Constructor without auto-increase id
+Question::Question(int id, const std::string &title, int level, int category_id)
+    : id(id), title(title), level(level), category_id(category_id) {}
 
-    static std::vector<Question> getAll();
-    static Question findById(int questionId);
-    static void edit(const Question &updatedQuestion);
-    static void create(const Question &newQuestion);
-    static void deleteQuestion(const Question &questionToDelete);
-};
+// Constructor with auto-increase id
+Question::Question(const std::string &title, int level, int category_id)
+    : id(id), title(title), level(level), category_id(category_id) {
+    std::vector<Question> questions = getAll();
+    if (!questions.empty()) {
+        id = questions.back().id + 1;
+    } else {
+        id = 1; // If no one exist, start from id 1
+    }
+}
+
 
 std::vector<Question> Question::getAll()
 {
@@ -32,7 +31,7 @@ std::vector<Question> Question::getAll()
 
     // Load existing questions from JSON
     json jsonData;
-    std::ifstream inputFile(source);
+    std::ifstream inputFile("../../database/questions.json");
     inputFile >> jsonData;
     inputFile.close();
 
@@ -50,17 +49,17 @@ std::vector<Question> Question::getAll()
     return questions;
 }
 
-Question Question::findById(int questionId)
+Question Question::findById(int id)
 {
     // Load existing questions from JSON
     json jsonData;
-    std::ifstream inputFile(source);
+    std::ifstream inputFile("../../database/questions.json");
     inputFile >> jsonData;
     inputFile.close();
 
     for (const auto &questionData : jsonData["questions"])
     {
-        if (questionData["id"] == questionId)
+        if (questionData["id"] == id)
         {
             Question question;
             question.id = questionData["id"];
@@ -76,11 +75,11 @@ Question Question::findById(int questionId)
     return Question();
 }
 
-void Question::edit(const Question &updatedQuestion)
+Question Question::edit(const Question &updatedQuestion)
 {
     // Load existing questions from JSON
     json jsonData;
-    std::ifstream inputFile(source);
+    std::ifstream inputFile("../../database/questions.json");
     inputFile >> jsonData;
     inputFile.close();
 
@@ -97,16 +96,18 @@ void Question::edit(const Question &updatedQuestion)
     }
 
     // Write the updated data back to JSON file
-    std::ofstream outputFile(source);
+    std::ofstream outputFile("../../database/questions.json");
     outputFile << std::setw(4) << jsonData;
     outputFile.close();
+
+    return updatedQuestion;
 }
 
-void Question::create(const Question &newQuestion)
+Question Question::create(const Question &newQuestion)
 {
     // Load existing questions from JSON
     json jsonData;
-    std::ifstream inputFile(source);
+    std::ifstream inputFile("../../database/questions.json");
     inputFile >> jsonData;
     inputFile.close();
 
@@ -120,16 +121,18 @@ void Question::create(const Question &newQuestion)
     jsonData["questions"].push_back(newQuestionJson);
 
     // Write the updated data back to JSON file
-    std::ofstream outputFile(source);
+    std::ofstream outputFile("../../database/questions.json");
     outputFile << std::setw(4) << jsonData;
     outputFile.close();
+
+    return newQuestion;
 }
 
-void Question::deleteQuestion(const Question &questionToDelete)
+void Question::Delete(const Question &questionToDelete)
 {
     // Load existing questions from JSON
     json jsonData;
-    std::ifstream inputFile(source);
+    std::ifstream inputFile("../../database/questions.json");
     inputFile >> jsonData;
     inputFile.close();
 
@@ -138,78 +141,12 @@ void Question::deleteQuestion(const Question &questionToDelete)
     questionsArray.erase(std::remove_if(questionsArray.begin(), questionsArray.end(),
                                         [&questionToDelete](const auto &questionData)
                                         {
-                                            return questionData["id"] == questionToDelete.id &&
-                                                   questionData["title"] == questionToDelete.title &&
-                                                   questionData["level"] == questionToDelete.level &&
-                                                   questionData["category_id"] == questionToDelete.category_id;
+                                            return questionData["id"] == questionToDelete.id;
                                         }),
                          questionsArray.end());
 
     // Write the updated data back to JSON file
-    std::ofstream outputFile(source);
+    std::ofstream outputFile("../../database/questions.json");
     outputFile << std::setw(4) << jsonData;
     outputFile.close();
-}
-
-int main()
-{
-    // Testing getAll function
-    std::cout << "getAll() Function Test:\n";
-    std::vector<Question> allQuestions = Question::getAll();
-    for (const auto &question : allQuestions)
-    {
-        std::cout << "Question ID: " << question.id << ", Title: " << question.title << "\n";
-    }
-    std::cout << "\n";
-
-    // Testing findById function
-    std::cout << "findById() Function Test:\n";
-    int questionIdToFind = 2;
-    Question foundQuestion = Question::findById(questionIdToFind);
-    if (foundQuestion.id != 0)
-    {
-        std::cout << "Found Question - ID: " << foundQuestion.id << ", Title: " << foundQuestion.title << "\n";
-    }
-    else
-    {
-        std::cout << "Question with ID " << questionIdToFind << " not found.\n";
-    }
-    std::cout << "\n";
-
-    // Testing edit function
-    std::cout << "edit() Function Test:\n";
-    Question questionToEdit = foundQuestion; // Use the question found in the previous test
-    questionToEdit.title = "Updated Question Title";
-    questionToEdit.level = 2;
-    Question::edit(questionToEdit);
-    std::cout << "Question after editing:\n";
-    Question editedQuestion = Question::findById(questionIdToFind);
-    std::cout << "Edited Question - ID: " << editedQuestion.id << ", Title: " << editedQuestion.title << "\n";
-    std::cout << "\n";
-
-    // Testing create function
-    std::cout << "create() Function Test:\n";
-    Question newQuestion(4, "New Question", 3, 1);
-    Question::create(newQuestion);
-    std::cout << "Newly Created Question:\n";
-    Question createdQuestion = Question::findById(4);
-    std::cout << "Created Question - ID: " << createdQuestion.id << ", Title: " << createdQuestion.title << "\n";
-    std::cout << "\n";
-
-    // Testing deleteQuestion function
-    std::cout << "deleteQuestion() Function Test:\n";
-    Question questionToDelete = createdQuestion; // Use the question created in the previous test
-    Question::deleteQuestion(questionToDelete);
-    std::cout << "Question after deleting:\n";
-    Question deletedQuestion = Question::findById(4);
-    if (deletedQuestion.id != 0)
-    {
-        std::cout << "Question still found after deletion. Something went wrong!\n";
-    }
-    else
-    {
-        std::cout << "Question successfully deleted.\n";
-    }
-
-    return 0;
 }

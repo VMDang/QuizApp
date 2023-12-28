@@ -1,3 +1,4 @@
+#include "Answer.hpp"
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -5,27 +6,46 @@
 #include "../../library/json.hpp"
 
 using json = nlohmann::json;
-std::string source = "../../database/answers.json";
-class Answer
+
+Answer::Answer() = default;
+
+// Constructor with auto-increase id
+Answer::Answer(int user_id, int room_id, int option_id, int result)
+    : user_id(user_id), room_id(room_id), option_id(option_id), result(result)
 {
-public:
-    int id;
-    int user_id;
-    int room_id;
-    int option_id;
-    int result;
+    std::vector<Answer> answers = getAll();
+    // Auto-increment id based on the last answer's id in the "../../database/answers.json" file
+    if (!answers.empty())
+    {
+        id = answers.back().id + 1;
+    }
+    else
+    {
+        id = 1; // If no one exist, start from id 1
+    }
+}
 
-    Answer() = default;
+Answer::Answer(int id, int user_id, int room_id, int option_id, int result) 
+    : id(id), user_id(user_id), room_id(room_id), option_id(option_id), result(result) {}
 
-    Answer(int id, int user_id, int room_id, int option_id, int result)
-        : id(id), user_id(user_id), room_id(room_id), option_id(option_id), result(result) {}
+// Constructor with default value of option_id and result_id
+Answer::Answer(int user_id, int room_id)
+    : user_id(user_id), room_id(room_id)
+{
 
-    static std::vector<Answer> getAll();
-    static Answer findById(int answerId);
-    static void edit(const Answer &updatedAnswer);
-    static void create(const Answer &newAnswer);
-    static void deleteAnswer(const Answer &answerToDelete);
-};
+    std::vector<Answer> answers = getAll();
+    // Auto-increment id based on the last answer's id in the "../../database/answers.json" file
+    if (!answers.empty())
+    {
+        id = answers.back().id + 1;
+    }
+    else
+    {
+        id = 1; // If no one exist, start from id 1
+    }
+    option_id = 0;
+    result = 0;
+}
 
 std::vector<Answer> Answer::getAll()
 {
@@ -33,7 +53,7 @@ std::vector<Answer> Answer::getAll()
 
     // Load existing answers from JSON
     json jsonData;
-    std::ifstream inputFile(source);
+    std::ifstream inputFile("../../database/answers.json");
     inputFile >> jsonData;
     inputFile.close();
 
@@ -52,17 +72,17 @@ std::vector<Answer> Answer::getAll()
     return answers;
 }
 
-Answer Answer::findById(int answerId)
+Answer Answer::findById(int id)
 {
     // Load existing answers from JSON
     json jsonData;
-    std::ifstream inputFile(source);
+    std::ifstream inputFile("../../database/answers.json");
     inputFile >> jsonData;
     inputFile.close();
 
     for (const auto &answerData : jsonData["answers"])
     {
-        if (answerData["id"] == answerId)
+        if (answerData["id"] == id)
         {
             Answer answer;
             answer.id = answerData["id"];
@@ -79,11 +99,11 @@ Answer Answer::findById(int answerId)
     return Answer();
 }
 
-void Answer::edit(const Answer &updatedAnswer)
+Answer Answer::edit(const Answer &updatedAnswer)
 {
     // Load existing answers from JSON
     json jsonData;
-    std::ifstream inputFile(source);
+    std::ifstream inputFile("../../database/answers.json");
     inputFile >> jsonData;
     inputFile.close();
 
@@ -101,16 +121,18 @@ void Answer::edit(const Answer &updatedAnswer)
     }
 
     // Write the updated data back to JSON file
-    std::ofstream outputFile(source);
+    std::ofstream outputFile("../../database/answers.json");
     outputFile << std::setw(4) << jsonData;
     outputFile.close();
+
+    return updatedAnswer;
 }
 
-void Answer::create(const Answer &newAnswer)
+Answer Answer::create(const Answer &newAnswer)
 {
     // Load existing answers from JSON
     json jsonData;
-    std::ifstream inputFile(source);
+    std::ifstream inputFile("../../database/answers.json");
     inputFile >> jsonData;
     inputFile.close();
 
@@ -125,16 +147,18 @@ void Answer::create(const Answer &newAnswer)
     jsonData["answers"].push_back(newAnswerJson);
 
     // Write the updated data back to JSON file
-    std::ofstream outputFile(source);
+    std::ofstream outputFile("../../database/answers.json");
     outputFile << std::setw(4) << jsonData;
     outputFile.close();
+
+    return newAnswer;
 }
 
-void Answer::deleteAnswer(const Answer &answerToDelete)
+void Answer::Delete(const Answer &answerToDelete)
 {
     // Load existing answers from JSON
     json jsonData;
-    std::ifstream inputFile(source);
+    std::ifstream inputFile("../../database/answers.json");
     inputFile >> jsonData;
     inputFile.close();
 
@@ -143,78 +167,12 @@ void Answer::deleteAnswer(const Answer &answerToDelete)
     answersArray.erase(std::remove_if(answersArray.begin(), answersArray.end(),
                                       [&answerToDelete](const auto &answerData)
                                       {
-                                          return answerData["id"] == answerToDelete.id &&
-                                                 answerData["user_id"] == answerToDelete.user_id &&
-                                                 answerData["room_id"] == answerToDelete.room_id &&
-                                                 answerData["option_id"] == answerToDelete.option_id &&
-                                                 answerData["result"] == answerToDelete.result;
+                                          return answerData["id"] == answerToDelete.id;
                                       }),
                        answersArray.end());
 
     // Write the updated data back to JSON file
-    std::ofstream outputFile(source);
+    std::ofstream outputFile("../../database/answers.json");
     outputFile << std::setw(4) << jsonData;
     outputFile.close();
-}
-
-int main()
-{
-    // Testing getAll function
-    std::cout << "getAll() Function Test:\n";
-    std::vector<Answer> allAnswers = Answer::getAll();
-    for (const auto &answer : allAnswers)
-    {
-        std::cout << "Answer ID: " << answer.id << ", Result: " << answer.result << "\n";
-    }
-    std::cout << "\n";
-
-    // Testing findById function
-    std::cout << "findById() Function Test:\n";
-    int answerIdToFind = 2;
-    Answer foundAnswer = Answer::findById(answerIdToFind);
-    if (foundAnswer.id != 0)
-    {
-        std::cout << "Found Answer - ID: " << foundAnswer.id << ", Result: " << foundAnswer.result << "\n";
-    }
-    else
-    {
-        std::cout << "Answer with ID " << answerIdToFind << " not found.\n";
-    }
-    std::cout << "\n";
-
-    // Testing edit function
-    std::cout << "edit() Function Test:\n";
-    Answer answerToEdit = foundAnswer; // Use the answer found in the previous test
-    answerToEdit.result = 1;
-    Answer::edit(answerToEdit);
-    std::cout << "Answer after editing:\n";
-    Answer editedAnswer = Answer::findById(answerIdToFind);
-    std::cout << "Edited Answer - ID: " << editedAnswer.id << ", Result: " << editedAnswer.result << "\n";
-    std::cout << "\n";
-
-    // Testing create function
-    std::cout << "create() Function Test:\n";
-    Answer newAnswer(4, 1, 2, 2, 0);
-    Answer::create(newAnswer);
-    std::cout << "Newly Created Answer:\n";
-    Answer createdAnswer = Answer::findById(4);
-    std::cout << "Created Answer - ID: " << createdAnswer.id << ", Result: " << createdAnswer.result << "\n";
-    std::cout << "\n";
-
-    // Testing deleteAnswer function
-    std::cout << "deleteAnswer() Function Test:\n";
-    Answer answerToDelete = createdAnswer; // Use the answer created in the previous test
-    Answer::deleteAnswer(answerToDelete);
-    std::cout << "Answer after deleting:\n";
-    Answer deletedAnswer = Answer::findById(4);
-    if (deletedAnswer.id != 0)
-    {
-        std::cout << "Answer still found after deletion. Something went wrong!\n";
-    }
-    else
-    {
-        std::cout << "Answer successfully deleted.\n";
-    }
-
-    return 0;
 }

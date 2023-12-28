@@ -2,18 +2,23 @@
     "categories": [
         {
             "id": 1,
-            "name": "Category A",
-            "slug": "#"
+            "name": "History",
+            "slug": "#history"
         },
         {
             "id": 2,
-            "name": "Category B",
-            "slug": "#"
+            "name": "Math",
+            "slug": "#math"
         },
         {
             "id": 3,
-            "name": "Category C",
-            "slug": "#"
+            "name": "Biology",
+            "slug": "#biology"
+        },
+        {
+            "id": 4,
+            "name": "Geopraphy",
+            "slug": "#geopraphy"
         }
     ]
 }
