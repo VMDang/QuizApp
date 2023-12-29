@@ -32,6 +32,15 @@ public:
     static Option edit(Option &updatedOption);
     static Option create(const Option &newOption);
     static void Delete(const Option &optionToDelete);
+    json toJson()
+    {
+        return json{
+            {"id", id},
+            {"question_id", question_id},
+            {"content", content},
+            {"is_right", is_right},
+        };
+    }
 };
 
 #endif // OPTION_HPP

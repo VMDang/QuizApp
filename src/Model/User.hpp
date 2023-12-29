@@ -25,9 +25,21 @@ public:
 
     static std::vector<User> getAll();
     static User findById(int id);
+    static User findByEmail(std::string email);
     static User edit(User &updatedUser);
     static User create(const User &newUser);
     static void Delete(const User &userToDelete);
+    json toJson()
+    {
+        return json{
+            {"id", id},
+            {"name", name},
+            {"email", email},
+            // {"password", password},
+            {"status", status},
+            {"role", role},
+        };
+    }
 };
 
 #endif // USER_HPP

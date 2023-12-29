@@ -4,6 +4,8 @@
 #include <vector>
 #include "../../library/json.hpp"
 
+#define USERS_JSON "../../../database/users.json"
+
 using json = nlohmann::json;
 
 User::User() = default;
@@ -13,7 +15,7 @@ User::User(std::string n, std::string e, std::string p, int s, std::string r)
     : name(n), email(e), password(p), status(s), role(r)
 {
     std::vector<User> users = getAll();
-    // Auto-increment id based on the last user's id in the "../../database/users.json" file
+    // Auto-increment id based on the last user's id in the USERS_JSON file
     if (!users.empty()) {
         id = users.back().id + 1;
     } else {
@@ -28,7 +30,7 @@ User::User(int i, std::string n, std::string e, std::string p, int s, std::strin
 // Constructor with default value of status and role
 User::User(std::string n, std::string e, std::string p)
     : name(n), email(e), password(p) {
-    // Auto-increment id based on the last user's id in the "../../database/users.json" file
+    // Auto-increment id based on the last user's id in the USERS_JSON file
     std::vector<User> users = getAll();
     if (!users.empty()) {
         id = users.back().id + 1;
@@ -45,7 +47,7 @@ std::vector<User> User::getAll()
 
     // Load existing users from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/users.json");
+    std::ifstream inputFile(USERS_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -68,7 +70,7 @@ User User::findById(int id)
 {
     // Load existing answers from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/users.json");
+    std::ifstream inputFile(USERS_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -78,6 +80,35 @@ User User::findById(int id)
         {
             User user;
             user.id = userData["id"];
+            user.email = userData["email"];
+            user.name = userData["name"];
+            user.password = userData["password"];
+            user.role = userData["role"];
+            user.status = userData["status"];
+
+            return user;
+        }
+    }
+
+    // Return an empty user if not found
+    return User();
+}
+
+User User::findByEmail(std::string email)
+{
+    // Load existing answers from JSON
+    json jsonData;
+    std::ifstream inputFile(USERS_JSON);
+    inputFile >> jsonData;
+    inputFile.close();
+
+    for (const auto &userData : jsonData["users"])
+    {
+        if (userData["email"] == email)
+        {
+            User user;
+            user.id = userData["id"];
+            user.email = userData["email"];
             user.name = userData["name"];
             user.password = userData["password"];
             user.role = userData["role"];
@@ -95,7 +126,7 @@ User User::edit(User &updatedUser)
 {
     // Load existing users from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/users.json");
+    std::ifstream inputFile(USERS_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -114,7 +145,7 @@ User User::edit(User &updatedUser)
     }
 
     // Write the updated data back to JSON file
-    std::ofstream outputFile("../../database/users.json");
+    std::ofstream outputFile(USERS_JSON);
     outputFile << std::setw(4) << jsonData;
     outputFile.close();
 
@@ -125,7 +156,7 @@ User User::create(const User &newUser)
 {
     // Load existing users from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/users.json");
+    std::ifstream inputFile(USERS_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -141,7 +172,7 @@ User User::create(const User &newUser)
     jsonData["users"].push_back(newUserJson);
 
     // Write the updated data back to JSON file
-    std::ofstream outputFile("../../database/users.json");
+    std::ofstream outputFile(USERS_JSON);
     outputFile << std::setw(4) << jsonData;
     outputFile.close();
 
@@ -152,7 +183,7 @@ void User::Delete(const User &userToDelete)
 {
     // Load existing users from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/users.json");
+    std::ifstream inputFile(USERS_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -166,7 +197,7 @@ void User::Delete(const User &userToDelete)
                      usersArray.end());
 
     // Write the updated data back to JSON file
-    std::ofstream outputFile("../../database/users.json");
+    std::ofstream outputFile(USERS_JSON);
     outputFile << std::setw(4) << jsonData;
     outputFile.close();
 }

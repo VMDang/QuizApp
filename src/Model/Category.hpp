@@ -27,6 +27,14 @@ public:
     static Category edit(Category &updatedCategory);
     static Category create(const Category &newCategory);
     static void Delete(const Category &categoryToDelete);
+    json toJson()
+    {
+        return json{
+            {"id", id},
+            {"name", name},
+            {"slug", slug},
+        };
+    }
 };
 
 #endif // CATEGORY_HPP

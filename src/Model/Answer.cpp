@@ -7,6 +7,8 @@
 
 using json = nlohmann::json;
 
+#define ANSWERS_JSON "../../../database/answers.json"
+
 Answer::Answer() = default;
 
 // Constructor with auto-increase id
@@ -14,7 +16,7 @@ Answer::Answer(int user_id, int room_id, int option_id, int result)
     : user_id(user_id), room_id(room_id), option_id(option_id), result(result)
 {
     std::vector<Answer> answers = getAll();
-    // Auto-increment id based on the last answer's id in the "../../database/answers.json" file
+    // Auto-increment id based on the last answer's id in the ANSWERS_JSON file
     if (!answers.empty())
     {
         id = answers.back().id + 1;
@@ -34,7 +36,7 @@ Answer::Answer(int user_id, int room_id)
 {
 
     std::vector<Answer> answers = getAll();
-    // Auto-increment id based on the last answer's id in the "../../database/answers.json" file
+    // Auto-increment id based on the last answer's id in the ANSWERS_JSON file
     if (!answers.empty())
     {
         id = answers.back().id + 1;
@@ -53,7 +55,7 @@ std::vector<Answer> Answer::getAll()
 
     // Load existing answers from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/answers.json");
+    std::ifstream inputFile(ANSWERS_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -76,7 +78,7 @@ Answer Answer::findById(int id)
 {
     // Load existing answers from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/answers.json");
+    std::ifstream inputFile(ANSWERS_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -103,7 +105,7 @@ Answer Answer::edit(const Answer &updatedAnswer)
 {
     // Load existing answers from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/answers.json");
+    std::ifstream inputFile(ANSWERS_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -121,7 +123,7 @@ Answer Answer::edit(const Answer &updatedAnswer)
     }
 
     // Write the updated data back to JSON file
-    std::ofstream outputFile("../../database/answers.json");
+    std::ofstream outputFile(ANSWERS_JSON);
     outputFile << std::setw(4) << jsonData;
     outputFile.close();
 
@@ -132,7 +134,7 @@ Answer Answer::create(const Answer &newAnswer)
 {
     // Load existing answers from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/answers.json");
+    std::ifstream inputFile(ANSWERS_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -147,7 +149,7 @@ Answer Answer::create(const Answer &newAnswer)
     jsonData["answers"].push_back(newAnswerJson);
 
     // Write the updated data back to JSON file
-    std::ofstream outputFile("../../database/answers.json");
+    std::ofstream outputFile(ANSWERS_JSON);
     outputFile << std::setw(4) << jsonData;
     outputFile.close();
 
@@ -158,7 +160,7 @@ void Answer::Delete(const Answer &answerToDelete)
 {
     // Load existing answers from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/answers.json");
+    std::ifstream inputFile(ANSWERS_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -172,7 +174,7 @@ void Answer::Delete(const Answer &answerToDelete)
                        answersArray.end());
 
     // Write the updated data back to JSON file
-    std::ofstream outputFile("../../database/answers.json");
+    std::ofstream outputFile(ANSWERS_JSON);
     outputFile << std::setw(4) << jsonData;
     outputFile.close();
 }

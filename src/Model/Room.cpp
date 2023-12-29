@@ -6,6 +6,8 @@
 
 using json = nlohmann::json;
 
+#define ROOMS_JSON "../../../database/rooms.json"
+
 Room::Room() = default;
 
 // Constructor without auto-increase id
@@ -25,7 +27,7 @@ Room::Room(const std::string &name, int capacity, const std::string &type,
         status(status), time_limit(time_limit) {
 
     std::vector<Room> rooms = getAll();
-    // Auto-increment id based on the last room's id in the "../../database/rooms.json" file
+    // Auto-increment id based on the last room's id in the ROOMS_JSON file
     if (!rooms.empty()) {
         id = rooms.back().id + 1;
     } else {
@@ -39,7 +41,7 @@ std::vector<Room> Room::getAll()
 
     // Load existing rooms from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/rooms.json");
+    std::ifstream inputFile(ROOMS_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -65,7 +67,7 @@ Room Room::findById(int roomId)
 {
     // Load existing rooms from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/rooms.json");
+    std::ifstream inputFile(ROOMS_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -95,7 +97,7 @@ Room Room::edit(Room &updatedRoom)
 {
     // Load existing rooms from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/rooms.json");
+    std::ifstream inputFile(ROOMS_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -116,7 +118,7 @@ Room Room::edit(Room &updatedRoom)
     }
 
     // Write the updated data back to JSON file
-    std::ofstream outputFile("../../database/rooms.json");
+    std::ofstream outputFile(ROOMS_JSON);
     outputFile << std::setw(4) << jsonData;
     outputFile.close();
 
@@ -127,7 +129,7 @@ Room Room::create(const Room &newRoom)
 {
     // Load existing rooms from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/rooms.json");
+    std::ifstream inputFile(ROOMS_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -145,7 +147,7 @@ Room Room::create(const Room &newRoom)
     jsonData["rooms"].push_back(newRoomJson);
 
     // Write the updated data back to JSON file
-    std::ofstream outputFile("../../database/rooms.json");
+    std::ofstream outputFile(ROOMS_JSON);
     outputFile << std::setw(4) << jsonData;
     outputFile.close();
 
@@ -156,7 +158,7 @@ void Room::Delete(const Room &roomToRemove)
 {
     // Load existing rooms from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/rooms.json");
+    std::ifstream inputFile(ROOMS_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -170,7 +172,7 @@ void Room::Delete(const Room &roomToRemove)
                      roomsArray.end());
 
     // Write the updated data back to JSON file
-    std::ofstream outputFile("../../database/rooms.json");
+    std::ofstream outputFile(ROOMS_JSON);
     outputFile << std::setw(4) << jsonData;
     outputFile.close();
 }

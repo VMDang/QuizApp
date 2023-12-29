@@ -7,6 +7,8 @@
 
 using json = nlohmann::json;
 
+#define CATEGORIES_JSON "../../../database/categories.json"
+
 Category::Category() = default;
 
 Category::Category(const std::string &name, const std::string &slug)
@@ -35,7 +37,7 @@ std::vector<Category> Category::getAll()
 
     // Load existing categories from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/categories.json");
+    std::ifstream inputFile(CATEGORIES_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -56,7 +58,7 @@ Category Category::findById(int categoryId)
 {
     // Load existing categories from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/categories.json");
+    std::ifstream inputFile(CATEGORIES_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -81,7 +83,7 @@ Category Category::edit(Category &updatedCategory)
 {
     // Load existing categories from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/categories.json");
+    std::ifstream inputFile(CATEGORIES_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -97,7 +99,7 @@ Category Category::edit(Category &updatedCategory)
     }
 
     // Write the updated data back to JSON file
-    std::ofstream outputFile("../../database/categories.json");
+    std::ofstream outputFile(CATEGORIES_JSON);
     outputFile << std::setw(4) << jsonData;
     outputFile.close();
 
@@ -108,7 +110,7 @@ Category Category::create(const Category &newCategory)
 {
     // Load existing categories from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/categories.json");
+    std::ifstream inputFile(CATEGORIES_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -121,7 +123,7 @@ Category Category::create(const Category &newCategory)
     jsonData["categories"].push_back(newCategoryJson);
 
     // Write the updated data back to JSON file
-    std::ofstream outputFile("../../database/categories.json");
+    std::ofstream outputFile(CATEGORIES_JSON);
     outputFile << std::setw(4) << jsonData;
     outputFile.close();
 
@@ -132,7 +134,7 @@ void Category::Delete(const Category &categoryToDelete)
 {
     // Load existing categories from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/categories.json");
+    std::ifstream inputFile(CATEGORIES_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -146,7 +148,7 @@ void Category::Delete(const Category &categoryToDelete)
                           categoriesArray.end());
 
     // Write the updated data back to JSON file
-    std::ofstream outputFile("../../database/categories.json");
+    std::ofstream outputFile(CATEGORIES_JSON);
     outputFile << std::setw(4) << jsonData;
     outputFile.close();
 }
