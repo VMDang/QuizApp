@@ -37,6 +37,19 @@ public:
     static Room edit(Room &updatedRoom);
     static Room create(const Room &newRoom);
     static void Delete(const Room &roomToDelete);
+    json toJson()
+    {
+          return json{
+               {"id", id},
+               {"name", id},
+               {"capacity", capacity},
+               {"type", type},
+               {"start_time", start_time},
+               {"close_time", close_time},
+               {"status", status},
+               {"time_limit", time_limit},
+          };
+    };
 };
 
 #endif // ROOM_HPP

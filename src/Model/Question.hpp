@@ -29,6 +29,15 @@ public:
     static Question edit(const Question &updatedQuestion);
     static Question create(const Question &newQuestion);
     static void Delete(const Question &questionToDelete);
+    json toJson()
+    {
+          return json{
+               {"id", id},
+               {"title", title},
+               {"level", level},
+               {"category_id", category_id},
+          };
+    };
 };
 
 #endif // QUESTION_HPP

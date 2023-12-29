@@ -7,6 +7,8 @@
 
 using json = nlohmann::json;
 
+#define QUESTIONS_JSON "../../../database/questions.json"
+
 Question::Question() = default;
 
 // Constructor without auto-increase id
@@ -31,7 +33,7 @@ std::vector<Question> Question::getAll()
 
     // Load existing questions from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/questions.json");
+    std::ifstream inputFile(QUESTIONS_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -53,7 +55,7 @@ Question Question::findById(int id)
 {
     // Load existing questions from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/questions.json");
+    std::ifstream inputFile(QUESTIONS_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -79,7 +81,7 @@ Question Question::edit(const Question &updatedQuestion)
 {
     // Load existing questions from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/questions.json");
+    std::ifstream inputFile(QUESTIONS_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -96,7 +98,7 @@ Question Question::edit(const Question &updatedQuestion)
     }
 
     // Write the updated data back to JSON file
-    std::ofstream outputFile("../../database/questions.json");
+    std::ofstream outputFile(QUESTIONS_JSON);
     outputFile << std::setw(4) << jsonData;
     outputFile.close();
 
@@ -107,7 +109,7 @@ Question Question::create(const Question &newQuestion)
 {
     // Load existing questions from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/questions.json");
+    std::ifstream inputFile(QUESTIONS_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -121,7 +123,7 @@ Question Question::create(const Question &newQuestion)
     jsonData["questions"].push_back(newQuestionJson);
 
     // Write the updated data back to JSON file
-    std::ofstream outputFile("../../database/questions.json");
+    std::ofstream outputFile(QUESTIONS_JSON);
     outputFile << std::setw(4) << jsonData;
     outputFile.close();
 
@@ -132,7 +134,7 @@ void Question::Delete(const Question &questionToDelete)
 {
     // Load existing questions from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/questions.json");
+    std::ifstream inputFile(QUESTIONS_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -146,7 +148,7 @@ void Question::Delete(const Question &questionToDelete)
                          questionsArray.end());
 
     // Write the updated data back to JSON file
-    std::ofstream outputFile("../../database/questions.json");
+    std::ofstream outputFile(QUESTIONS_JSON);
     outputFile << std::setw(4) << jsonData;
     outputFile.close();
 }

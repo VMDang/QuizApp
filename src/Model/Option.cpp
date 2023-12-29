@@ -7,6 +7,8 @@
 
 using json = nlohmann::json;
 
+#define OPTIONS_JSON "../../../database/options.json"
+
 Option::Option() = default;
 
 // Constructor without auto-increase id
@@ -18,7 +20,7 @@ Option::Option(int question_id, const std::string &content, bool is_right)
     : question_id(question_id), content(content), is_right(is_right)
 {
     std::vector<Option> options = getAll();
-    // Auto-increment id based on the last option's id in the "../../database/options.json" file
+    // Auto-increment id based on the last option's id in the OPTIONS_JSON file
     if (!options.empty())
     {
         id = options.back().id + 1;
@@ -33,7 +35,7 @@ Option::Option(int question_id, const std::string &content, bool is_right)
 Option::Option(int question_id, const std::string &content)
     : question_id(question_id), content(content) {
         std::vector<Option> options = getAll();
-        // Auto-increment id based on the last option's id in the "../../database/options.json" file
+        // Auto-increment id based on the last option's id in the OPTIONS_JSON file
         if (!options.empty()) {
             id = options.back().id + 1;
         } else {
@@ -49,7 +51,7 @@ std::vector<Option> Option::getAll()
 
     // Load existing options from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/options.json");
+    std::ifstream inputFile(OPTIONS_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -71,7 +73,7 @@ Option Option::findById(int optionId)
 {
     // Load existing options from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/options.json");
+    std::ifstream inputFile(OPTIONS_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -97,7 +99,7 @@ Option Option::edit(Option &updatedOption)
 {
     // Load existing options from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/options.json");
+    std::ifstream inputFile(OPTIONS_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -114,7 +116,7 @@ Option Option::edit(Option &updatedOption)
     }
 
     // Write the updated data back to JSON file
-    std::ofstream outputFile("../../database/options.json");
+    std::ofstream outputFile(OPTIONS_JSON);
     outputFile << std::setw(4) << jsonData;
     outputFile.close();
 
@@ -125,7 +127,7 @@ Option Option::create(const Option &newOption)
 {
     // Load existing options from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/options.json");
+    std::ifstream inputFile(OPTIONS_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -139,7 +141,7 @@ Option Option::create(const Option &newOption)
     jsonData["options"].push_back(newOptionJson);
 
     // Write the updated data back to JSON file
-    std::ofstream outputFile("../../database/options.json");
+    std::ofstream outputFile(OPTIONS_JSON);
     outputFile << std::setw(4) << jsonData;
     outputFile.close();
 
@@ -150,7 +152,7 @@ void Option::Delete(const Option &optionToDelete)
 {
     // Load existing options from JSON
     json jsonData;
-    std::ifstream inputFile("../../database/options.json");
+    std::ifstream inputFile(OPTIONS_JSON);
     inputFile >> jsonData;
     inputFile.close();
 
@@ -164,7 +166,7 @@ void Option::Delete(const Option &optionToDelete)
                        optionsArray.end());
 
     // Write the updated data back to JSON file
-    std::ofstream outputFile("../../database/options.json");
+    std::ofstream outputFile(OPTIONS_JSON);
     outputFile << std::setw(4) << jsonData;
     outputFile.close();
 }

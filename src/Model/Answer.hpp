@@ -33,6 +33,16 @@ public:
     static Answer edit(const Answer &updatedAnswer);
     static Answer create(const Answer &newAnswer);
     static void Delete(const Answer &answerToDelete);
+    json toJson()
+    {
+        return json{
+            {"id", id},
+            {"user_id", user_id},
+            {"room_id", room_id},
+            {"option_id", option_id},
+            {"result", result},
+        };
+    }
 };
 
 #endif // ANSWER_HPP
