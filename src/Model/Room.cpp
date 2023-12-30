@@ -13,7 +13,7 @@ Room::Room() = default;
 // Constructor without auto-increase id
 Room::Room(int id, const std::string &name, int capacity, const std::string &type,
             const std::string &start_time, const std::string &close_time,
-            int status, int time_limit)
+            const std::string status, int time_limit)
     : id(id), name(name), capacity(capacity), type(type),
         start_time(start_time), close_time(close_time),
         status(status), time_limit(time_limit) {}
@@ -21,7 +21,7 @@ Room::Room(int id, const std::string &name, int capacity, const std::string &typ
 // Constructor with auto-increase id
 Room::Room(const std::string &name, int capacity, const std::string &type,
             const std::string &start_time, const std::string &close_time,
-            int status, int time_limit)
+            const std::string status, int time_limit)
     : name(name), capacity(capacity), type(type),
         start_time(start_time), close_time(close_time),
         status(status), time_limit(time_limit) {

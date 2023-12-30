@@ -7,4 +7,9 @@
 #define RequestLogoutRouter "request/logout"
 #define ResponseLogoutRouter "response/logout"
 
+#define RequestRoomListRouter "request/room/list"
+#define ResponseRoomListRouter "response/room/list"
+#define RequestRoomDetailRouter "request/room/detail"
+#define ResponseRoomDetailRouter "response/room/detail"
+
 #endif
