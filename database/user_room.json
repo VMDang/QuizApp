@@ -1,34 +1,49 @@
 {
     "user_room": [
         {
-            "id": 1,
             "user_id": 3,
             "room_id": 1,
             "is_owner": true
         },
         {
-            "id": 4,
             "user_id": 6,
             "room_id": 1,
             "is_owner": false
         },
         {
-            "id": 5,
             "user_id": 7,
             "room_id": 1,
             "is_owner": false
         },
         {
-            "id": 6,
             "user_id": 8,
             "room_id": 1,
             "is_owner": false
         },
         {
-            "id": 7,
             "user_id": 5,
             "room_id": 2,
             "is_owner": false
+        },
+        {
+            "user_id": 4,
+            "room_id": 3,
+            "is_owner": true
+        },
+        {
+            "user_id": 3,
+            "room_id": 3,
+            "is_owner": false
+        },
+        {
+            "user_id": 5,
+            "room_id": 4,
+            "is_owner": true
+        },
+        {
+            "user_id": 6,
+            "room_id": 5,
+            "is_owner": true
         }
     ]
 }

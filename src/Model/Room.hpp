@@ -17,7 +17,7 @@ public:
     std::string type;
     std::string start_time;
     std::string close_time;
-    int status;
+    std::string status;
     int time_limit;
 
     Room();
@@ -25,12 +25,12 @@ public:
     // Constructor without auto-increase id
     Room(int id, const std::string &name, int capacity, const std::string &type,
          const std::string &start_time, const std::string &close_time,
-         int status, int time_limit);
+         const std::string status, int time_limit);
 
     // Constructor with auto-increase id
     Room(const std::string &name, int capacity, const std::string &type,
          const std::string &start_time, const std::string &close_time,
-         int status, int time_limit);
+         const std::string status, int time_limit);
 
     static std::vector<Room> getAll();
     static Room findById(int id);

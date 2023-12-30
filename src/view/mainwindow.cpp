@@ -6,6 +6,7 @@
 #include "../app/comunicate/client.h"
 #include "clientmanager.h"
 #include "../app/request/logout.h"
+#include "roomhandler.h"
 
 #include <iostream>
 #include <QWidget>
@@ -17,6 +18,19 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    json auth = ClientManager::authUser;
+    std::string name = auth["name"];
+    std::string email = auth["email"];
+    ui->nameInfoLabel->setText(name.c_str());
+    ui->emailInfoLabel->setText(email.c_str());
+
+    RoomHandler roomhandler;
+
+    roomhandler.requestListRoom();
+    json listRooms = roomhandler.responseListRoom();
+    std::cout << listRooms.dump() << std::endl;  // Print to data list room for set view
+
     QVBoxLayout *roomList = new QVBoxLayout(ui->roomList);
 
     // Tạo một item exam
@@ -29,12 +43,6 @@ MainWindow::MainWindow(QWidget *parent)
     // Kết nối tới signal của ExamItem
     connect(item1, &RoomItem::joinPushButton_clicked, this, &MainWindow::openWaittingRoom);
 
-    json auth = ClientManager::authUser;
-
-    std::string name = auth["name"];
-    std::string email = auth["email"];
-    ui->nameInfoLabel->setText(name.c_str());
-    ui->emailInfoLabel->setText(email.c_str());
 }
 
 // Di chuyển tới màn hình waiting room

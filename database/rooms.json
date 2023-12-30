@@ -6,7 +6,7 @@
             "id": 1,
             "name": "Room A",
             "start_time": "2023-01-01T16:00:00",
-            "status": 1,
+            "status": "Closed",
             "time_limit": 60,
             "type": "exam"
         },
@@ -16,8 +16,38 @@
             "id": 2,
             "name": "Room B",
             "start_time": "2023-01-01T17:00:00",
-            "status": 1,
+            "status": "Closed",
             "time_limit": 60,
+            "type": "practice"
+        },
+        {
+            "capacity": 5,
+            "close_time": "",
+            "id": 3,
+            "name": "Room C",
+            "start_time": "",
+            "status": "Lobby",
+            "time_limit": 30,
+            "type": "exam"
+        },
+        {
+            "capacity": 5,
+            "close_time": "",
+            "id": 4,
+            "name": "Room D",
+            "start_time": "",
+            "status": "Lobby",
+            "time_limit": 45,
+            "type": "exam"
+        },
+        {
+            "capacity": 5,
+            "close_time": "",
+            "id": 5,
+            "name": "Room D",
+            "start_time": "",
+            "status": "Lobby",
+            "time_limit": 45,
             "type": "practice"
         }
     ]

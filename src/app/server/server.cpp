@@ -14,6 +14,7 @@
 #include <fstream>
 
 #include "AuthController.hpp"
+#include "RoomController.hpp"
 #include "../comunicate/server.h"
 #include "../request/route.h"
 
@@ -51,6 +52,11 @@ void *client_handler(void *arg)
                 logout.logout(request, clientfd);
             }
             
+            if (url.find("/room/") != std::string::npos)
+            {
+                RoomController roomController;
+                roomController.redriect(request, clientfd);
+            }
         }     
     
     }

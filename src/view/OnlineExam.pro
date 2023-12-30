@@ -7,6 +7,7 @@ CONFIG += c++11
 SOURCES += \
     ../app/comunicate/client.cpp \
     clientmanager.cpp \
+    roomhandler.cpp \
     examwindow.cpp \
     lobbywindow.cpp \
     loginwindow.cpp \
@@ -16,6 +17,7 @@ SOURCES += \
 
 HEADERS += \
     clientmanager.h \
+    roomhandler.h \
     examwindow.h \
     lobbywindow.h \
     loginwindow.h \
