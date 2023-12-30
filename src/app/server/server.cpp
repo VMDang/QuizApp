@@ -13,18 +13,16 @@
 #include <pthread.h>
 #include <fstream>
 
-#include "../request/login.h"
-#include "../request/type.h"
+#include "AuthController.hpp"
 #include "../comunicate/server.h"
+#include "../request/route.h"
 
 #define BACKLOG 5
-
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void *client_handler(void *arg) 
 {
     int clientfd;
-    int sendBytes, rcvBytes;
+    int rcvBytes;
 
     pthread_detach(pthread_self());
     clientfd = *((int *)arg);
@@ -35,40 +33,25 @@ void *client_handler(void *arg)
         char buff[BUFF_SIZE];
         
         rcvBytes = recvFromClient(clientfd, buff);
-        
-        if (strcmp(buff, "\0") == 0)
-        {
+        if (strcmp(buff, "\0") == 0) {
             break;
         }
-        printf("%s\n", buff);
-        json requestLogin = json::parse(buff);
-        std::string code = requestLogin["code"];
-        std::string url = requestLogin["url"];
-        std::string header = requestLogin["header"];
-        std::string email = requestLogin["body"]["email"];
-        std::string password = requestLogin["body"]["password"];
-
-        User user = User::findByEmail(email);
-        ResponseLogin responseLogin;
-
-        if (user.email.empty())
+        json request = json::parse(buff);
+        std::string code = request["code"];
+        std::string url = request["url"];
+        if (url == RequestLoginRouter)
         {
-            responseLogin.status = FAILURE;
-            responseLogin.body.message = "Account not exists.";
+            AuthController loginController = AuthController();
+            loginController.login(request, clientfd);
         } else
         {
-            if (password == user.password)
+            if (url == RequestLogoutRouter )
             {
-                responseLogin.status = SUCCESS;
-                responseLogin.body.user = user;
-            } else
-            {
-                responseLogin.status = FAILURE;
-                responseLogin.body.message = "Password incorrect.";
+                AuthController logout = AuthController();
+                logout.logout(request, clientfd);
             }
-        }
-
-        sendToClient(clientfd, responseLogin.toJson().dump().c_str());
+            
+        }     
     
     }
     close(clientfd);

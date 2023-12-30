@@ -85,7 +85,7 @@
          <widget class="QLabel" name="label">
           <property name="geometry">
            <rect>
-            <x>10</x>
+            <x>0</x>
             <y>0</y>
             <width>40</width>
             <height>40</height>
@@ -104,10 +104,10 @@
            <bool>true</bool>
           </property>
          </widget>
-         <widget class="QLabel" name="emailInfoLabel">
+         <widget class="QLabel" name="nameInfoLabel">
           <property name="geometry">
            <rect>
-            <x>60</x>
+            <x>50</x>
             <y>0</y>
             <width>75</width>
             <height>22</height>
@@ -117,7 +117,6 @@
            <font>
             <family>Source Sans 3 Medium</family>
             <pointsize>-1</pointsize>
-            <weight>50</weight>
             <bold>false</bold>
            </font>
           </property>
@@ -130,12 +129,12 @@ color: #fff;</string>
            <string>Tien Dat</string>
           </property>
          </widget>
-         <widget class="QLabel" name="nameInfoLabel">
+         <widget class="QLabel" name="emailInfoLabel">
           <property name="geometry">
            <rect>
-            <x>60</x>
+            <x>50</x>
             <y>20</y>
-            <width>131</width>
+            <width>161</width>
             <height>22</height>
            </rect>
           </property>
@@ -143,7 +142,6 @@ color: #fff;</string>
            <font>
             <family>Source Sans 3 Medium</family>
             <pointsize>-1</pointsize>
-            <weight>50</weight>
             <bold>false</bold>
            </font>
           </property>
@@ -216,7 +214,6 @@ border: none;</string>
           <property name="font">
            <font>
             <family>Source Sans 3</family>
-            <weight>75</weight>
             <italic>false</italic>
             <bold>true</bold>
            </font>
@@ -366,6 +363,13 @@ color: #fff;</string>
           </size>
          </property>
         </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="loggoutButton">
+         <property name="text">
+          <string>Logout</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -638,7 +642,6 @@ color: #fff;</string>
           <property name="font">
            <font>
             <family>Source Sans 3</family>
-            <weight>75</weight>
             <bold>true</bold>
            </font>
           </property>

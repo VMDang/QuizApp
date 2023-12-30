@@ -18,6 +18,9 @@ public:
 public slots:
     void openWaittingRoom(const QString &room_id);
 
+private slots:
+    void on_loggoutButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

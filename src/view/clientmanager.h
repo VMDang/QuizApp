@@ -2,10 +2,13 @@
 #define CLIENTMANAGER_H
 
 #include <unistd.h>
+#include "../Model/User.hpp"
+#include "../../library/json.hpp"
 
 class ClientManager {
 public:
     static int client_sock;
+    static json authUser;
     static void close_client_sock();
 };
 
