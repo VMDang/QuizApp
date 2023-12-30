@@ -4,19 +4,17 @@
 #include "../app/comunicate/client.h"
 #include "../app/request/login.h"
 #include "../../library/json.hpp"
+#include "clientmanager.h"
 
 using json = nlohmann::json;
 
 #include <QString>
 #include <QMessageBox>
-#include <stdio.h>
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <cstring>
-#include <iostream>
 
 
 LoginWindow::LoginWindow(QWidget *parent) :
@@ -49,8 +47,6 @@ void LoginWindow::on_loginPushButton_clicked()
 
         int bytes_sent;
         int bytes_received;
-        // char username[BUFF_SIZE];
-        // char password[BUFF_SIZE];
         char buff[BUFF_SIZE];
 
         std::string dataTemp = login.toJson().dump();
@@ -67,6 +63,9 @@ void LoginWindow::on_loginPushButton_clicked()
         if (status == FAILURE) {
             QMessageBox::warning(this, "Login Failed", QString::fromStdString(responseLogin["body"]["message"]));
         } else if (status == SUCCESS) {
+            json user = responseLogin["body"]["user"];
+            ClientManager::authUser = user;
+
             LoginWindow::hide();
             MainWindow *mainWindow = new MainWindow(this);
             mainWindow->show();

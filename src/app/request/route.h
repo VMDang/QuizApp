@@ -4,4 +4,7 @@
 #define RequestLoginRouter "request/login"
 #define ResponseLoginRouter "response/login"
 
+#define RequestLogoutRouter "request/logout"
+#define ResponseLogoutRouter "response/logout"
+
 #endif
