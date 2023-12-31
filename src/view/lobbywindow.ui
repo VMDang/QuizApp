@@ -46,7 +46,6 @@ QMainWindow {
        <property name="font">
         <font>
          <family>Source Sans 3</family>
-         <weight>75</weight>
          <italic>false</italic>
          <bold>true</bold>
         </font>
@@ -128,7 +127,6 @@ border-radius: 8px;</string>
           <font>
            <family>Source Sans 3</family>
            <pointsize>24</pointsize>
-           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
@@ -453,11 +451,11 @@ border-radius: 8px;</string>
          </layout>
         </widget>
        </widget>
-       <widget class="QPushButton" name="pushButton_2">
+       <widget class="QPushButton" name="startExamButton">
         <property name="geometry">
          <rect>
           <x>240</x>
-          <y>480</y>
+          <y>440</y>
           <width>261</width>
           <height>50</height>
          </rect>
@@ -465,24 +463,85 @@ border-radius: 8px;</string>
         <property name="font">
          <font>
           <family>Source Sans 3</family>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
         <property name="styleSheet">
-         <string notr="true">#pushButton_2 {
+         <string notr="true">#startExamButton {
 	background-color: rgb(9, 44, 76);
 	border: none;
 	color: #fff;
 	border-radius: 25px;
 }
 
-#pushButton_2:hover {
+#startExamButton:hover {
 	background-color: rgba(9, 44, 76, 0.9);
 }</string>
         </property>
         <property name="text">
          <string>START EXAM</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="readyExamButton">
+        <property name="geometry">
+         <rect>
+          <x>240</x>
+          <y>500</y>
+          <width>261</width>
+          <height>50</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Source Sans 3</family>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">#readyExamButton {
+	background-color: rgb(9, 44, 76);
+	border: none;
+	color: #fff;
+	border-radius: 25px;
+}
+
+#readyExamButton:hover {
+	background-color: rgba(9, 44, 76, 0.9);
+}</string>
+        </property>
+        <property name="text">
+         <string>READY JOIN EXAM</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="unReadyExamButton">
+        <property name="geometry">
+         <rect>
+          <x>240</x>
+          <y>560</y>
+          <width>261</width>
+          <height>50</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Source Sans 3</family>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">#unReadyExamButton {
+	background-color: rgb(9, 44, 76);
+	border: none;
+	color: #fff;
+	border-radius: 25px;
+}
+
+#unReadyExamButton:hover {
+	background-color: rgba(9, 44, 76, 0.9);
+}</string>
+        </property>
+        <property name="text">
+         <string>UNREADY</string>
         </property>
        </widget>
       </widget>

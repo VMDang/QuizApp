@@ -11,5 +11,11 @@
 #define ResponseRoomListRouter "response/room/list"
 #define RequestRoomDetailRouter "request/room/detail"
 #define ResponseRoomDetailRouter "response/room/detail"
+#define RequestReadyRoomRouter "request/room/ready"
+#define ResponseReadyRoomRouter "response/room/ready"
+#define RequestUnReadyRoomRouter "request/room/unready"
+#define ResponseUnReadyRoomRouter "response/room/unready"
+#define RequestStartRoomRouter "request/room/start"
+#define ResponseStartRoomRouter "response/room/start"
 
 #endif

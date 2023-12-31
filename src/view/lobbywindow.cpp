@@ -1,5 +1,13 @@
 #include "lobbywindow.h"
 #include "ui_lobbywindow.h"
+#include "../app/comunicate/client.h"
+#include "clientmanager.h"
+#include "../app/request/room.h"
+#include "roomhandler.h"
+#include <pthread.h>
+#include <iostream>
+
+void* onlyReceiveThread(void* arg);
 
 LobbyWindow::LobbyWindow(QWidget *parent, const QString &room_id) :
     QMainWindow(parent),
@@ -16,9 +24,53 @@ LobbyWindow::LobbyWindow(QWidget *parent, const QString &room_id) :
     ui->tableWidget->setItem(1,0, new QTableWidgetItem("2"));
     ui->tableWidget->setItem(1,1, new QTableWidgetItem("Nguyen Van A"));
     ui->tableWidget->setItem(1,2, new QTableWidgetItem("1000"));
+
+    // Only listen have a person ready --> update table
+    pthread_t tid;
+    pthread_create(&tid, NULL, &onlyReceiveThread, (void*)ClientManager::client_sock);
 }
 
 LobbyWindow::~LobbyWindow()
 {
     delete ui;
 }
+
+void LobbyWindow::on_startExamButton_clicked()
+{
+
+}
+
+
+void LobbyWindow::on_readyExamButton_clicked()
+{
+    int room_id = 4;
+    RoomHandler roomhandler;
+    roomhandler.requestReadyRoom(room_id);
+}
+
+void LobbyWindow::on_unReadyExamButton_clicked()
+{
+    int room_id = 4;
+    RoomHandler roomhandler;
+    roomhandler.requestUnReadyRoom(room_id);
+}
+
+void* onlyReceiveThread(void* arg) {
+    char buff[BUFF_SIZE];
+
+    while (1) {
+        recvFromServer(buff);
+        json response = json::parse(buff);
+        std::cout << response.dump()  << std::endl;
+        if (response["url"] == ResponseReadyRoomRouter)     // Have a person ready
+        {
+            // std::cout << response.dump()  << std::endl;   // List users ready in here
+        }else if (response["url"] == ResponseStartRoomRouter) {     // Break if ownner start room
+            break;
+        }
+    }
+
+    pthread_exit(NULL);
+}
+
+

@@ -17,8 +17,11 @@
 #include "RoomController.hpp"
 #include "../comunicate/server.h"
 #include "../request/route.h"
+#include "ServerManager.hpp"
 
 #define BACKLOG 5
+
+std::vector<int> listClientFd;
 
 void *client_handler(void *arg) 
 {
@@ -27,6 +30,10 @@ void *client_handler(void *arg)
 
     pthread_detach(pthread_self());
     clientfd = *((int *)arg);
+    
+    pthread_mutex_lock(&ServerManager::mutex);
+    pthread_mutex_unlock(&ServerManager::mutex);
+
     free(arg);
 
     while (1)
@@ -60,6 +67,13 @@ void *client_handler(void *arg)
         }     
     
     }
+    pthread_mutex_lock(&ServerManager::mutex);
+    ServerManager::client_auth.erase(std::remove_if(ServerManager::client_auth.begin(), ServerManager::client_auth.end(),
+                             [clientfd](std::unordered_map<int, int>& clientUserMap) {
+                                 return clientUserMap.find(clientfd) != clientUserMap.end();
+                             }),
+                ServerManager::client_auth.end());
+    pthread_mutex_unlock(&ServerManager::mutex);
     close(clientfd);
 }
 
