@@ -15,6 +15,13 @@ public:
     explicit LobbyWindow(QWidget *parent = nullptr, const QString &room_id = nullptr);
     ~LobbyWindow();
 
+private slots:
+    void on_startExamButton_clicked();
+
+    void on_readyExamButton_clicked();
+
+    void on_unReadyExamButton_clicked();
+
 private:
     Ui::LobbyWindow *ui;
 };

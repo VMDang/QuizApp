@@ -24,8 +24,13 @@ void RoomItem::on_joinPushButton_clicked()
     int id = 4; // This is room_id when click. Emulate is interger but room_id now is QString. Need convert to int
     RoomHandler roomhandler;
     roomhandler.requestDetailRoom(id);
-    json detailRoom = roomhandler.responseDetailRoom();
+    json detailRoom = roomhandler.responseDetailRoom();     // Data room information and table users ready, not yet qusestions info
     std::cout << detailRoom.dump() << std::endl;
+    if (detailRoom["body"]["is_owner"] == true) {
+        // Go to view room owmer
+    } else {
+        // Go to view exam participants
+    }
 
     emit joinPushButton_clicked(room_id);
 }

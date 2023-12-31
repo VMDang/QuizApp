@@ -38,3 +38,35 @@ json RoomHandler::responseDetailRoom()
 
     return json::parse(buff);
 }
+
+void RoomHandler::requestReadyRoom(int room_id)
+{
+    RequestReadyRoom request;
+    request.header = ClientManager::authUser;
+    request.param = room_id;
+    sendToServer(request.toJson().dump().c_str());
+}
+json RoomHandler::responseReadyRoom()
+
+{
+    char buff[BUFF_SIZE];
+    recvFromServer(buff);
+
+    return json::parse(buff);
+}
+
+void RoomHandler::requestUnReadyRoom(int room_id)
+{
+    RequestUnReadyRoom request;
+    request.header = ClientManager::authUser;
+    request.param = room_id;
+    sendToServer(request.toJson().dump().c_str());
+}
+
+json RoomHandler::responseUnReadyRoom()
+{
+    char buff[BUFF_SIZE];
+    recvFromServer(buff);
+
+    return json::parse(buff);
+}
