@@ -21,6 +21,8 @@ public slots:
 private slots:
     void on_loggoutButton_clicked();
 
+    void on_createRoomButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

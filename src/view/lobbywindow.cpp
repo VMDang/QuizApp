@@ -71,7 +71,7 @@ void* onlyReceiveThread(void* arg) {
             // std::cout << response.dump()  << std::endl;   // List users ready in here --> update table participants
         } else if (response["url"] == ResponseStartRoomRouter) {    // Break if ownner start
             std::cout << " -----Start Room ---- "  << std::endl;
-            // std::cout << response.dump()  << std::endl;
+            // std::cout << response.dump()  << std::endl;          // List question& option and room information
             // Change view to examwindow
             break;
         }

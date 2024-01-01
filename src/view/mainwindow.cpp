@@ -7,6 +7,8 @@
 #include "clientmanager.h"
 #include "../app/request/logout.h"
 #include "roomhandler.h"
+#include "categoryhandler.h"
+#include "answerhandler.h"
 
 #include <iostream>
 #include <QWidget>
@@ -83,5 +85,22 @@ void MainWindow::on_loggoutButton_clicked()
         loginWindow->show();
     }
 
+}
+
+
+void MainWindow::on_createRoomButton_clicked()
+{
+    CategoryHandler categoryHandler;
+    categoryHandler.requestListCategory();
+
+    json responseListCategory = categoryHandler.responseListCategory();
+    std::cout << responseListCategory.dump() << std::endl;
+
+    // Testing submit answer
+    AnswerHandler answerHandler;
+    answerHandler.requestSubmitAnswer(4, 17, 65);
+
+    json responseSubmitAnswer = answerHandler.responseSubmitAnswer();
+    std::cout << responseSubmitAnswer.dump() << std::endl;
 }
 

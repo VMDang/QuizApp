@@ -18,4 +18,10 @@
 #define RequestStartRoomRouter "request/room/start"
 #define ResponseStartRoomRouter "response/room/start"
 
+#define RequestListCategoryRouter "request/category/list"
+#define ResponseListCategoryRouter "response/category/list"
+
+#define RequestSubmitAnswerRouter "request/answer/submit"
+#define ResponseSubmitAnswerRouter "response/answer/submit"
+
 #endif
