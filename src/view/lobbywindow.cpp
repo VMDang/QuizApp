@@ -37,7 +37,9 @@ LobbyWindow::~LobbyWindow()
 
 void LobbyWindow::on_startExamButton_clicked()
 {
-
+    int room_id = 4;
+    RoomHandler roomhandler;
+    roomhandler.requestStartRoom(room_id);
 }
 
 
@@ -64,8 +66,13 @@ void* onlyReceiveThread(void* arg) {
         std::cout << response.dump()  << std::endl;
         if (response["url"] == ResponseReadyRoomRouter)     // Have a person ready
         {
-            // std::cout << response.dump()  << std::endl;   // List users ready in here
-        }else if (response["url"] == ResponseStartRoomRouter) {     // Break if ownner start room
+            // std::cout << response.dump()  << std::endl;   // List users ready in here (if donot have participate, response["usersReady"] = null)
+        }else if (response["url"] == ResponseUnReadyRoomRouter ) {     // Have a person unready
+            // std::cout << response.dump()  << std::endl;   // List users ready in here --> update table participants
+        } else if (response["url"] == ResponseStartRoomRouter) {    // Break if ownner start
+            std::cout << " -----Start Room ---- "  << std::endl;
+            // std::cout << response.dump()  << std::endl;
+            // Change view to examwindow
             break;
         }
     }

@@ -1,6 +1,10 @@
 #include <iostream>
 #include <unordered_map>
 #include <vector>
+#include <iomanip>
+#include <chrono>
+#include <ctime>
+#include <sstream>
 
 #include "RoomController.hpp"
 #include "../comunicate/server.h"
@@ -8,6 +12,7 @@
 #include "../../Model/Room.hpp"
 #include "../../Model/User.hpp"
 #include "../../Model/UserRoom.hpp"
+#include "../../Model/RoomQuestion.hpp"
 #include "ServerManager.hpp"
 
 RoomController::RoomController() = default;
@@ -33,7 +38,11 @@ void RoomController::redriect(json request, int clientfd)
     else if (url == RequestUnReadyRoomRouter)
     {
         unready(request, clientfd);
+    } else if (url == RequestStartRoomRouter)
+    {
+        start(request, clientfd);
     }
+    
 }
 
 void RoomController::list(json request, int clientfd)
@@ -211,6 +220,111 @@ void RoomController::unready(json request, int clientfd)
 
         for (const auto &entry : *i)
         {
+            sendToClient(entry.first, response.toJson().dump().c_str());
+        }
+    }
+    pthread_mutex_unlock(&ServerManager::mutex);
+
+    std::vector<UserRoom> user_room = relationsUserRoom();
+    auto itOwner = std::find_if(user_room.begin(), user_room.end(), [room_id](const UserRoom &ur)
+                                { return ur.room_id == room_id && ur.is_owner == true; });
+    int owner_id = itOwner->user_id;
+
+    auto iOwner = std::find_if(clientUserMaps.begin(), clientUserMaps.end(),
+                               [owner_id](const std::unordered_map<int, int> &clientUserMap)
+                               {
+                                   return std::any_of(clientUserMap.begin(), clientUserMap.end(),
+                                                      [owner_id](const auto &entry)
+                                                      {
+                                                          return entry.second == owner_id;
+                                                      });
+                               });
+
+    for (const auto &entry : *iOwner)
+    {
+        sendToClient(entry.first, response.toJson().dump().c_str());
+    }
+
+    auto itAuth = std::find_if(clientUserMaps.begin(), clientUserMaps.end(),
+                               [auth_id](const std::unordered_map<int, int> &clientUserMap)
+                               {
+                                   return std::any_of(clientUserMap.begin(), clientUserMap.end(),
+                                                      [auth_id](const auto &entry)
+                                                      {
+                                                          return entry.second == auth_id;
+                                                      });
+                               });
+
+    for (const auto &entry : *itAuth)
+    {
+        sendToClient(entry.first, response.toJson().dump().c_str());
+    }
+}
+
+void RoomController::start(json request, int clientfd)
+{
+    int auth_id = request["header"]["id"];
+    int room_id = request["body"]["room_id"];
+
+    auto now = std::chrono::system_clock::now();
+    std::time_t convertTime = std::chrono::system_clock::to_time_t(now);
+    std::stringstream formattedTime;
+    formattedTime << std::put_time(std::localtime(&convertTime), "%Y-%m-%d %H:%M:%S");
+
+    Room r = Room::findById(room_id);
+    r.status = "Doing";
+    r.start_time = formattedTime.str();
+    Room room = Room::edit(r);
+
+    std::vector<RoomQuestion> relationsRQ = relationsRoomQuestion();
+    std::vector<QuestionContent> questionsExam;
+    std::vector<Option> options = Option::getAll();
+
+    relationsRQ.erase(std::remove_if(relationsRQ.begin(), relationsRQ.end(),
+        [room_id](const RoomQuestion& r_q) {
+            return r_q.room_id != room_id;
+        }), relationsRQ.end());
+
+    for (RoomQuestion& rq : relationsRQ)
+    {
+        Question q = Question::findById(rq.question_id);
+        int q_id = q.id;
+        std::vector<Option> filteredOptions;
+        std::copy_if(options.begin(), options.end(), std::back_inserter(filteredOptions),
+        [q_id](const Option& option) {
+            return option.question_id == q_id;
+        });
+        QuestionContent qc;
+        qc.question = q;
+        qc.options = filteredOptions;
+
+        questionsExam.push_back(qc);
+    }
+    
+    ResponseStartRoom response;
+    response.body.room = r;
+    response.body.questions = questionsExam;
+    response.status = SUCCESS;
+
+    pthread_mutex_unlock(&ServerManager::mutex);
+    std::vector<std::unordered_map<int, int>> clientUserMaps = ServerManager::client_auth;
+
+    auto usersReadyInRoom = usersReady.find(room_id);
+
+    for (int item : usersReadyInRoom->second)
+    {
+        auto i = std::find_if(clientUserMaps.begin(), clientUserMaps.end(),
+                              [item](const std::unordered_map<int, int> &clientUserMap)
+                              {
+                                  return std::any_of(clientUserMap.begin(), clientUserMap.end(),
+                                                     [item](const auto &entry)
+                                                     {
+                                                         return entry.second == item;
+                                                     });
+                              });
+
+        for (const auto &entry : *i)
+        {        
             sendToClient(entry.first, response.toJson().dump().c_str());
         }
     }

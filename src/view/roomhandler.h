@@ -12,14 +12,17 @@ public:
     void requestListRoom();
     json responseListRoom();
 
-    void requestDetailRoom(int id);
+    void requestDetailRoom(int room_id);
     json responseDetailRoom();
 
-    void requestReadyRoom(int id);
+    void requestReadyRoom(int room_id);
     json responseReadyRoom();
 
-    void requestUnReadyRoom(int id);
+    void requestUnReadyRoom(int room_id);
     json responseUnReadyRoom();
+
+    void requestStartRoom(int room_id);
+    json responseStartRoom();
 };
 
 #endif // ROOMHANDLER_H

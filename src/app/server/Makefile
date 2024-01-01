@@ -4,9 +4,13 @@ LIB = -lm
 comunicate = ../comunicate/server.cpp
 M_user = ../../Model/User.cpp
 M_room = ../../Model/Room.cpp
+M_question = ../../Model/Question.cpp
+M_option = ../../Model/Option.cpp
+M_answer = ../../Model/Answer.cpp
 C_auth = AuthController.cpp
 C_room = RoomController.cpp
-M_userroom = ../../Model/UserRoom.cpp
+M_ur = ../../Model/UserRoom.cpp
+M_rq = ../../Model/RoomQuestion.cpp
 manager = ServerManager.cpp
 
 all: server
@@ -15,7 +19,7 @@ debug: CFLAGS += -g
 debug: server
 
 server: server.o
-	${CC} server.cpp  ${comunicate} ${M_user} ${M_room} ${M_userroom} ${C_auth} ${C_room} ${R} ${manager} -o server -pthread
+	${CC} server.cpp  ${comunicate} ${M_user} ${M_room} ${M_question} ${M_option} ${M_answer} ${M_ur} ${M_rq} ${C_auth} ${C_room} ${manager} -o server -pthread
 
 server.o: server.cpp
 	${CC} $(CFLAGS) server.cpp

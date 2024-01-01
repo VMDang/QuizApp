@@ -7,6 +7,7 @@
 #include "../../Model/User.hpp"
 #include "type.h"
 #include "route.h"
+#include "question.h"
 
 using json = nlohmann::json;
 
@@ -16,24 +17,24 @@ typedef struct
     json header;
     std::string url = RequestRoomListRouter;
     std::string params;
-    
-    json toJson() {
+
+    json toJson()
+    {
         return json{
             {"code", code},
             {"url", url},
-            {"header", header },
-            {"params", params}
-        };
-
+            {"header", header},
+            {"params", params}};
     }
 } RequestListRoom;
 
-typedef struct 
+typedef struct
 {
     std::vector<Room> rooms;
-    json toJson() {
+    json toJson()
+    {
         json result;
-        for (Room& room : rooms)
+        for (Room &room : rooms)
         {
             result["rooms"].push_back(room.toJson());
         }
@@ -47,15 +48,14 @@ typedef struct
     std::string header;
     std::string url = ResponseRoomListRouter;
     ResponseListRoomBody body;
-    
-    json toJson() {
+
+    json toJson()
+    {
         return json{
             {"code", code},
             {"url", url},
-            {"header", header },
-            {"body", body.toJson()}
-        };
-
+            {"header", header},
+            {"body", body.toJson()}};
     }
 } ResponseListRoom;
 
@@ -66,29 +66,37 @@ typedef struct
     std::string url = RequestRoomDetailRouter;
     int param;
 
-    json toJson() {
+    json toJson()
+    {
         return json{
             {"code", code},
             {"url", url},
-            {"header", header },
-            {"param", param}
-        };
-
+            {"header", header},
+            {"param", param}};
     }
 } ResquestDetailRoom;
 
-typedef struct 
+typedef struct
 {
     Room room;
     bool is_owner;
     std::vector<User> usersReady;
 
-    json toJson() {
+    json toJson()
+    {
         json result;
-        for (User& user : usersReady)
+        if (usersReady.size() > 0)
         {
-            result["usersReady"].push_back(user.toJson());
+            for (User &user : usersReady)
+            {
+                result["usersReady"].push_back(user.toJson());
+            }
         }
+        else
+        {
+            result["usersReady"] = nullptr;
+        }
+
         result["room"] = room.toJson();
         result["is_owner"] = is_owner;
         return result;
@@ -102,13 +110,13 @@ typedef struct
     std::string url = ResponseRoomDetailRouter;
     ResponseDetailRoomBody body;
 
-    json toJson() {
+    json toJson()
+    {
         return json{
             {"code", code},
             {"url", url},
-            {"header", header },
-            {"body", body.toJson()}
-        };
+            {"header", header},
+            {"body", body.toJson()}};
     }
 } ResponseDetailRoom;
 
@@ -119,13 +127,13 @@ typedef struct
     std::string url = RequestReadyRoomRouter;
     int param;
 
-    json toJson() {
+    json toJson()
+    {
         return json{
             {"code", code},
             {"url", url},
-            {"header", header },
-            {"param", param}
-        };
+            {"header", header},
+            {"param", param}};
     }
 } RequestReadyRoom;
 
@@ -133,15 +141,16 @@ typedef struct
 {
     std::vector<User> usersReady;
 
-    json toJson() {
+    json toJson()
+    {
         json result;
-        for (User& user : usersReady)
+        for (User &user : usersReady)
         {
             result["usersReady"].push_back(user.toJson());
         }
         return result;
     }
-}ResponseReadyRoomBody;
+} ResponseReadyRoomBody;
 
 typedef struct
 {
@@ -151,14 +160,14 @@ typedef struct
     std::string url = ResponseReadyRoomRouter;
     ResponseReadyRoomBody body;
 
-    json toJson() {
+    json toJson()
+    {
         return json{
             {"code", code},
             {"status", status},
             {"url", url},
-            {"header", header },
-            {"body", body.toJson()}
-        };
+            {"header", header},
+            {"body", body.toJson()}};
     }
 } ResponseReadyRoom;
 
@@ -169,13 +178,13 @@ typedef struct
     std::string url = RequestUnReadyRoomRouter;
     int param;
 
-    json toJson() {
+    json toJson()
+    {
         return json{
             {"code", code},
             {"url", url},
-            {"header", header },
-            {"param", param}
-        };
+            {"header", header},
+            {"param", param}};
     }
 } RequestUnReadyRoom;
 
@@ -187,15 +196,80 @@ typedef struct
     std::string url = ResponseUnReadyRoomRouter;
     ResponseReadyRoomBody body;
 
-    json toJson() {
+    json toJson()
+    {
         return json{
             {"code", code},
             {"status", status},
             {"url", url},
-            {"header", header },
+            {"header", header},
+            {"body", body.toJson()}};
+    }
+} ResponseUnReadyRoom;
+
+typedef struct
+{
+    int room_id;
+    json toJson()
+    {
+        return json{
+            {"room_id", room_id},
+        };
+    }
+} RequestStartRoomBody;
+
+typedef struct
+{
+    std::string code = REQUEST_CREATE_RESOURCE;
+    json header;
+    std::string url = RequestStartRoomRouter;
+    RequestStartRoomBody body;
+
+    json toJson()
+    {
+        return json{
+            {"code", code},
+            {"url", url},
+            {"header", header},
             {"body", body.toJson()}
         };
     }
-} ResponseUnReadyRoom;
+} RequestStartRoom;
+
+typedef struct
+{
+    Room room;
+    std::vector<QuestionContent> questions;
+    json toJson()
+    {
+        json result;
+        for (QuestionContent &q : questions)
+        {
+            result["questions"].push_back(q.toJson());
+        }
+        result["room"] = room.toJson();
+        return result;
+    }
+} ResponseStartRoomBody;
+
+typedef struct
+{
+    std::string code = RESPONSE_CREATE_RESOURCE;
+    json header;
+    std::string status;
+    std::string url = ResponseStartRoomRouter;
+    ResponseStartRoomBody body;
+
+    json toJson()
+    {
+        return json{
+            {"code", code},
+            {"url", url},
+            {"status", status},
+            {"header", header},
+            {"body", body.toJson()}
+        };
+    }
+} ResponseStartRoom;
 
 #endif

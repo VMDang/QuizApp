@@ -70,3 +70,19 @@ json RoomHandler::responseUnReadyRoom()
 
     return json::parse(buff);
 }
+
+void RoomHandler::requestStartRoom(int room_id)
+{
+    RequestStartRoom request;
+    request.header = ClientManager::authUser;
+    request.body.room_id = room_id;
+    sendToServer(request.toJson().dump().c_str());
+}
+
+json RoomHandler::responseStartRoom()
+{
+    char buff[BUFF_SIZE];
+    recvFromServer(buff);
+
+    return json::parse(buff);
+}
