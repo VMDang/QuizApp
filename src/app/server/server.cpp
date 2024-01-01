@@ -16,6 +16,7 @@
 #include "AuthController.hpp"
 #include "RoomController.hpp"
 #include "CategoryController.hpp"
+#include "AnswerController.hpp"
 #include "../comunicate/server.h"
 #include "../request/route.h"
 #include "ServerManager.hpp"
@@ -70,6 +71,12 @@ void *client_handler(void *arg)
             {
                 CategoryController categoryController;
                 categoryController.redriect(request, clientfd);
+            }
+
+            if (url.find("/answer/") != std::string::npos)
+            {
+                AnswerController answerController;
+                answerController.redriect(request, clientfd);
             }
             
         }     

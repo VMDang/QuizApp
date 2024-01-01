@@ -12,12 +12,12 @@ using json = nlohmann::json;
 Option::Option() = default;
 
 // Constructor without auto-increase id
-Option::Option(int id, int question_id, const std::string &content, bool is_right)
-    : id(id), question_id(question_id), content(content), is_right(is_right) {}
+Option::Option(int id, int question_id, const std::string &content, bool correct)
+    : id(id), question_id(question_id), content(content), correct(correct) {}
 
 // Constructor with auto-increase id
-Option::Option(int question_id, const std::string &content, bool is_right)
-    : question_id(question_id), content(content), is_right(is_right)
+Option::Option(int question_id, const std::string &content, bool correct)
+    : question_id(question_id), content(content), correct(correct)
 {
     std::vector<Option> options = getAll();
     // Auto-increment id based on the last option's id in the OPTIONS_JSON file
@@ -31,7 +31,7 @@ Option::Option(int question_id, const std::string &content, bool is_right)
     }
 }
 
-// Constructor with default value of is_right
+// Constructor with default value of correct
 Option::Option(int question_id, const std::string &content)
     : question_id(question_id), content(content) {
         std::vector<Option> options = getAll();
@@ -42,7 +42,7 @@ Option::Option(int question_id, const std::string &content)
             id = 1; // If no one exist, start from id 1
         }
 
-        is_right = false;
+        correct = false;
     }
 
 std::vector<Option> Option::getAll()
@@ -61,7 +61,7 @@ std::vector<Option> Option::getAll()
         option.id = optionData["id"];
         option.question_id = optionData["question_id"];
         option.content = optionData["content"];
-        option.is_right = optionData["correct"];
+        option.correct = optionData["correct"];
 
         options.push_back(option);
     }
@@ -85,7 +85,7 @@ Option Option::findById(int optionId)
             option.id = optionData["id"];
             option.question_id = optionData["question_id"];
             option.content = optionData["content"];
-            option.is_right = optionData["correct"];
+            option.correct = optionData["correct"];
 
             return option;
         }
@@ -110,7 +110,7 @@ Option Option::edit(Option &updatedOption)
         {
             optionData["question_id"] = updatedOption.question_id;
             optionData["content"] = updatedOption.content;
-            optionData["correct"] = updatedOption.is_right;
+            optionData["correct"] = updatedOption.correct;
             break;
         }
     }
@@ -136,7 +136,7 @@ Option Option::create(const Option &newOption)
     newOptionJson["id"] = newOption.id;
     newOptionJson["question_id"] = newOption.question_id;
     newOptionJson["content"] = newOption.content;
-    newOptionJson["correct"] = newOption.is_right;
+    newOptionJson["correct"] = newOption.correct;
 
     jsonData["options"].push_back(newOptionJson);
 

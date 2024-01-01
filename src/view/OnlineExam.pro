@@ -6,6 +6,7 @@ CONFIG += c++11
 
 SOURCES += \
     ../app/comunicate/client.cpp \
+    answerhandler.cpp \
     categoryhandler.cpp \
     clientmanager.cpp \
     roomhandler.cpp \
@@ -17,6 +18,7 @@ SOURCES += \
     roomitem.cpp
 
 HEADERS += \
+    answerhandler.h \
     categoryhandler.h \
     clientmanager.h \
     roomhandler.h \

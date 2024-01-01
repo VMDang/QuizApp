@@ -14,15 +14,15 @@ public:
     int id;
     int question_id;
     std::string content;
-    bool is_right;
+    bool correct;
 
     Option();
 
     // Constructor without auto-increase id
-    Option(int id, int question_id, const std::string &content, bool is_right);
+    Option(int id, int question_id, const std::string &content, bool correct);
 
     // Constructor with auto-increase id
-    Option(int question_id, const std::string &content, bool is_right);
+    Option(int question_id, const std::string &content, bool correct);
 
     // Constructor with default value of is_right
     Option(int question_id, const std::string &content);
@@ -38,7 +38,7 @@ public:
             {"id", id},
             {"question_id", question_id},
             {"content", content},
-            {"is_right", is_right},
+            {"is_right", correct},
         };
     }
 };

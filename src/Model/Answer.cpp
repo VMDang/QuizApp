@@ -12,8 +12,8 @@ using json = nlohmann::json;
 Answer::Answer() = default;
 
 // Constructor with auto-increase id
-Answer::Answer(int user_id, int room_id, int option_id, int result)
-    : user_id(user_id), room_id(room_id), option_id(option_id), result(result)
+Answer::Answer(int user_id, int room_id, int question_id, int option_id, int result)
+    : user_id(user_id), room_id(room_id), question_id(question_id), option_id(option_id), result(result)
 {
     std::vector<Answer> answers = getAll();
     // Auto-increment id based on the last answer's id in the ANSWERS_JSON file
@@ -27,12 +27,12 @@ Answer::Answer(int user_id, int room_id, int option_id, int result)
     }
 }
 
-Answer::Answer(int id, int user_id, int room_id, int option_id, int result) 
-    : id(id), user_id(user_id), room_id(room_id), option_id(option_id), result(result) {}
+Answer::Answer(int id, int user_id, int room_id, int question_id, int option_id, int result) 
+    : id(id), user_id(user_id), room_id(room_id), question_id(question_id), option_id(option_id), result(result) {}
 
 // Constructor with default value of option_id and result_id
-Answer::Answer(int user_id, int room_id)
-    : user_id(user_id), room_id(room_id)
+Answer::Answer(int user_id, int room_id, int question_id)
+    : user_id(user_id), room_id(room_id), question_id(question_id)
 {
 
     std::vector<Answer> answers = getAll();
@@ -65,6 +65,7 @@ std::vector<Answer> Answer::getAll()
         answer.id = answerData["id"];
         answer.user_id = answerData["user_id"];
         answer.room_id = answerData["room_id"];
+        answer.question_id = answerData["question_id"];
         answer.option_id = answerData["option_id"];
         answer.result = answerData["result"];
 
@@ -90,6 +91,7 @@ Answer Answer::findById(int id)
             answer.id = answerData["id"];
             answer.user_id = answerData["user_id"];
             answer.room_id = answerData["room_id"];
+            answer.question_id = answerData["question_id"];
             answer.option_id = answerData["option_id"];
             answer.result = answerData["result"];
 
@@ -116,6 +118,7 @@ Answer Answer::edit(const Answer &updatedAnswer)
         {
             answerData["user_id"] = updatedAnswer.user_id;
             answerData["room_id"] = updatedAnswer.room_id;
+            answerData["question_id"] = updatedAnswer.question_id;
             answerData["option_id"] = updatedAnswer.option_id;
             answerData["result"] = updatedAnswer.result;
             break;
@@ -143,6 +146,7 @@ Answer Answer::create(const Answer &newAnswer)
     newAnswerJson["id"] = newAnswer.id;
     newAnswerJson["user_id"] = newAnswer.user_id;
     newAnswerJson["room_id"] = newAnswer.room_id;
+    newAnswerJson["question_id"] = newAnswer.question_id;
     newAnswerJson["option_id"] = newAnswer.option_id;
     newAnswerJson["result"] = newAnswer.result;
 

@@ -8,7 +8,7 @@ CategoryHandler::CategoryHandler() {}
 
 void CategoryHandler::requestListCategory()
 {
-    ResquestListCategory requestListCategory;
+    RequestListCategory requestListCategory;
     requestListCategory.header = ClientManager::authUser;
     sendToServer(requestListCategory.toJson().dump().c_str());
 }

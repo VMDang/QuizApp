@@ -24,7 +24,7 @@ typedef struct
             {"header", header},
             {"param", param}};
     }
-} ResquestListCategory;
+} RequestListCategory;
 
 typedef struct 
 {
