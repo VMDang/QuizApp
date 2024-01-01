@@ -425,7 +425,7 @@ color: #fff;</string>
            <height>50</height>
           </size>
          </property>
-         <widget class="QPushButton" name="pushButton">
+         <widget class="QPushButton" name="createRoomButton">
           <property name="geometry">
            <rect>
             <x>900</x>
@@ -649,14 +649,14 @@ color: #fff;</string>
            <bool>false</bool>
           </property>
           <property name="styleSheet">
-           <string notr="true">#pushButton {
+           <string notr="true">#createRoomButton {
 	background-color:rgb(9, 44, 76);
 	border-radius: 8px;
 	color: #fff;
 	border: none;
 }
 
-#pushButton:hover {
+#createRoomButton:hover {
 	background-color:rgba(9, 44, 76, 0.9);
 }</string>
           </property>
