@@ -61,10 +61,23 @@ typedef struct
 
 typedef struct
 {
+    bool is_private;
+    std::string password;
+    json toJson() {
+        return json{
+            {"is_private", is_private},
+            {"password", password},
+        };
+    }
+}ResquestJoinRoomBody;
+
+typedef struct
+{
     std::string code = REQUEST_GET_RESOURCE;
     json header;
-    std::string url = RequestRoomDetailRouter;
+    std::string url = RequestJoinRoomRouter;
     int param;
+    ResquestJoinRoomBody body;
 
     json toJson()
     {
@@ -72,15 +85,18 @@ typedef struct
             {"code", code},
             {"url", url},
             {"header", header},
-            {"param", param}};
+            {"param", param},
+            {"body", body.toJson()}
+        };
     }
-} ResquestDetailRoom;
+} RequestJoinRoom;
 
 typedef struct
 {
     Room room;
     bool is_owner;
     std::vector<User> usersReady;
+    std::string message;
 
     json toJson()
     {
@@ -99,16 +115,18 @@ typedef struct
 
         result["room"] = room.toJson();
         result["is_owner"] = is_owner;
+        result["message"] = message;
         return result;
     };
-} ResponseDetailRoomBody;
+} ResponseJoinRoomBody;
 
 typedef struct
 {
     std::string code = RESPONSE_GET_RESOURCE;
     json header;
-    std::string url = ResponseRoomDetailRouter;
-    ResponseDetailRoomBody body;
+    std::string url = ResponseJoinRoomRouter;
+    std::string status;
+    ResponseJoinRoomBody body;
 
     json toJson()
     {
@@ -116,9 +134,10 @@ typedef struct
             {"code", code},
             {"url", url},
             {"header", header},
+            {"status", status},
             {"body", body.toJson()}};
     }
-} ResponseDetailRoom;
+} ResponseJoinRoom;
 
 typedef struct
 {
@@ -140,6 +159,7 @@ typedef struct
 typedef struct
 {
     std::vector<User> usersReady;
+    std::string message;
 
     json toJson()
     {
@@ -148,6 +168,7 @@ typedef struct
         {
             result["usersReady"].push_back(user.toJson());
         }
+        result["message"] = message;
         return result;
     }
 } ResponseReadyRoomBody;

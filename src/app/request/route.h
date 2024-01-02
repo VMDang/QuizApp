@@ -9,8 +9,8 @@
 
 #define RequestRoomListRouter "request/room/list"
 #define ResponseRoomListRouter "response/room/list"
-#define RequestRoomDetailRouter "request/room/detail"
-#define ResponseRoomDetailRouter "response/room/detail"
+#define RequestJoinRoomRouter "request/room/join"
+#define ResponseJoinRoomRouter "response/room/join"
 #define RequestReadyRoomRouter "request/room/ready"
 #define ResponseReadyRoomRouter "response/room/ready"
 #define RequestUnReadyRoomRouter "request/room/unready"

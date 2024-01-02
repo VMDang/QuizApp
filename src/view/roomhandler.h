@@ -12,8 +12,8 @@ public:
     void requestListRoom();
     json responseListRoom();
 
-    void requestDetailRoom(int room_id);
-    json responseDetailRoom();
+    void requestJoinRoom(int room_id, bool is_private, std::string password);
+    json responseJoinRoom();
 
     void requestReadyRoom(int room_id);
     json responseReadyRoom();

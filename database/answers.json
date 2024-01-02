@@ -162,9 +162,9 @@
         },
         {
             "id": 21,
-            "option_id": 67,
+            "option_id": 65,
             "question_id": 17,
-            "result": 0,
+            "result": 1,
             "room_id": 4,
             "user_id": 5
         },

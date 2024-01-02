@@ -23,15 +23,17 @@ json RoomHandler::responseListRoom()
     return json::parse(buff);
 }
 
-void RoomHandler::requestDetailRoom(int id)
+void RoomHandler::requestJoinRoom(int room_id, bool is_private, std::string password)
 {
-    ResquestDetailRoom request;
+    RequestJoinRoom request;
     request.header = ClientManager::authUser;
-    request.param = id;
+    request.param = room_id;
+    request.body.is_private = is_private;
+    request.body.password = password;
     sendToServer(request.toJson().dump().c_str());
 }
 
-json RoomHandler::responseDetailRoom()
+json RoomHandler::responseJoinRoom()
 {
     char buff[BUFF_SIZE];
     recvFromServer(buff);

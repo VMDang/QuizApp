@@ -13,18 +13,18 @@ Room::Room() = default;
 // Constructor without auto-increase id
 Room::Room(int id, const std::string &name, int capacity, const std::string &type,
             const std::string &start_time, const std::string &close_time,
-            const std::string status, int time_limit)
+            const std::string status, int time_limit, bool is_private, const std::string password)
     : id(id), name(name), capacity(capacity), type(type),
         start_time(start_time), close_time(close_time),
-        status(status), time_limit(time_limit) {}
+        status(status), time_limit(time_limit), is_private(is_private), password(password) {}
 
 // Constructor with auto-increase id
 Room::Room(const std::string &name, int capacity, const std::string &type,
             const std::string &start_time, const std::string &close_time,
-            const std::string status, int time_limit)
+            const std::string status, int time_limit, bool is_private, const std::string password)
     : name(name), capacity(capacity), type(type),
         start_time(start_time), close_time(close_time),
-        status(status), time_limit(time_limit) {
+        status(status), time_limit(time_limit), is_private(is_private), password(password) {
 
     std::vector<Room> rooms = getAll();
     // Auto-increment id based on the last room's id in the ROOMS_JSON file
@@ -56,6 +56,8 @@ std::vector<Room> Room::getAll()
         room.close_time = roomData["close_time"];
         room.status = roomData["status"];
         room.time_limit = roomData["time_limit"];
+        room.is_private = roomData["is_private"];
+        room.password = roomData["password"];
 
         rooms.push_back(room);
     }
@@ -84,6 +86,8 @@ Room Room::findById(int roomId)
             room.close_time = roomData["close_time"];
             room.status = roomData["status"];
             room.time_limit = roomData["time_limit"];
+            room.is_private = roomData["is_private"];
+            room.password = roomData["password"];
 
             return room;
         }
@@ -113,6 +117,8 @@ Room Room::edit(Room &updatedRoom)
             roomData["close_time"] = updatedRoom.close_time;
             roomData["status"] = updatedRoom.status;
             roomData["time_limit"] = updatedRoom.time_limit;
+            roomData["is_private"] = updatedRoom.is_private;
+            roomData["password"] = updatedRoom.password;
             break;
         }
     }
@@ -143,6 +149,8 @@ Room Room::create(const Room &newRoom)
     newRoomJson["close_time"] = newRoom.close_time;
     newRoomJson["status"] = newRoom.status;
     newRoomJson["time_limit"] = newRoom.time_limit;
+    newRoomJson["is_private"] = newRoom.is_private;
+    newRoomJson["password"] = newRoom.password;
 
     jsonData["rooms"].push_back(newRoomJson);
 
