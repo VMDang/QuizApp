@@ -9,6 +9,7 @@
 #include "roomhandler.h"
 #include "categoryhandler.h"
 #include "answerhandler.h"
+#include "resulthandler.h"
 
 #include <iostream>
 #include <QWidget>
@@ -108,5 +109,11 @@ void MainWindow::on_createRoomButton_clicked()
     // roomHandler.requestCreateRoom();
     // json responseCreateRoom =  roomHandler.responseCreateRoom();
     // std::cout << responseCreateRoom.dump() << std::endl;
+
+    ResultHandler resultHandler;
+    resultHandler.requestRoomResult(4);
+
+    json responseResultRoom = resultHandler.responseRoomResult();
+    std::cout << responseResultRoom.dump() << std::endl;
 }
 

@@ -9,6 +9,7 @@ SOURCES += \
     answerhandler.cpp \
     categoryhandler.cpp \
     clientmanager.cpp \
+    resulthandler.cpp \
     roomhandler.cpp \
     examwindow.cpp \
     lobbywindow.cpp \
@@ -21,6 +22,7 @@ HEADERS += \
     answerhandler.h \
     categoryhandler.h \
     clientmanager.h \
+    resulthandler.h \
     roomhandler.h \
     examwindow.h \
     lobbywindow.h \

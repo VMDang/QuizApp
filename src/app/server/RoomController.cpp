@@ -308,7 +308,7 @@ void RoomController::start(json request, int clientfd)
     formattedTime << std::put_time(std::localtime(&convertTime), "%Y-%m-%d %H:%M:%S");
 
     Room r = Room::findById(room_id);
-    r.status = "Doing";
+    r.status = ROOM_DOING_STATUS;
     r.start_time = formattedTime.str();
     Room room = Room::edit(r);
 
@@ -482,4 +482,14 @@ void countdownClock(int minutes, int room_id)
     ServerManager::roomsActiveClock.erase(std::remove(ServerManager::roomsActiveClock.begin(), ServerManager::roomsActiveClock.end(),room_id),
                                         ServerManager::roomsActiveClock.end());
     pthread_mutex_unlock(&ServerManager::mutex);
+
+    auto now = std::chrono::system_clock::now();
+    std::time_t convertTime = std::chrono::system_clock::to_time_t(now);
+    std::stringstream formattedTime;
+    formattedTime << std::put_time(std::localtime(&convertTime), "%Y-%m-%d %H:%M:%S");
+
+    Room room = Room::findById(room_id);
+    room.status = ROOM_CLOSE_STATUS;
+    room.close_time = formattedTime.str();
+    Room::edit(room);
 }

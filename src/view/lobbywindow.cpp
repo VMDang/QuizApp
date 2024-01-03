@@ -66,11 +66,11 @@ void LobbyWindow::on_unReadyExamButton_clicked()
     // int room_id = 4;
     // RoomHandler roomhandler;
     // roomhandler.requestUnReadyRoom(room_id);
-    AnswerHandler answerHandler;
-    answerHandler.requestSubmitAnswer(4, 17, 65);
+    // AnswerHandler answerHandler;
+    // answerHandler.requestSubmitAnswer(4, 17, 65);
 
-    json responseSubmitAnswer = answerHandler.responseSubmitAnswer();
-    std::cout << responseSubmitAnswer.dump() << std::endl;
+    // json responseSubmitAnswer = answerHandler.responseSubmitAnswer();
+    // std::cout << responseSubmitAnswer.dump() << std::endl;
 }
 
 void* onlyReceiveThread(void* arg) {
