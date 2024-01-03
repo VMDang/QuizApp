@@ -59,6 +59,18 @@
             "status": "Lobby",
             "time_limit": 45,
             "type": "practice"
+        },
+        {
+            "capacity": 2,
+            "close_time": "",
+            "id": 6,
+            "is_private": true,
+            "name": "Room Test",
+            "password": "1234",
+            "start_time": "",
+            "status": "Lobby",
+            "time_limit": 30,
+            "type": "exam"
         }
     ]
 }

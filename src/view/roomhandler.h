@@ -23,6 +23,9 @@ public:
 
     void requestStartRoom(int room_id);
     json responseStartRoom();
+
+    void requestCreateRoom();
+    json responseCreateRoom();
 };
 
 #endif // ROOMHANDLER_H

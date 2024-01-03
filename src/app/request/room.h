@@ -5,6 +5,7 @@
 #include "../../../library/json.hpp"
 #include "../../Model/Room.hpp"
 #include "../../Model/User.hpp"
+#include "../../Model/Category.hpp"
 #include "type.h"
 #include "route.h"
 #include "question.h"
@@ -292,5 +293,84 @@ typedef struct
         };
     }
 } ResponseStartRoom;
+
+typedef struct
+{
+    std::string name;
+    int time_limit;
+    int capacity;
+    bool is_private;
+    std::string password;
+    std::string type;
+    json toJson()
+    {
+        return json{
+            {"name", name},
+            {"time_limit", time_limit},
+            {"capacity", capacity},
+            {"is_private", is_private},
+            {"password", password},
+            {"type", type},
+        };
+    }
+} RequestCreateRoomBody;
+
+typedef struct
+{
+    std::string code = REQUEST_CREATE_RESOURCE;
+    json header;
+    std::string url = RequestCreateRoomRouter;
+    RequestCreateRoomBody body;
+    QuestionsExam questions_exam;
+
+    json toJson()
+    {
+        return json{
+            {"code", code},
+            {"url", url},
+            {"header", header},
+            {"body", body.toJson()},
+            {"questions_exam", questions_exam.toJson()}
+        };
+    }
+} RequestCreateRoom;
+
+typedef struct 
+{
+    Room room;
+    Category category;
+    int max_score;
+    std::vector<int> question_config;
+
+    json toJson(){
+        json qc = question_config;
+        return json{
+            {"room", room.toJson()},
+            {"category", category.toJson()},
+            {"max_score", max_score},
+            {"question_config", qc},
+        };
+    }
+}ResponseCreateRoomBody;
+
+typedef struct
+{
+    std::string code = RESPONSE_CREATE_RESOURCE;
+    json header;
+    std::string status;
+    std::string url = ResponseCreateRoomRouter;
+    ResponseCreateRoomBody body;
+
+    json toJson()
+    {
+        return json{
+            {"code", code},
+            {"url", url},
+            {"status", status},
+            {"header", header},
+            {"body", body.toJson()},
+        };
+    }
+} ResponseCreateRoom;
 
 #endif

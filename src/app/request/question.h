@@ -24,5 +24,18 @@ typedef struct
     }
 }QuestionContent;
 
+typedef struct
+{
+    int category_id;
+    std::vector<int> question_config;
+
+    json toJson(){
+        json q_config = question_config;
+        return json{
+            {"category_id", category_id},
+            {"question_config", q_config},
+        };
+    }
+}QuestionsExam;
 
 #endif

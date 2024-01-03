@@ -16,6 +16,7 @@ public:
     void ready(json request, int clientfd);
     void unready(json request, int clientfd);
     void start(json request, int clientfd);
+    void create(json request, int clientfd);
 };
 
 #endif

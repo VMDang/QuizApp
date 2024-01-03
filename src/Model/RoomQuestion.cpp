@@ -27,3 +27,21 @@ std::vector<RoomQuestion> relationsRoomQuestion()
     }
     return roomQuestions;
 }
+
+void insertRoomQuestion(RoomQuestion &r_q)
+{
+    json jsonData;
+    std::ifstream inputFile(ROOM_QUESTION_JSON);
+    inputFile >> jsonData;
+    inputFile.close();
+
+    json newR_Q;
+    newR_Q["room_id"] = r_q.room_id;
+    newR_Q["question_id"] = r_q.question_id;
+
+    jsonData["room_question"].push_back(newR_Q);
+
+    std::ofstream outputFile(ROOM_QUESTION_JSON);
+    outputFile << std::setw(4) << jsonData;
+    outputFile.close();
+}

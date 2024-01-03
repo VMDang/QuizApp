@@ -42,6 +42,9 @@ void RoomController::redriect(json request, int clientfd)
     else if (url == RequestStartRoomRouter)
     {
         start(request, clientfd);
+    } else if(url == RequestCreateRoomRouter)
+    {
+        create(request, clientfd);
     }
 }
 
@@ -53,7 +56,7 @@ void RoomController::list(json request, int clientfd)
 
     rooms.erase(std::remove_if(rooms.begin(), rooms.end(),
                                [](Room &room)
-                               { return room.status != "Lobby" || room.type != "exam"; }),
+                               { return room.status != ROOM_LOBBY_STATUS || room.type != ROOM_EXAM_TYPE; }),
                 rooms.end());
 
     ResponseListRoomBody body;
@@ -130,7 +133,7 @@ void RoomController::ready(json request, int clientfd)
         response.body.message = "Room is full";
 
         sendToClient(clientfd, response.toJson().dump().c_str());
-    } else if (room.status != "Lobby")
+    } else if (room.status != ROOM_LOBBY_STATUS)
     {
         response.status = FAILURE;
         response.body.message = "Room isnot lobby status";
@@ -359,6 +362,11 @@ void RoomController::start(json request, int clientfd)
 
         for (const auto &entry : *i)
         {
+            UserRoom ur;
+            ur.user_id = entry.second;
+            ur.room_id = room_id;
+            ur.is_owner = false;
+            insertUserRoom(ur);
             sendToClient(entry.first, response.toJson().dump().c_str());
         }
     }
@@ -383,4 +391,73 @@ void RoomController::start(json request, int clientfd)
     {
         sendToClient(entry.first, response.toJson().dump().c_str());
     }
+}
+
+void RoomController::create(json request, int clientfd)
+{
+    std::string name = request["body"]["name"];
+    std::string type = request["body"]["type"];
+    int capacity = request["body"]["capacity"];
+    int time_limit = request["body"]["time_limit"];
+    bool is_private = request["body"]["is_private"];
+
+    std::string password;
+    if (is_private)
+    {
+        password = request["body"]["password"];
+    }else
+    {
+        password = "";
+    }
+
+    Room room = Room(name, capacity, type, "", "", ROOM_LOBBY_STATUS, time_limit, is_private, password);
+    Room::create(room);
+
+    std::vector<Question> questions = Question::getAll();
+    int category_id = request["questions_exam"]["category_id"];
+    json question_config = request["questions_exam"]["question_config"];
+
+    std::vector<Question> filtered_questions;
+    std::copy_if(questions.begin(), questions.end(), std::back_inserter(filtered_questions),
+                 [category_id](const Question& q) { return q.category_id == category_id; });
+
+    std::vector<Question> selected_questions;
+
+    int max_score = 0;
+    for (size_t i = 0; i < question_config.size(); ++i) {
+        int level = i + 1;
+        int num_questions = question_config[i];
+        max_score += num_questions*level;
+
+        std::vector<Question> filtered_by_level;
+        std::copy_if(filtered_questions.begin(), filtered_questions.end(), std::back_inserter(filtered_by_level),
+                     [level](const Question& q) { return q.level == level; });
+
+        std::random_shuffle(filtered_by_level.begin(), filtered_by_level.end());
+        std::copy_n(filtered_by_level.begin(), static_cast<std::size_t>(std::min(static_cast<int>(num_questions), static_cast<int>(filtered_by_level.size()))), std::back_inserter(selected_questions));
+    }
+
+    for (const auto& q: selected_questions)
+    {
+        RoomQuestion rq;
+        rq.question_id = q.id;
+        rq.room_id = room.id;
+        insertRoomQuestion(rq);
+    }
+
+    int auth_id = request["header"]["id"];
+    UserRoom ur;
+    ur.user_id = auth_id;
+    ur.room_id = room.id;
+    ur.is_owner = true;
+    insertUserRoom(ur);
+
+    ResponseCreateRoom response;
+    response.status = SUCCESS;
+    response.body.room = room;
+    response.body.category = Category::findById(category_id);
+    response.body.max_score = max_score;
+    response.body.question_config = question_config.get<std::vector<int>>();
+
+    sendToClient(clientfd, response.toJson().dump().c_str());
 }

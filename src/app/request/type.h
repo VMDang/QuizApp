@@ -16,4 +16,13 @@
 #define FAILURE "FAILURE"
 #define ERROR "ERROR"
 
+/* Room type */
+#define ROOM_EXAM_TYPE "exam";
+#define ROOM_PRACTICE_TYPE "practice";
+
+/* Room status */
+#define ROOM_LOBBY_STATUS "Lobby"
+#define ROOM_DOING_STATUS "Doing"
+#define ROOM_CLOSE_STATUS "Close"
+
 #endif
