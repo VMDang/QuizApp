@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1280</width>
+    <width>1258</width>
     <height>712</height>
    </rect>
   </property>
@@ -46,6 +46,7 @@ QMainWindow {
        <property name="font">
         <font>
          <family>Source Sans 3</family>
+         <weight>75</weight>
          <italic>false</italic>
          <bold>true</bold>
         </font>
@@ -127,6 +128,7 @@ border-radius: 8px;</string>
           <font>
            <family>Source Sans 3</family>
            <pointsize>24</pointsize>
+           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
@@ -451,11 +453,11 @@ border-radius: 8px;</string>
          </layout>
         </widget>
        </widget>
-       <widget class="QPushButton" name="startExamButton">
+       <widget class="QPushButton" name="pushButton_2">
         <property name="geometry">
          <rect>
           <x>240</x>
-          <y>440</y>
+          <y>480</y>
           <width>261</width>
           <height>50</height>
          </rect>
@@ -463,85 +465,27 @@ border-radius: 8px;</string>
         <property name="font">
          <font>
           <family>Source Sans 3</family>
+          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
         <property name="styleSheet">
-         <string notr="true">#startExamButton {
+         <string notr="true">#pushButton_2 {
 	background-color: rgb(9, 44, 76);
 	border: none;
 	color: #fff;
 	border-radius: 25px;
 }
 
-#startExamButton:hover {
+#pushButton_2:hover {
 	background-color: rgba(9, 44, 76, 0.9);
 }</string>
         </property>
         <property name="text">
          <string>START EXAM</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="readyExamButton">
-        <property name="geometry">
-         <rect>
-          <x>240</x>
-          <y>500</y>
-          <width>261</width>
-          <height>50</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Source Sans 3</family>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">#readyExamButton {
-	background-color: rgb(9, 44, 76);
-	border: none;
-	color: #fff;
-	border-radius: 25px;
-}
-
-#readyExamButton:hover {
-	background-color: rgba(9, 44, 76, 0.9);
-}</string>
-        </property>
-        <property name="text">
-         <string>READY JOIN EXAM</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="unReadyExamButton">
-        <property name="geometry">
-         <rect>
-          <x>240</x>
-          <y>560</y>
-          <width>261</width>
-          <height>50</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Source Sans 3</family>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">#unReadyExamButton {
-	background-color: rgb(9, 44, 76);
-	border: none;
-	color: #fff;
-	border-radius: 25px;
-}
-
-#unReadyExamButton:hover {
-	background-color: rgba(9, 44, 76, 0.9);
-}</string>
-        </property>
-        <property name="text">
-         <string>UNREADY</string>
         </property>
        </widget>
       </widget>
@@ -555,106 +499,68 @@ border-radius: 8px;</string>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <widget class="QTableWidget" name="tableWidget">
+      <widget class="QWidget" name="verticalLayoutWidget">
        <property name="geometry">
         <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>511</width>
-         <height>691</height>
+         <x>9</x>
+         <y>60</y>
+         <width>491</width>
+         <height>631</height>
         </rect>
        </property>
-       <property name="font">
-        <font>
-         <family>Source Sans 3</family>
-        </font>
+       <layout class="QVBoxLayout" name="userList"/>
+      </widget>
+      <widget class="QWidget" name="widget_11" native="true">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>499</width>
+         <height>51</height>
+        </rect>
        </property>
        <property name="styleSheet">
-        <string notr="true">QHeaderView::section { 
-	background-color: rgb(9, 44, 76);
-	border-radius: 20px;
-	color: #fff;
-}</string>
+        <string notr="true"/>
        </property>
-       <property name="verticalScrollBarPolicy">
-        <enum>Qt::ScrollBarAsNeeded</enum>
-       </property>
-       <property name="horizontalScrollBarPolicy">
-        <enum>Qt::ScrollBarAlwaysOff</enum>
-       </property>
-       <property name="gridStyle">
-        <enum>Qt::SolidLine</enum>
-       </property>
-       <attribute name="horizontalHeaderDefaultSectionSize">
-        <number>170</number>
-       </attribute>
-       <attribute name="horizontalHeaderStretchLastSection">
-        <bool>false</bool>
-       </attribute>
-       <attribute name="verticalHeaderVisible">
-        <bool>false</bool>
-       </attribute>
-       <attribute name="verticalHeaderMinimumSectionSize">
-        <number>30</number>
-       </attribute>
-       <attribute name="verticalHeaderDefaultSectionSize">
-        <number>50</number>
-       </attribute>
-       <row>
-        <property name="text">
-         <string>New Row</string>
+       <widget class="QLabel" name="label_3">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>75</width>
+          <height>22</height>
+         </rect>
         </property>
-       </row>
-       <row>
-        <property name="text">
-         <string>New Row</string>
-        </property>
-       </row>
-       <row>
-        <property name="text">
-         <string>New Row</string>
-        </property>
-       </row>
-       <column>
         <property name="text">
          <string>#</string>
         </property>
-       </column>
-       <column>
+       </widget>
+       <widget class="QLabel" name="label_5">
+        <property name="geometry">
+         <rect>
+          <x>90</x>
+          <y>10</y>
+          <width>290</width>
+          <height>22</height>
+         </rect>
+        </property>
         <property name="text">
          <string>Name</string>
         </property>
-       </column>
-       <column>
+       </widget>
+       <widget class="QLabel" name="label_6">
+        <property name="geometry">
+         <rect>
+          <x>390</x>
+          <y>10</y>
+          <width>101</width>
+          <height>22</height>
+         </rect>
+        </property>
         <property name="text">
          <string>Point</string>
         </property>
-       </column>
-       <item row="0" column="0">
-        <property name="text">
-         <string>1</string>
-        </property>
-       </item>
-       <item row="0" column="1">
-        <property name="text">
-         <string>Nguyen Tien Dat</string>
-        </property>
-       </item>
-       <item row="0" column="2">
-        <property name="text">
-         <string>1440</string>
-        </property>
-       </item>
-       <item row="1" column="0">
-        <property name="text">
-         <string>2</string>
-        </property>
-       </item>
-       <item row="2" column="0">
-        <property name="text">
-         <string>3</string>
-        </property>
-       </item>
+       </widget>
       </widget>
      </widget>
     </item>

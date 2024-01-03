@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>654</width>
-    <height>140</height>
+    <height>180</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>654</width>
-    <height>140</height>
+    <height>180</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>16777215</width>
-    <height>140</height>
+    <height>180</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -34,7 +34,7 @@
      <x>0</x>
      <y>0</y>
      <width>654</width>
-     <height>140</height>
+     <height>151</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -48,16 +48,16 @@ QWidget {
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
     <property name="leftMargin">
-     <number>2</number>
+     <number>0</number>
     </property>
     <property name="topMargin">
-     <number>2</number>
+     <number>0</number>
     </property>
     <property name="rightMargin">
-     <number>2</number>
+     <number>0</number>
     </property>
     <property name="bottomMargin">
-     <number>2</number>
+     <number>0</number>
     </property>
     <item>
      <widget class="QWidget" name="widget_2" native="true">
@@ -83,7 +83,7 @@ QWidget {
        <property name="geometry">
         <rect>
          <x>60</x>
-         <y>-10</y>
+         <y>0</y>
          <width>151</width>
          <height>151</height>
         </rect>
@@ -95,7 +95,7 @@ QWidget {
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap>../Downloads/exam.png</pixmap>
+        <pixmap resource="resource.qrc">:/img/img/exam.png</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
@@ -118,7 +118,7 @@ QWidget {
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>35</y>
+         <y>44</y>
          <width>341</width>
          <height>31</height>
         </rect>
@@ -127,7 +127,6 @@ QWidget {
         <font>
          <family>Source Sans 3</family>
          <pointsize>16</pointsize>
-         <weight>75</weight>
          <bold>true</bold>
          <stylestrategy>PreferAntialias</stylestrategy>
          <kerning>false</kerning>
@@ -167,7 +166,7 @@ color: rgb(39, 174, 96);
 border-radius: 8px;</string>
        </property>
        <property name="text">
-        <string>Beginner</string>
+        <string>Lobby</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -177,7 +176,7 @@ border-radius: 8px;</string>
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>67</y>
+         <y>85</y>
          <width>28</width>
          <height>30</height>
         </rect>
@@ -186,26 +185,7 @@ border-radius: 8px;</string>
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap>../Downloads/svgexport-10-1.svg</pixmap>
-       </property>
-       <property name="scaledContents">
-        <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_5">
-       <property name="geometry">
-        <rect>
-         <x>85</x>
-         <y>72</y>
-         <width>21</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>../Downloads/svgexport-14-1.svg</pixmap>
+        <pixmap resource="resource.qrc">:/img/img/group.svg</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
@@ -214,8 +194,8 @@ border-radius: 8px;</string>
       <widget class="QLabel" name="label_6">
        <property name="geometry">
         <rect>
-         <x>161</x>
-         <y>71</y>
+         <x>80</x>
+         <y>89</y>
          <width>20</width>
          <height>20</height>
         </rect>
@@ -224,37 +204,18 @@ border-radius: 8px;</string>
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap>../Downloads/svgexport-11-1.svg</pixmap>
+        <pixmap resource="resource.qrc">:/img/img/clock.svg</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QLabel" name="label_8">
+      <widget class="QLabel" name="capacityLabel">
        <property name="geometry">
         <rect>
-         <x>40</x>
-         <y>67</y>
-         <width>41</width>
-         <height>30</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Source Sans 3</family>
-         <pointsize>14</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>50</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_9">
-       <property name="geometry">
-        <rect>
-         <x>112</x>
-         <y>67</y>
-         <width>41</width>
+         <x>42</x>
+         <y>84</y>
+         <width>30</width>
          <height>30</height>
         </rect>
        </property>
@@ -271,8 +232,8 @@ border-radius: 8px;</string>
       <widget class="QLabel" name="label_10">
        <property name="geometry">
         <rect>
-         <x>188</x>
-         <y>67</y>
+         <x>105</x>
+         <y>84</y>
          <width>41</width>
          <height>30</height>
         </rect>
@@ -291,7 +252,7 @@ border-radius: 8px;</string>
        <property name="geometry">
         <rect>
          <x>267</x>
-         <y>88</y>
+         <y>105</y>
          <width>98</width>
          <height>36</height>
         </rect>
@@ -299,9 +260,11 @@ border-radius: 8px;</string>
        <property name="font">
         <font>
          <family>Source Sans 3</family>
-         <weight>75</weight>
          <bold>true</bold>
         </font>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
        </property>
        <property name="styleSheet">
         <string notr="true">#joinPushButton {
@@ -320,11 +283,70 @@ border-radius: 8px;</string>
         <string>Join</string>
        </property>
       </widget>
+      <widget class="QLabel" name="label_7">
+       <property name="geometry">
+        <rect>
+         <x>15</x>
+         <y>120</y>
+         <width>18</width>
+         <height>18</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap resource="resource.qrc">:/img/img/calendar.svg</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_11">
+       <property name="geometry">
+        <rect>
+         <x>42</x>
+         <y>117</y>
+         <width>140</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Source Sans 3</family>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>01/01/2023</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="lockLabel">
+       <property name="geometry">
+        <rect>
+         <x>340</x>
+         <y>10</y>
+         <width>22</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap resource="resource.qrc">:/img/img/lock-red.svg</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
      </widget>
     </item>
    </layout>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="resource.qrc"/>
+ </resources>
  <connections/>
 </ui>

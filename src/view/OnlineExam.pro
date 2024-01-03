@@ -6,35 +6,51 @@ CONFIG += c++11
 
 SOURCES += \
     ../app/comunicate/client.cpp \
+    animations.cpp \
     answerhandler.cpp \
     categoryhandler.cpp \
     clientmanager.cpp \
-    resulthandler.cpp \
-    roomhandler.cpp \
+    component.cpp \
+    createroomdialog.cpp \
     examwindow.cpp \
-    lobbywindow.cpp \
     loginwindow.cpp \
     main.cpp \
     mainwindow.cpp \
-    roomitem.cpp
+    passworddialog.cpp \
+    questionbutton.cpp \
+    questionclient.cpp \
+    resulthandler.cpp \
+    roomhandler.cpp \
+    roomitem.cpp \
+    styles.cpp \
+    utils.cpp
 
 HEADERS += \
+    animations.h \
     answerhandler.h \
     categoryhandler.h \
     clientmanager.h \
-    resulthandler.h \
-    roomhandler.h \
+    component.h \
+    createroomdialog.h \
     examwindow.h \
-    lobbywindow.h \
     loginwindow.h \
     mainwindow.h \
-    roomitem.h
+    passworddialog.h \
+    questionbutton.h \
+    questionclient.h \
+    resulthandler.h \
+    roomhandler.h \
+    roomitem.h \
+    styles.h \
+    utils.h
 
 FORMS += \
+    createroomdialog.ui \
     examwindow.ui \
-    lobbywindow.ui \
     loginwindow.ui \
     mainwindow.ui \
+    passworddialog.ui \
     roomitem.ui
 
-RESOURCES +=
+RESOURCES += \
+    resource.qrc

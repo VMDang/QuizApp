@@ -87,6 +87,34 @@
         {
             "question_id": 28,
             "room_id": 6
+        },
+        {
+            "question_id": 16,
+            "room_id": 7
+        },
+        {
+            "question_id": 18,
+            "room_id": 7
+        },
+        {
+            "question_id": 19,
+            "room_id": 7
+        },
+        {
+            "question_id": 27,
+            "room_id": 7
+        },
+        {
+            "question_id": 25,
+            "room_id": 7
+        },
+        {
+            "question_id": 26,
+            "room_id": 7
+        },
+        {
+            "question_id": 28,
+            "room_id": 7
         }
     ]
 }

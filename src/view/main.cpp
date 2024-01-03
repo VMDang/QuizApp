@@ -1,18 +1,21 @@
 #include "loginwindow.h"
 #include "mainwindow.h"
 #include "examwindow.h"
+#include "lobbywindow.h"
+#include "createroom.h"
+#include "passworddialog.h"
+#include "createroomdialog.h"
 #include "clientmanager.h"
 
-#include <QApplication>
-#include <QDebug>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+
+#include <QApplication>
 
 int main(int argc, char *argv[])
 {
@@ -41,11 +44,19 @@ int main(int argc, char *argv[])
     ClientManager::client_sock = client_sock;
 
    LoginWindow l;
-//    MainWindow m;
-    // ExamWindow e;
+    // MainWindow m;
+//    ExamWindow e;
+//    LobbyWindow lb;
+//      CreateRoom cr;
+//    PasswordDialog pd;
+//    createRoomDialog crd;
 
-//    m.show();
-    // l.show();
+    // m.show();
     l.show();
+//    e.show();
+//    lb.show();
+//      cr.show();
+//    crd.show();
+//    pd.show();
     return a.exec();
 }

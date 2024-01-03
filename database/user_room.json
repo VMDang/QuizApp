@@ -59,6 +59,21 @@
             "is_owner": false,
             "room_id": 4,
             "user_id": 6
+        },
+        {
+            "is_owner": true,
+            "room_id": 7,
+            "user_id": 3
+        },
+        {
+            "is_owner": false,
+            "room_id": 4,
+            "user_id": 4
+        },
+        {
+            "is_owner": false,
+            "room_id": 4,
+            "user_id": 6
         }
     ]
 }

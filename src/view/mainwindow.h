@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QPushButton>
 
 //QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -14,14 +15,29 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    QWidget* createUserItem();
+    QWidget* createResultItem();
 
 public slots:
-    void openWaittingRoom(const QString &room_id);
+    void redirectToWaittingRoom();
+
+    void checkRoomAcceptPms(const QString& room_id, bool isPrivate, const QString& password);
+    // void* onlyReceiveThread(void* arg);
 
 private slots:
-    void on_loggoutButton_clicked();
+    void on_createExamButton_clicked();
 
-    void on_createRoomButton_clicked();
+    void on_leaveButton_clicked();
+
+    void on_examPushButton_clicked();
+
+    void on_practicePushButton_clicked();
+
+    void on_historyPushButton_clicked();
+
+    void on_dashboardButton_clicked();
+
+    void on_readyButton_clicked();
 
 private:
     Ui::MainWindow *ui;
