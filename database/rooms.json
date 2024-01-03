@@ -43,8 +43,8 @@
             "is_private": true,
             "name": "Room D",
             "password": "1234",
-            "start_time": "",
-            "status": "Lobby",
+            "start_time": "2024-01-03 16:56:57",
+            "status": "Doing",
             "time_limit": 45,
             "type": "exam"
         },

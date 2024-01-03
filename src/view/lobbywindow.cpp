@@ -4,6 +4,7 @@
 #include "clientmanager.h"
 #include "../app/request/room.h"
 #include "roomhandler.h"
+#include "answerhandler.h"
 #include <pthread.h>
 #include <iostream>
 
@@ -62,9 +63,14 @@ void LobbyWindow::on_readyExamButton_clicked()
 
 void LobbyWindow::on_unReadyExamButton_clicked()
 {
-    int room_id = 4;
-    RoomHandler roomhandler;
-    roomhandler.requestUnReadyRoom(room_id);
+    // int room_id = 4;
+    // RoomHandler roomhandler;
+    // roomhandler.requestUnReadyRoom(room_id);
+    AnswerHandler answerHandler;
+    answerHandler.requestSubmitAnswer(4, 17, 65);
+
+    json responseSubmitAnswer = answerHandler.responseSubmitAnswer();
+    std::cout << responseSubmitAnswer.dump() << std::endl;
 }
 
 void* onlyReceiveThread(void* arg) {

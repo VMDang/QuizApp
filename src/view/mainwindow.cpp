@@ -96,7 +96,7 @@ void MainWindow::on_createRoomButton_clicked()
     // json responseListCategory = categoryHandler.responseListCategory();
     // std::cout << responseListCategory.dump() << std::endl;
 
-    // // Testing submit answer
+    // Testing submit answer
     // AnswerHandler answerHandler;
     // answerHandler.requestSubmitAnswer(4, 17, 65);
 
@@ -104,9 +104,9 @@ void MainWindow::on_createRoomButton_clicked()
     // std::cout << responseSubmitAnswer.dump() << std::endl;
 
     // Testing create room and config question
-    RoomHandler roomHandler;
-    roomHandler.requestCreateRoom();
-    json responseCreateRoom =  roomHandler.responseCreateRoom();
-    std::cout << responseCreateRoom.dump() << std::endl;
+    // RoomHandler roomHandler;
+    // roomHandler.requestCreateRoom();
+    // json responseCreateRoom =  roomHandler.responseCreateRoom();
+    // std::cout << responseCreateRoom.dump() << std::endl;
 }
 

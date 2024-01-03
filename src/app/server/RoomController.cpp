@@ -5,6 +5,7 @@
 #include <chrono>
 #include <ctime>
 #include <sstream>
+#include <thread>
 
 #include "RoomController.hpp"
 #include "../comunicate/server.h"
@@ -16,6 +17,7 @@
 #include "ServerManager.hpp"
 
 RoomController::RoomController() = default;
+void countdownClock(int minutes, int room_id);
 
 std::unordered_map<int, std::vector<int>> usersReady;
 
@@ -337,7 +339,11 @@ void RoomController::start(json request, int clientfd)
 
         questionsExam.push_back(qc);
     }
-
+    
+    // Start Clock thread
+    std::thread clockThread(countdownClock, r.time_limit, room_id);
+    clockThread.detach();
+    
     ResponseStartRoom response;
     response.body.room = r;
     response.body.questions = questionsExam;
@@ -460,4 +466,20 @@ void RoomController::create(json request, int clientfd)
     response.body.question_config = question_config.get<std::vector<int>>();
 
     sendToClient(clientfd, response.toJson().dump().c_str());
+}
+
+void countdownClock(int minutes, int room_id)
+{
+    auto duration = std::chrono::minutes(minutes);
+
+    pthread_mutex_lock(&ServerManager::mutex);
+    ServerManager::roomsActiveClock.push_back(room_id);
+    pthread_mutex_unlock(&ServerManager::mutex);
+
+    std::this_thread::sleep_for(duration);
+
+    pthread_mutex_lock(&ServerManager::mutex);
+    ServerManager::roomsActiveClock.erase(std::remove(ServerManager::roomsActiveClock.begin(), ServerManager::roomsActiveClock.end(),room_id),
+                                        ServerManager::roomsActiveClock.end());
+    pthread_mutex_unlock(&ServerManager::mutex);
 }

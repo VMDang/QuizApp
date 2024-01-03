@@ -175,6 +175,14 @@
             "result": 1,
             "room_id": 4,
             "user_id": 4
+        },
+        {
+            "id": 23,
+            "option_id": 65,
+            "question_id": 17,
+            "result": 1,
+            "room_id": 4,
+            "user_id": 6
         }
     ]
 }
