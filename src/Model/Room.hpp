@@ -43,7 +43,7 @@ public:
     {
           return json{
                {"id", id},
-               {"name", id},
+               {"name", name},
                {"capacity", capacity},
                {"type", type},
                {"start_time", start_time},

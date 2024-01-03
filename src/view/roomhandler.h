@@ -2,6 +2,7 @@
 #define ROOMHANDLER_H
 
 #include "../../library/json.hpp"
+#include "../app/request/room.h"
 
 using json = nlohmann::json;
 
@@ -24,7 +25,7 @@ public:
     void requestStartRoom(int room_id);
     json responseStartRoom();
 
-    void requestCreateRoom();
+    void requestCreateRoom(RequestCreateRoomBody body, QuestionsExam questions_exam);
     json responseCreateRoom();
 };
 

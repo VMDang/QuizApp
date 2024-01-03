@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>img/note.svg</file>
+        <file>img/chart.svg</file>
+        <file>img/lock-red.svg</file>
+        <file>img/lock.svg</file>
+        <file>img/login-bg.png</file>
+        <file>img/group.svg</file>
+        <file>img/clock.svg</file>
+        <file>img/calendar.svg</file>
+        <file>img/question.svg</file>
+        <file>img/right-arrow.svg</file>
+        <file>img/user.svg</file>
+        <file>img/clock-history.svg</file>
+        <file>img/pen.svg</file>
+        <file>img/exam.png</file>
+    </qresource>
+</RCC>

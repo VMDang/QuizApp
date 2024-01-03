@@ -17,6 +17,7 @@
 #include "RoomController.hpp"
 #include "CategoryController.hpp"
 #include "AnswerController.hpp"
+#include "ResultController.hpp"
 #include "../comunicate/server.h"
 #include "../request/route.h"
 #include "ServerManager.hpp"
@@ -77,6 +78,12 @@ void *client_handler(void *arg)
             {
                 AnswerController answerController;
                 answerController.redriect(request, clientfd);
+            }
+
+            if (url.find("/result/") != std::string::npos)
+            {
+                ResultController resultController;
+                resultController.redriect(request, clientfd);
             }
             
         }     
