@@ -12,8 +12,8 @@ public:
     void requestListRoom();
     json responseListRoom();
 
-    void requestDetailRoom(int room_id);
-    json responseDetailRoom();
+    void requestJoinRoom(int room_id, bool is_private, std::string password);
+    json responseJoinRoom();
 
     void requestReadyRoom(int room_id);
     json responseReadyRoom();
@@ -23,6 +23,9 @@ public:
 
     void requestStartRoom(int room_id);
     json responseStartRoom();
+
+    void requestCreateRoom();
+    json responseCreateRoom();
 };
 
 #endif // ROOMHANDLER_H

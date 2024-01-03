@@ -28,3 +28,22 @@ std::vector<UserRoom> relationsUserRoom()
     }
     return userRooms;
 }
+
+void insertUserRoom(UserRoom &u_r)
+{
+    json jsonData;
+    std::ifstream inputFile(USER_ROOM_JSON);
+    inputFile >> jsonData;
+    inputFile.close();
+
+    json newU_R;
+    newU_R["room_id"] = u_r.room_id;
+    newU_R["user_id"] = u_r.user_id;
+    newU_R["is_owner"] = u_r.is_owner;
+
+    jsonData["user_room"].push_back(newU_R);
+
+    std::ofstream outputFile(USER_ROOM_JSON);
+    outputFile << std::setw(4) << jsonData;
+    outputFile.close();
+}

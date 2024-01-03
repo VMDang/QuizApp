@@ -10,4 +10,5 @@ typedef struct
 } RoomQuestion;
 
 std::vector<RoomQuestion> relationsRoomQuestion();
+void insertRoomQuestion(RoomQuestion &r_q);
 #endif

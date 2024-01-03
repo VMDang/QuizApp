@@ -19,18 +19,20 @@ public:
     std::string close_time;
     std::string status;
     int time_limit;
+    bool is_private;
+    std::string password;
 
     Room();
 
     // Constructor without auto-increase id
     Room(int id, const std::string &name, int capacity, const std::string &type,
          const std::string &start_time, const std::string &close_time,
-         const std::string status, int time_limit);
+         const std::string status, int time_limit, bool is_private, const std::string password);
 
     // Constructor with auto-increase id
     Room(const std::string &name, int capacity, const std::string &type,
          const std::string &start_time, const std::string &close_time,
-         const std::string status, int time_limit);
+         const std::string status, int time_limit, bool is_private, const std::string password);
 
     static std::vector<Room> getAll();
     static Room findById(int id);
@@ -48,6 +50,8 @@ public:
                {"close_time", close_time},
                {"status", status},
                {"time_limit", time_limit},
+               {"is_private", is_private},
+               // {"password", password},
           };
     };
 };

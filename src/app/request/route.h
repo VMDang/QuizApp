@@ -9,14 +9,16 @@
 
 #define RequestRoomListRouter "request/room/list"
 #define ResponseRoomListRouter "response/room/list"
-#define RequestRoomDetailRouter "request/room/detail"
-#define ResponseRoomDetailRouter "response/room/detail"
+#define RequestJoinRoomRouter "request/room/join"
+#define ResponseJoinRoomRouter "response/room/join"
 #define RequestReadyRoomRouter "request/room/ready"
 #define ResponseReadyRoomRouter "response/room/ready"
 #define RequestUnReadyRoomRouter "request/room/unready"
 #define ResponseUnReadyRoomRouter "response/room/unready"
 #define RequestStartRoomRouter "request/room/start"
 #define ResponseStartRoomRouter "response/room/start"
+#define RequestCreateRoomRouter "request/room/create"
+#define ResponseCreateRoomRouter "response/room/create"
 
 #define RequestListCategoryRouter "request/category/list"
 #define ResponseListCategoryRouter "response/category/list"

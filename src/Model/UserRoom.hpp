@@ -11,4 +11,5 @@ typedef struct
 } UserRoom;
 
 std::vector<UserRoom> relationsUserRoom();
+void insertUserRoom(UserRoom &u_r);
 #endif

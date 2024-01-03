@@ -5,6 +5,7 @@
 #include "../../../library/json.hpp"
 #include "../../Model/Room.hpp"
 #include "../../Model/User.hpp"
+#include "../../Model/Category.hpp"
 #include "type.h"
 #include "route.h"
 #include "question.h"
@@ -61,10 +62,23 @@ typedef struct
 
 typedef struct
 {
+    bool is_private;
+    std::string password;
+    json toJson() {
+        return json{
+            {"is_private", is_private},
+            {"password", password},
+        };
+    }
+}ResquestJoinRoomBody;
+
+typedef struct
+{
     std::string code = REQUEST_GET_RESOURCE;
     json header;
-    std::string url = RequestRoomDetailRouter;
+    std::string url = RequestJoinRoomRouter;
     int param;
+    ResquestJoinRoomBody body;
 
     json toJson()
     {
@@ -72,15 +86,18 @@ typedef struct
             {"code", code},
             {"url", url},
             {"header", header},
-            {"param", param}};
+            {"param", param},
+            {"body", body.toJson()}
+        };
     }
-} ResquestDetailRoom;
+} RequestJoinRoom;
 
 typedef struct
 {
     Room room;
     bool is_owner;
     std::vector<User> usersReady;
+    std::string message;
 
     json toJson()
     {
@@ -99,16 +116,18 @@ typedef struct
 
         result["room"] = room.toJson();
         result["is_owner"] = is_owner;
+        result["message"] = message;
         return result;
     };
-} ResponseDetailRoomBody;
+} ResponseJoinRoomBody;
 
 typedef struct
 {
     std::string code = RESPONSE_GET_RESOURCE;
     json header;
-    std::string url = ResponseRoomDetailRouter;
-    ResponseDetailRoomBody body;
+    std::string url = ResponseJoinRoomRouter;
+    std::string status;
+    ResponseJoinRoomBody body;
 
     json toJson()
     {
@@ -116,9 +135,10 @@ typedef struct
             {"code", code},
             {"url", url},
             {"header", header},
+            {"status", status},
             {"body", body.toJson()}};
     }
-} ResponseDetailRoom;
+} ResponseJoinRoom;
 
 typedef struct
 {
@@ -140,6 +160,7 @@ typedef struct
 typedef struct
 {
     std::vector<User> usersReady;
+    std::string message;
 
     json toJson()
     {
@@ -148,6 +169,7 @@ typedef struct
         {
             result["usersReady"].push_back(user.toJson());
         }
+        result["message"] = message;
         return result;
     }
 } ResponseReadyRoomBody;
@@ -271,5 +293,84 @@ typedef struct
         };
     }
 } ResponseStartRoom;
+
+typedef struct
+{
+    std::string name;
+    int time_limit;
+    int capacity;
+    bool is_private;
+    std::string password;
+    std::string type;
+    json toJson()
+    {
+        return json{
+            {"name", name},
+            {"time_limit", time_limit},
+            {"capacity", capacity},
+            {"is_private", is_private},
+            {"password", password},
+            {"type", type},
+        };
+    }
+} RequestCreateRoomBody;
+
+typedef struct
+{
+    std::string code = REQUEST_CREATE_RESOURCE;
+    json header;
+    std::string url = RequestCreateRoomRouter;
+    RequestCreateRoomBody body;
+    QuestionsExam questions_exam;
+
+    json toJson()
+    {
+        return json{
+            {"code", code},
+            {"url", url},
+            {"header", header},
+            {"body", body.toJson()},
+            {"questions_exam", questions_exam.toJson()}
+        };
+    }
+} RequestCreateRoom;
+
+typedef struct 
+{
+    Room room;
+    Category category;
+    int max_score;
+    std::vector<int> question_config;
+
+    json toJson(){
+        json qc = question_config;
+        return json{
+            {"room", room.toJson()},
+            {"category", category.toJson()},
+            {"max_score", max_score},
+            {"question_config", qc},
+        };
+    }
+}ResponseCreateRoomBody;
+
+typedef struct
+{
+    std::string code = RESPONSE_CREATE_RESOURCE;
+    json header;
+    std::string status;
+    std::string url = ResponseCreateRoomRouter;
+    ResponseCreateRoomBody body;
+
+    json toJson()
+    {
+        return json{
+            {"code", code},
+            {"url", url},
+            {"status", status},
+            {"header", header},
+            {"body", body.toJson()},
+        };
+    }
+} ResponseCreateRoom;
 
 #endif

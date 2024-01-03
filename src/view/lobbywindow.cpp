@@ -7,6 +7,8 @@
 #include <pthread.h>
 #include <iostream>
 
+#include <QMessageBox>
+
 void* onlyReceiveThread(void* arg);
 
 LobbyWindow::LobbyWindow(QWidget *parent, const QString &room_id) :
@@ -48,6 +50,14 @@ void LobbyWindow::on_readyExamButton_clicked()
     int room_id = 4;
     RoomHandler roomhandler;
     roomhandler.requestReadyRoom(room_id);
+
+    json response = roomhandler.responseReadyRoom();
+    if (response["status"] == FAILURE) {
+        QMessageBox::warning(this, "Ready Failed", QString::fromStdString(response["body"]["message"]));
+    } else {
+        std::cout << response.dump().c_str() << std::endl;
+        std::cout << "Ready! Waiting start room" << std::endl;
+    }
 }
 
 void LobbyWindow::on_unReadyExamButton_clicked()
