@@ -2,6 +2,8 @@
 #define LOBBYWINDOW_H
 
 #include <QMainWindow>
+#include <QVBoxLayout>
+#include <QWidget>
 
 namespace Ui {
 class LobbyWindow;
@@ -14,13 +16,7 @@ class LobbyWindow : public QMainWindow
 public:
     explicit LobbyWindow(QWidget *parent = nullptr, const QString &room_id = nullptr);
     ~LobbyWindow();
-
-private slots:
-    void on_startExamButton_clicked();
-
-    void on_readyExamButton_clicked();
-
-    void on_unReadyExamButton_clicked();
+    QWidget* createUserItem();
 
 private:
     Ui::LobbyWindow *ui;

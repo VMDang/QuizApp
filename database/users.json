@@ -70,6 +70,14 @@
             "name": "Std4",
             "password": "1234",
             "role": "User",
+            "status": 1
+        },
+        {
+            "email": "std5@example.com",
+            "id": 10,
+            "name": "Std5",
+            "password": "1234",
+            "role": "User",
             "status": 0
         }
     ]

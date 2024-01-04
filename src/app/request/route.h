@@ -37,4 +37,17 @@
 
 #define RequestRegistrationRouter "request/registration"
 #define ResponseRegistrationRouter "response/registration"
+
+#define RequestRoomResultRouter "request/result/room"
+#define ResponseRoomResultRouter "response/result/room"
+
+#define RequestHistoryResultRouter "request/result/history"
+#define ResponseHistoryResultRouter "response/result/history"
+
+#define RequestCreatePracticeRouter "request/practice/create"
+#define ResponseCreatePracticeRouter "response/practice/create"
+
+#define RequestStartPracticeRouter "request/practice/start"
+#define ResponseStartPracticeRouter "response/practice/start"
+
 #endif

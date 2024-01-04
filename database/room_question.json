@@ -21,15 +21,11 @@
             "room_id": 1
         },
         {
-            "question_id": 3,
+            "question_id": 16,
             "room_id": 2
         },
         {
-            "question_id": 8,
-            "room_id": 2
-        },
-        {
-            "question_id": 15,
+            "question_id": 19,
             "room_id": 2
         },
         {
@@ -37,7 +33,11 @@
             "room_id": 2
         },
         {
-            "question_id": 30,
+            "question_id": 25,
+            "room_id": 2
+        },
+        {
+            "question_id": 28,
             "room_id": 2
         },
         {

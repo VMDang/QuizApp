@@ -1,27 +1,23 @@
 #include "loginwindow.h"
 #include "ui_loginwindow.h"
 #include "mainwindow.h"
+
 #include "../app/comunicate/client.h"
 #include "../app/request/login.h"
 #include "../../library/json.hpp"
 #include "clientmanager.h"
 
-using json = nlohmann::json;
-
 #include <QString>
 #include <QMessageBox>
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
 
+using json = nlohmann::json;
 
 LoginWindow::LoginWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::LoginWindow)
 {
     ui->setupUi(this);
+    setWindowTitle("Login");
 }
 
 LoginWindow::~LoginWindow()

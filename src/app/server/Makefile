@@ -1,4 +1,4 @@
-CFLAGS = -c -Wall -lcrypto -lssl
+CFLAGS = -c -Wall
 CC = g++
 LIB = -lm
 comunicate = ../comunicate/server.cpp
@@ -14,6 +14,8 @@ C_category = CategoryController.cpp
 C_answer = AnswerController.cpp
 C_question = QuestionController.cpp
 C_registration = RegistrationController.cpp
+C_result = ResultController.cpp
+C_practice = PracticeController.cpp
 M_ur = ../../Model/UserRoom.cpp
 M_rq = ../../Model/RoomQuestion.cpp
 manager = ServerManager.cpp
