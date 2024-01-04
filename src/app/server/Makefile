@@ -1,4 +1,4 @@
-CFLAGS = -c -Wall -lcrypto -lssl
+CFLAGS = -c -Wall
 CC = g++
 LIB = -lm
 comunicate = ../comunicate/server.cpp

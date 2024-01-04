@@ -8,6 +8,7 @@
 #include "examwindow.h"
 #include "component.h"
 #include "roomhandler.h"
+#include "resulthandler.h"
 #include "clientmanager.h"
 #include "../app/comunicate/client.h"
 
@@ -154,10 +155,14 @@ void MainWindow::on_historyPushButton_clicked()
 
 void MainWindow::on_dashboardButton_clicked()
 {
-    Styles::activeSidebarItem(ui->dashboardButton);
-    Styles::disableSidebarItem(ui->examPushButton);
-    Styles::disableSidebarItem(ui->practicePushButton);
-    Styles::disableSidebarItem(ui->historyPushButton);
+    // Styles::activeSidebarItem(ui->dashboardButton);
+    // Styles::disableSidebarItem(ui->examPushButton);
+    // Styles::disableSidebarItem(ui->practicePushButton);
+    // Styles::disableSidebarItem(ui->historyPushButton);
+    ResultHandler resultHandler;
+    resultHandler.requestHistoryResult();
+    json response = resultHandler.responseHistoryResult();
+    std::cout << response.dump(4) <<  std::endl;
 }
 
 MainWindow::~MainWindow()
