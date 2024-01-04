@@ -24,7 +24,10 @@ json ResultHandler::responseRoomResult()
 
 void ResultHandler::requestHistoryResult()
 {
+    RequestHistoryResult request;
+    request.header = ClientManager::authUser;
 
+    sendToServer(request.toJson().dump().c_str());
 }
 
 json ResultHandler::responseHistoryResult()

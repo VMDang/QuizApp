@@ -32,4 +32,10 @@
 #define RequestHistoryResultRouter "request/result/history"
 #define ResponseHistoryResultRouter "response/result/history"
 
+#define RequestCreatePracticeRouter "request/practice/create"
+#define ResponseCreatePracticeRouter "response/practice/create"
+
+#define RequestStartPracticeRouter "request/practice/start"
+#define ResponseStartPracticeRouter "response/practice/start"
+
 #endif

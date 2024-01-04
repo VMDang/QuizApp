@@ -1,4 +1,4 @@
-CFLAGS = -c -Wall -lcrypto -lssl
+CFLAGS = -c -Wall
 CC = g++
 LIB = -lm
 comunicate = ../comunicate/server.cpp
@@ -13,6 +13,7 @@ C_room = RoomController.cpp
 C_category = CategoryController.cpp
 C_answer = AnswerController.cpp
 C_result = ResultController.cpp
+C_practice = PracticeController.cpp
 M_ur = ../../Model/UserRoom.cpp
 M_rq = ../../Model/RoomQuestion.cpp
 manager = ServerManager.cpp
@@ -23,7 +24,7 @@ debug: CFLAGS += -g
 debug: server
 
 server: server.o
-	${CC} server.cpp  ${comunicate} ${M_user} ${M_room} ${M_question} ${M_option} ${M_answer} ${M_category} ${M_ur} ${M_rq} ${C_auth} ${C_room} ${C_category} ${C_answer} ${C_result} ${manager} -o server -pthread
+	${CC} server.cpp  ${comunicate} ${M_user} ${M_room} ${M_question} ${M_option} ${M_answer} ${M_category} ${M_ur} ${M_rq} ${C_auth} ${C_room} ${C_category} ${C_answer} ${C_result} ${C_practice} ${manager} -o server -pthread
 
 server.o: server.cpp
 	${CC} $(CFLAGS) server.cpp

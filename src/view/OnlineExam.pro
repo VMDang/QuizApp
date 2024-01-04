@@ -17,6 +17,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     passworddialog.cpp \
+    practicehandler.cpp \
     questionbutton.cpp \
     questionclient.cpp \
     resulthandler.cpp \
@@ -36,6 +37,7 @@ HEADERS += \
     loginwindow.h \
     mainwindow.h \
     passworddialog.h \
+    practicehandler.h \
     questionbutton.h \
     questionclient.h \
     resulthandler.h \
