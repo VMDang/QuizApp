@@ -10,6 +10,7 @@
 #include "roomhandler.h"
 #include "resulthandler.h"
 #include "clientmanager.h"
+#include "practicehandler.h"
 #include "../app/comunicate/client.h"
 
 #include <iostream>
@@ -139,30 +140,43 @@ void MainWindow::on_examPushButton_clicked()
 
 void MainWindow::on_practicePushButton_clicked()
 {
-    Styles::activeSidebarItem(ui->practicePushButton);
-    Styles::disableSidebarItem(ui->examPushButton);
-    Styles::disableSidebarItem(ui->historyPushButton);
-    Styles::disableSidebarItem(ui->dashboardButton);
+    // Styles::activeSidebarItem(ui->practicePushButton);
+    // Styles::disableSidebarItem(ui->examPushButton);
+    // Styles::disableSidebarItem(ui->historyPushButton);
+    // Styles::disableSidebarItem(ui->dashboardButton);
+
+    PracticeHandler practiceHandler;
+    practiceHandler.requestCreatePractice();
+
+    json response1 = practiceHandler.responseCreatePractice();
+    std::cout << response1.dump() << std::endl;
+
+    practiceHandler.requestStartPractice(7);
+
+    json response2 = practiceHandler.responseCreatePractice();
+    std::cout << response2.dump() << std::endl;
 }
 
 void MainWindow::on_historyPushButton_clicked()
 {
-    Styles::activeSidebarItem(ui->historyPushButton);
-    Styles::disableSidebarItem(ui->examPushButton);
-    Styles::disableSidebarItem(ui->practicePushButton);
-    Styles::disableSidebarItem(ui->dashboardButton);
+    // Styles::activeSidebarItem(ui->historyPushButton);
+    // Styles::disableSidebarItem(ui->examPushButton);
+    // Styles::disableSidebarItem(ui->practicePushButton);
+    // Styles::disableSidebarItem(ui->dashboardButton);
+
+    ResultHandler resulttHandler;
+    resulttHandler.requestHistoryResult();
+    json response = resulttHandler.responseHistoryResult();
+
+    std::cout << response.dump(4) << std::endl;
 }
 
 void MainWindow::on_dashboardButton_clicked()
 {
-    // Styles::activeSidebarItem(ui->dashboardButton);
-    // Styles::disableSidebarItem(ui->examPushButton);
-    // Styles::disableSidebarItem(ui->practicePushButton);
-    // Styles::disableSidebarItem(ui->historyPushButton);
-    ResultHandler resultHandler;
-    resultHandler.requestHistoryResult();
-    json response = resultHandler.responseHistoryResult();
-    std::cout << response.dump(4) <<  std::endl;
+    Styles::activeSidebarItem(ui->dashboardButton);
+    Styles::disableSidebarItem(ui->examPushButton);
+    Styles::disableSidebarItem(ui->practicePushButton);
+    Styles::disableSidebarItem(ui->historyPushButton);
 }
 
 MainWindow::~MainWindow()

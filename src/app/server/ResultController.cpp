@@ -118,7 +118,7 @@ void ResultController::history(json request, int clientfd)
     user_rooms.erase(std::remove_if(user_rooms.begin(), user_rooms.end(),
                                     [auth_id](const UserRoom &u_r)
                                     {
-                                        return u_r.user_id != auth_id || u_r.is_owner;
+                                        return u_r.user_id != auth_id;
                                     }),
                      user_rooms.end());
 
