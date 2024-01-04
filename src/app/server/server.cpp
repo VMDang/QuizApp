@@ -17,6 +17,8 @@
 #include "RoomController.hpp"
 #include "CategoryController.hpp"
 #include "AnswerController.hpp"
+#include "QuestionController.hpp"
+#include "RegistrationController.hpp"
 #include "../comunicate/server.h"
 #include "../request/route.h"
 #include "ServerManager.hpp"
@@ -53,8 +55,10 @@ void *client_handler(void *arg)
         {
             AuthController loginController = AuthController();
             loginController.login(request, clientfd);
-        } else
-        {
+        } else if (url == RequestRegistrationRouter) {
+            RegistrationController signupController = RegistrationController();
+            signupController.signup(request, clientfd);
+        } else {
             if (url == RequestLogoutRouter )
             {
                 AuthController logout = AuthController();
@@ -78,7 +82,11 @@ void *client_handler(void *arg)
                 AnswerController answerController;
                 answerController.redriect(request, clientfd);
             }
-            
+
+            if (url.find("/question/") != std::string::npos) {
+                QuestionController questionController;
+                questionController.redirect(request, clientfd);
+            }
         }     
     
     }
