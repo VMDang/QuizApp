@@ -19,6 +19,8 @@
 #define ResponseStartRoomRouter "response/room/start"
 #define RequestCreateRoomRouter "request/room/create"
 #define ResponseCreateRoomRouter "response/room/create"
+#define RequestRoomDetailRouter "request/room/detail"
+#define ResponseRoomDetailRouter "response/room/detail"
 
 #define RequestListCategoryRouter "request/category/list"
 #define ResponseListCategoryRouter "response/category/list"

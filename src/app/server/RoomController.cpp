@@ -47,6 +47,9 @@ void RoomController::redriect(json request, int clientfd)
     } else if(url == RequestCreateRoomRouter)
     {
         create(request, clientfd);
+    } else if (url == RequestRoomDetailRouter)
+    {
+        detail(request, clientfd);
     }
 }
 
@@ -464,6 +467,28 @@ void RoomController::create(json request, int clientfd)
     response.body.category = Category::findById(category_id);
     response.body.max_score = max_score;
     response.body.question_config = question_config.get<std::vector<int>>();
+
+    sendToClient(clientfd, response.toJson().dump().c_str());
+}
+
+void RoomController::detail(json request, int clientfd)
+{
+    int auth_id = request["header"]["id"];
+    int room_id = request["param"];
+
+    std::vector<UserRoom> User_Room = relationsUserRoom();
+
+    bool checkOwner = false;
+
+    checkOwner = std::any_of(User_Room.begin(), User_Room.end(),
+                             [auth_id, room_id](const UserRoom& item) {
+                                 return item.user_id == auth_id &&
+                                        item.room_id == room_id &&
+                                        item.is_owner;
+                             });
+    ResponseDetailRoom response;
+    response.body.is_owner = checkOwner;
+    response.body.room = Room::findById(room_id);
 
     sendToClient(clientfd, response.toJson().dump().c_str());
 }

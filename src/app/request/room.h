@@ -373,4 +373,53 @@ typedef struct
     }
 } ResponseCreateRoom;
 
+
+typedef struct
+{
+    std::string code = REQUEST_GET_RESOURCE;
+    json header;
+    std::string url = RequestRoomDetailRouter;
+    int param;
+
+    json toJson() {
+        return json{
+            {"code", code},
+            {"url", url},
+            {"header", header },
+            {"param", param}
+        };
+
+    }
+} ResquestDetailRoom;
+
+typedef struct 
+{
+    Room room;
+    bool is_owner;
+
+    json toJson() {
+        return json{
+            {"room", room.toJson()},
+            {"is_owner", is_owner}
+        };
+    };
+} ResponseDetailRoomBody;
+
+typedef struct
+{
+    std::string code = RESPONSE_GET_RESOURCE;
+    json header;
+    std::string url = ResponseRoomDetailRouter;
+    ResponseDetailRoomBody body;
+
+    json toJson() {
+        return json{
+            {"code", code},
+            {"url", url},
+            {"header", header },
+            {"body", body.toJson()}
+        };
+    }
+} ResponseDetailRoom;
+
 #endif
