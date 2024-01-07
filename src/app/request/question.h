@@ -157,24 +157,41 @@ typedef struct {
     std::string code = REQUEST_GET_RESOURCE;
     json header;
     std::string url = RequestGetQuestionRouter;
-    int question_id;
+    int room_id;
 
     json toJson() {
         return json{
             {"code", code}, 
             {"header", header},
             {"url", url},
-            {"question_id", question_id}
+            {"room_id", room_id}
         };
     }
 } RequesGetQuestion;
+
+
+typedef struct 
+{
+    std::vector<QuestionContent> questions;
+
+    json toJson()
+    {
+        json result;
+        for (QuestionContent &q : questions)
+        {
+            result["questions"].push_back(q.toJson());
+        }
+        return result;
+    }
+}ResponseGetQuestionBody;
+
 
 typedef struct {
     std::string code = RESPONSE_GET_RESOURCE;
     json header;
     std::string status;
     std::string url = ResponseGetQuestionRouter;
-    Question body;
+    ResponseGetQuestionBody body;
 
     json toJson(){
         return json{
@@ -182,7 +199,7 @@ typedef struct {
             {"header", header},
             {"status", status},
             {"url", url},
-            {"question", body.toJson()}
+            {"body", body.toJson()}
         };
     }
 } ResponseGetQuestion;
@@ -203,22 +220,29 @@ typedef struct {
     }
 } RequestDeleteQuestion;
 
+typedef struct{
+    std::string message;
+
+    json toJson() {
+        return json{
+            {"message", message},
+        };
+    }
+}ResponseDeleteQuestionBody;
 typedef struct {
     std::string code = RESPONSE_DELETE_RESOURCE;
     json header;
     std::string url = ResponseDeleteQuestionRouter;
     std::string status;
-    std::string message;
-    Question body;
+    ResponseDeleteQuestionBody body;
 
     json toJson(){
         return json {
             {"code", code},
             {"header", header},
             {"status", status},
-            {"message", message},
             {"url", url},
-            {"question", body.toJson()}
+            {"body", body.toJson()},
         };
     }
 

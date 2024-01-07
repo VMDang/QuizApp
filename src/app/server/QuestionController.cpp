@@ -62,12 +62,39 @@ void QuestionController::create(json request, int clientfd) {
 }
 
 void QuestionController::get(json request, int clientfd) {
-    int question_id = request["question_id"];
-    Question ques = Question::findById(question_id);
+    int room_id = request["room_id"];
+
+    std::vector<RoomQuestion> relationsRQ = relationsRoomQuestion();
+    std::vector<QuestionContent> questionsExam;
+    std::vector<Option> options = Option::getAll();
+
+    relationsRQ.erase(std::remove_if(relationsRQ.begin(), relationsRQ.end(),
+                                     [room_id](const RoomQuestion &r_q)
+                                     {
+                                         return r_q.room_id != room_id;
+                                     }),
+                      relationsRQ.end());
+
+    for (RoomQuestion &rq : relationsRQ)
+    {
+        Question q = Question::findById(rq.question_id);
+        int q_id = q.id;
+        std::vector<Option> filteredOptions;
+        std::copy_if(options.begin(), options.end(), std::back_inserter(filteredOptions),
+                     [q_id](const Option &option)
+                     {
+                         return option.question_id == q_id;
+                     });
+        QuestionContent qc;
+        qc.question = q;
+        qc.options = filteredOptions;
+
+        questionsExam.push_back(qc);
+    }
 
     ResponseGetQuestion response;
     response.status = SUCCESS;
-    response.body = ques;
+    response.body.questions = questionsExam;
 
     sendToClient(clientfd, response.toJson().dump().c_str());
 }
@@ -99,9 +126,8 @@ void QuestionController::Delete(json request, int clientfd) {
     Question::Delete(ques);
 
     ResponseDeleteQuestion response;
-    response.body = ques;
     response.status = SUCCESS;
-    response.message = "200 OK";
+    response.body.message = "Delete question success!";
 
     sendToClient(clientfd, response.toJson().dump().c_str());
 }

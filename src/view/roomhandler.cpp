@@ -107,3 +107,19 @@ json RoomHandler::responseCreateRoom()
 
     return json::parse(buff);
 }
+
+void RoomHandler::requestDetailRoom(int room_id)
+{
+    ResquestDetailRoom request;
+    request.header = ClientManager::authUser;
+    request.param = room_id;
+    sendToServer(request.toJson().dump().c_str());
+}
+
+json RoomHandler::responseDetailRoom()
+{
+    char buff[BUFF_SIZE];
+    recvFromServer(buff);
+
+    return json::parse(buff);
+}

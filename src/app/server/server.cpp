@@ -18,7 +18,6 @@
 #include "CategoryController.hpp"
 #include "AnswerController.hpp"
 #include "QuestionController.hpp"
-#include "RegistrationController.hpp"
 #include "ResultController.hpp"
 #include "PracticeController.hpp"
 #include "../comunicate/server.h"
@@ -32,7 +31,6 @@ std::vector<int> listClientFd;
 void *client_handler(void *arg) 
 {
     int clientfd;
-    int rcvBytes;
 
     pthread_detach(pthread_self());
     clientfd = *((int *)arg);
@@ -46,7 +44,7 @@ void *client_handler(void *arg)
     {
         char buff[BUFF_SIZE];
         
-        rcvBytes = recvFromClient(clientfd, buff);
+        recvFromClient(clientfd, buff);
         if (strcmp(buff, "\0") == 0) {
             break;
         }
@@ -58,7 +56,7 @@ void *client_handler(void *arg)
             AuthController loginController = AuthController();
             loginController.login(request, clientfd);
         } else if (url == RequestRegistrationRouter) {
-            RegistrationController signupController = RegistrationController();
+            AuthController signupController = AuthController();
             signupController.signup(request, clientfd);
         } else {
             if (url == RequestLogoutRouter )

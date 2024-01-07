@@ -15,6 +15,7 @@
 #include "../../Model/UserRoom.hpp"
 #include "../../Model/RoomQuestion.hpp"
 #include "ServerManager.hpp"
+#include "../helper.hpp"
 
 RoomController::RoomController() = default;
 void countdownClock(int minutes, int room_id);
@@ -67,6 +68,7 @@ void RoomController::list(json request, int clientfd)
     ResponseListRoomBody body;
     body.rooms = rooms;
     ResponseListRoom response;
+    response.status = SUCCESS;
     response.body = body;
     sendToClient(clientfd, response.toJson().dump().c_str());
 }
@@ -80,7 +82,7 @@ void RoomController::join(json request, int clientfd)
     Room room = Room::findById(room_id);
     ResponseJoinRoom response;
 
-    if (is_private && password != room.password)
+    if (is_private && sha256(password) != room.password)
     {
         response.status = FAILURE;
         response.body.message = "Password is incorrect";
@@ -315,33 +317,33 @@ void RoomController::start(json request, int clientfd)
     r.start_time = formattedTime.str();
     Room room = Room::edit(r);
 
-    std::vector<RoomQuestion> relationsRQ = relationsRoomQuestion();
-    std::vector<QuestionContent> questionsExam;
-    std::vector<Option> options = Option::getAll();
+    // std::vector<RoomQuestion> relationsRQ = relationsRoomQuestion();
+    // std::vector<QuestionContent> questionsExam;
+    // std::vector<Option> options = Option::getAll();
 
-    relationsRQ.erase(std::remove_if(relationsRQ.begin(), relationsRQ.end(),
-                                     [room_id](const RoomQuestion &r_q)
-                                     {
-                                         return r_q.room_id != room_id;
-                                     }),
-                      relationsRQ.end());
+    // relationsRQ.erase(std::remove_if(relationsRQ.begin(), relationsRQ.end(),
+    //                                  [room_id](const RoomQuestion &r_q)
+    //                                  {
+    //                                      return r_q.room_id != room_id;
+    //                                  }),
+    //                   relationsRQ.end());
 
-    for (RoomQuestion &rq : relationsRQ)
-    {
-        Question q = Question::findById(rq.question_id);
-        int q_id = q.id;
-        std::vector<Option> filteredOptions;
-        std::copy_if(options.begin(), options.end(), std::back_inserter(filteredOptions),
-                     [q_id](const Option &option)
-                     {
-                         return option.question_id == q_id;
-                     });
-        QuestionContent qc;
-        qc.question = q;
-        qc.options = filteredOptions;
+    // for (RoomQuestion &rq : relationsRQ)
+    // {
+    //     Question q = Question::findById(rq.question_id);
+    //     int q_id = q.id;
+    //     std::vector<Option> filteredOptions;
+    //     std::copy_if(options.begin(), options.end(), std::back_inserter(filteredOptions),
+    //                  [q_id](const Option &option)
+    //                  {
+    //                      return option.question_id == q_id;
+    //                  });
+    //     QuestionContent qc;
+    //     qc.question = q;
+    //     qc.options = filteredOptions;
 
-        questionsExam.push_back(qc);
-    }
+    //     questionsExam.push_back(qc);
+    // }
     
     // Start Clock thread
     std::thread clockThread(countdownClock, r.time_limit, room_id);
@@ -349,7 +351,7 @@ void RoomController::start(json request, int clientfd)
     
     ResponseStartRoom response;
     response.body.room = r;
-    response.body.questions = questionsExam;
+    // response.body.questions = questionsExam;
     response.status = SUCCESS;
 
     pthread_mutex_unlock(&ServerManager::mutex);
@@ -413,7 +415,8 @@ void RoomController::create(json request, int clientfd)
     std::string password;
     if (is_private)
     {
-        password = request["body"]["password"];
+        std::string passRequest = request["body"]["password"];
+        password = sha256(passRequest);
     }else
     {
         password = "";

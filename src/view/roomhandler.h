@@ -27,6 +27,9 @@ public:
 
     void requestCreateRoom(RequestCreateRoomBody body, QuestionsExam questions_exam);
     json responseCreateRoom();
+
+    void requestDetailRoom(int room_id);
+    json responseDetailRoom();
 };
 
 #endif // ROOMHANDLER_H

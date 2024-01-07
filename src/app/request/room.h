@@ -48,6 +48,7 @@ typedef struct
     std::string code = RESPONSE_GET_RESOURCE;
     std::string header;
     std::string url = ResponseRoomListRouter;
+    std::string status;
     ResponseListRoomBody body;
 
     json toJson()
@@ -56,6 +57,7 @@ typedef struct
             {"code", code},
             {"url", url},
             {"header", header},
+            {"status", status},
             {"body", body.toJson()}};
     }
 } ResponseListRoom;
@@ -261,14 +263,14 @@ typedef struct
 typedef struct
 {
     Room room;
-    std::vector<QuestionContent> questions;
+    // std::vector<QuestionContent> questions;
     json toJson()
     {
         json result;
-        for (QuestionContent &q : questions)
-        {
-            result["questions"].push_back(q.toJson());
-        }
+        // for (QuestionContent &q : questions)
+        // {
+        //     result["questions"].push_back(q.toJson());
+        // }
         result["room"] = room.toJson();
         return result;
     }
