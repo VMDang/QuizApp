@@ -12,6 +12,7 @@ public:
 
     void login(json request, int clientfd);
     void logout(json request, int clientfd);
+    void signup(json request, int clientfd);
 };
 
 #endif

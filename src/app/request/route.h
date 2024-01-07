@@ -19,12 +19,26 @@
 #define ResponseStartRoomRouter "response/room/start"
 #define RequestCreateRoomRouter "request/room/create"
 #define ResponseCreateRoomRouter "response/room/create"
+#define RequestRoomDetailRouter "request/room/detail"
+#define ResponseRoomDetailRouter "response/room/detail"
 
 #define RequestListCategoryRouter "request/category/list"
 #define ResponseListCategoryRouter "response/category/list"
 
 #define RequestSubmitAnswerRouter "request/answer/submit"
 #define ResponseSubmitAnswerRouter "response/answer/submit"
+
+#define RequestCreateQuestionRouter "request/question/create"
+#define ResponseCreateQuestionRouter "response/question/create"
+#define RequestUpdateQuestionRouter "request/question/update"
+#define ResponseUpdateQuestionRouter "response/questions/update"
+#define RequestGetQuestionRouter "request/question/get"
+#define ResponseGetQuestionRouter "response/question/get"
+#define RequestDeleteQuestionRouter "request/question/delete"
+#define ResponseDeleteQuestionRouter "response/question/delete"
+
+#define RequestRegistrationRouter "request/registration"
+#define ResponseRegistrationRouter "response/registration"
 
 #define RequestRoomResultRouter "request/result/room"
 #define ResponseRoomResultRouter "response/result/room"

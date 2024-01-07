@@ -6,9 +6,11 @@
 
 #include "../request/login.h"
 #include "../request/logout.h"
+#include "../request/registration.h"
 #include "../comunicate/server.h"
 #include "../../Model/User.hpp"
 #include "ServerManager.hpp"
+#include "../helper.hpp"
  
 std::vector<User> loggedUsers;
 
@@ -32,17 +34,18 @@ void AuthController::login(json request, int clientfd)
     }
     else
     {
+        std::string hasedPassword = sha256(password);
         if (user.status == 0)
         {
             responseLogin.status = FAILURE;
             responseLogin.body.message = "Account has been locked.";
         }
-        else if (password != user.password)
+        else if (hasedPassword != user.password)
         {
             responseLogin.status = FAILURE;
             responseLogin.body.message = "Password incorrect.";
         }
-        else if (password == user.password)
+        else if (hasedPassword == user.password)
         {
             pthread_mutex_lock(&ServerManager::mutex);
             auto it = std::find_if(loggedUsers.begin(), loggedUsers.end(),
@@ -56,6 +59,7 @@ void AuthController::login(json request, int clientfd)
             else
             {
                 responseLogin.status = SUCCESS;
+                responseLogin.body.message = "Login success!";
                 responseLogin.body.user = user;
                 loggedUsers.push_back(user);
                 ServerManager::client_auth.emplace_back(std::unordered_map<int, int>{{clientfd, user.id}});
@@ -91,4 +95,22 @@ void AuthController::logout(json request, int clientfd)
     responseLogout.message = "Loggout success!";
 
     sendToClient(clientfd, responseLogout.toJson().dump().c_str());
+}
+
+void AuthController::signup(json request, int clientfd)
+{
+    std::string name = request["body"]["name"];
+    std::string email = request["body"]["email"];
+    std::string password = request["body"]["password"];
+
+    std::string hashedPassword = sha256(password);
+
+    User newUser = User(name, email, hashedPassword);
+    User::create(newUser);
+
+    ResponseRegistration response;
+    response.status = SUCCESS;
+    response.body = newUser;
+
+    sendToClient(clientfd, response.toJson().dump().c_str());
 }

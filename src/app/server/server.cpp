@@ -17,6 +17,7 @@
 #include "RoomController.hpp"
 #include "CategoryController.hpp"
 #include "AnswerController.hpp"
+#include "QuestionController.hpp"
 #include "ResultController.hpp"
 #include "PracticeController.hpp"
 #include "../comunicate/server.h"
@@ -30,7 +31,6 @@ std::vector<int> listClientFd;
 void *client_handler(void *arg) 
 {
     int clientfd;
-    int rcvBytes;
 
     pthread_detach(pthread_self());
     clientfd = *((int *)arg);
@@ -44,7 +44,7 @@ void *client_handler(void *arg)
     {
         char buff[BUFF_SIZE];
         
-        rcvBytes = recvFromClient(clientfd, buff);
+        recvFromClient(clientfd, buff);
         if (strcmp(buff, "\0") == 0) {
             break;
         }
@@ -55,8 +55,10 @@ void *client_handler(void *arg)
         {
             AuthController loginController = AuthController();
             loginController.login(request, clientfd);
-        } else
-        {
+        } else if (url == RequestRegistrationRouter) {
+            AuthController signupController = AuthController();
+            signupController.signup(request, clientfd);
+        } else {
             if (url == RequestLogoutRouter )
             {
                 AuthController logout = AuthController();
@@ -81,6 +83,10 @@ void *client_handler(void *arg)
                 answerController.redriect(request, clientfd);
             }
 
+            if (url.find("/question/") != std::string::npos) {
+                QuestionController questionController;
+                questionController.redirect(request, clientfd);
+            }
             if (url.find("/result/") != std::string::npos)
             {
                 ResultController resultController;
@@ -92,7 +98,6 @@ void *client_handler(void *arg)
                 PracticeController practiceController;
                 practiceController.redriect(request, clientfd);
             }
-            
         }     
     
     }

@@ -6,6 +6,7 @@
 #include "../app/request/login.h"
 #include "../../library/json.hpp"
 #include "clientmanager.h"
+#include <stdio.h>
 
 #include <QString>
 #include <QMessageBox>
@@ -49,9 +50,11 @@ void LoginWindow::on_loginPushButton_clicked()
 
         const char* sendData = dataTemp.c_str();
 
-        bytes_sent = sendToServer(sendData);
+        sendToServer(sendData);
 
-        bytes_received = recvFromServer(buff);
+        recvFromServer(buff);
+
+
         json responseLogin = json::parse(buff);
 
         std::string status = responseLogin["status"];
