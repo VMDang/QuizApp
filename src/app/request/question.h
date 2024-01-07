@@ -136,9 +136,8 @@ typedef struct {
 typedef struct {
     std::string code = RESPONSE_EDIT_RESOURCE;
     json header;
-    std::string url;
     std::string status;
-    std::string ResponseUpdateQuestionRouterr;
+    std::string url = ResponseUpdateQuestionRouter;
     Question body;
 
     json toJson()
@@ -156,7 +155,7 @@ typedef struct {
 typedef struct {
     std::string code = REQUEST_GET_RESOURCE;
     json header;
-    std::string url = RequestGetQuestionRouter;
+    std::string url = RequestGetQuestionByRoomRouter;
     int room_id;
 
     json toJson() {
@@ -167,13 +166,13 @@ typedef struct {
             {"room_id", room_id}
         };
     }
-} RequesGetQuestion;
+} RequesGetQuestionByRoom;
 
 
 typedef struct 
 {
     std::vector<QuestionContent> questions;
-
+    std::string message;
     json toJson()
     {
         json result;
@@ -181,17 +180,18 @@ typedef struct
         {
             result["questions"].push_back(q.toJson());
         }
+        result["message"] = message;
         return result;
     }
-}ResponseGetQuestionBody;
+}ResponseGetQuestionByRoomBody;
 
 
 typedef struct {
     std::string code = RESPONSE_GET_RESOURCE;
     json header;
     std::string status;
-    std::string url = ResponseGetQuestionRouter;
-    ResponseGetQuestionBody body;
+    std::string url = ResponseGetQuestionByRoomRouter;
+    ResponseGetQuestionByRoomBody body;
 
     json toJson(){
         return json{
@@ -202,7 +202,7 @@ typedef struct {
             {"body", body.toJson()}
         };
     }
-} ResponseGetQuestion;
+} ResponseGetQuestionByRoom;
 
 typedef struct {
     std::string code = REQUEST_DELETE_RESOURCE;
@@ -247,4 +247,122 @@ typedef struct {
     }
 
 } ResponseDeleteQuestion;
+
+typedef struct
+{
+    std::string code = REQUEST_GET_RESOURCE;
+    json header;
+    std::string url = RequestConfigQuestionRouter;
+    int param;
+
+    json toJson() {
+        return json{
+            {"code", code},
+            {"url", url},
+            {"header", header },
+            {"param", param}
+        };
+    }
+} RequestConfigQuestion;
+
+typedef struct
+{
+    int room_id;
+    std::string room_name;
+    std::vector<int> question_config;
+
+    json toJson() {
+        return json{
+            {"room_id", room_id},
+            {"room_name", room_name},
+            {"question_config", question_config},
+        };
+    }
+}RoomConfigQuestion;
+
+typedef struct 
+{
+    std::string message;
+    std::vector<RoomConfigQuestion> room_questions;
+
+    json toJson() {
+        json result;
+        for (RoomConfigQuestion &rq : room_questions)
+        {
+            result["room_questions"].push_back(rq.toJson());
+        }
+        result["message"] = message;
+        return result;
+    };
+} ResponseConfigQuestionBody;
+
+typedef struct
+{
+    std::string code = RESPONSE_GET_RESOURCE;
+    json header;
+    std::string status;
+    std::string url = ResponseConfigQuestionRouter;
+    ResponseConfigQuestionBody body;
+
+    json toJson() {
+        return json{
+            {"code", code},
+            {"url", url},
+            {"status", status},
+            {"header", header },
+            {"body", body.toJson()}
+        };
+    }
+} ResponseConfigQuestion;
+
+
+typedef struct {
+    std::string code = REQUEST_GET_RESOURCE;
+    json header;
+    std::string url = RequestGetQuestionByCategoryRouter;
+    int category_id;
+
+    json toJson() {
+        return json{
+            {"code", code}, 
+            {"header", header},
+            {"url", url},
+            {"category_id", category_id}
+        };
+    }
+} RequestGetQuestionByCategory;
+
+typedef struct 
+{
+    std::vector<QuestionContent> questions;
+    std::string message;
+    json toJson()
+    {
+        json result;
+        for (QuestionContent &q : questions)
+        {
+            result["questions"].push_back(q.toJson());
+        }
+        result["message"] = message;
+        return result;
+    }
+}ResponseGetQuestionByCategoryBody;
+
+typedef struct {
+    std::string code = RESPONSE_GET_RESOURCE;
+    json header;
+    std::string status;
+    std::string url = ResponseGetQuestionByCategoryRouter;
+    ResponseGetQuestionByCategoryBody body;
+
+    json toJson(){
+        return json{
+            {"code", code},
+            {"header", header},
+            {"status", status},
+            {"url", url},
+            {"body", body.toJson()}
+        };
+    }
+} ResponseGetQuestionByCategory;
 #endif

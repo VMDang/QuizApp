@@ -20,6 +20,7 @@ SOURCES += \
     practicehandler.cpp \
     questionbutton.cpp \
     questionclient.cpp \
+    questionhandler.cpp \
     resulthandler.cpp \
     roomhandler.cpp \
     roomitem.cpp \
@@ -40,6 +41,7 @@ HEADERS += \
     practicehandler.h \
     questionbutton.h \
     questionclient.h \
+    questionhandler.h \
     resulthandler.h \
     roomhandler.h \
     roomitem.h \

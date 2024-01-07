@@ -19,7 +19,7 @@
 
 RoomController::RoomController() = default;
 void countdownClock(int minutes, int room_id);
-bool containsName(const Room& room, const std::string& searchTerm);
+bool containsName(const Room &room, const std::string &searchTerm);
 
 std::unordered_map<int, std::vector<int>> usersReady;
 
@@ -46,10 +46,12 @@ void RoomController::redriect(json request, int clientfd)
     else if (url == RequestStartRoomRouter)
     {
         start(request, clientfd);
-    } else if(url == RequestCreateRoomRouter)
+    }
+    else if (url == RequestCreateRoomRouter)
     {
         create(request, clientfd);
-    } else if (url == RequestRoomDetailRouter)
+    }
+    else if (url == RequestRoomDetailRouter)
     {
         detail(request, clientfd);
     }
@@ -67,7 +69,7 @@ void RoomController::list(json request, int clientfd)
                 rooms.end());
 
     ResponseListRoom response;
-    
+
     if (category_id == 0 && name_search == "")
     {
         response.body.rooms = rooms;
@@ -76,22 +78,25 @@ void RoomController::list(json request, int clientfd)
     if (category_id == 0 && name_search != "")
     {
         rooms.erase(std::remove_if(rooms.begin(), rooms.end(),
-                               [name_search](const Room& room) {
-                                   return !containsName(room, name_search);
-                               }),
-                rooms.end());
+                                   [name_search](const Room &room)
+                                   {
+                                       return !containsName(room, name_search);
+                                   }),
+                    rooms.end());
         response.body.rooms = rooms;
     }
-    
+
     std::vector<RoomQuestion> room_questions = relationsRoomQuestion();
     if (category_id != 0 && name_search == "")
     {
         std::vector<Room> roomsFiltered;
-        for (auto& room : rooms)
+        for (auto &room : rooms)
         {
             RoomQuestion rqFirst;
-            for ( auto& rq : room_questions) {
-                if (rq.room_id == room.id) {
+            for (auto &rq : room_questions)
+            {
+                if (rq.room_id == room.id)
+                {
                     rqFirst = rq;
                     break;
                 }
@@ -108,11 +113,13 @@ void RoomController::list(json request, int clientfd)
     if (category_id != 0 && name_search != "")
     {
         std::vector<Room> roomsFiltered;
-        for (auto& room : rooms)
+        for (auto &room : rooms)
         {
             RoomQuestion rqFirst;
-            for ( auto& rq : room_questions) {
-                if (rq.room_id == room.id) {
+            for (auto &rq : room_questions)
+            {
+                if (rq.room_id == room.id)
+                {
                     rqFirst = rq;
                     break;
                 }
@@ -124,22 +131,24 @@ void RoomController::list(json request, int clientfd)
             }
         }
         roomsFiltered.erase(std::remove_if(roomsFiltered.begin(), roomsFiltered.end(),
-                               [name_search](const Room& room) {
-                                   return !containsName(room, name_search);
-                               }),
-                roomsFiltered.end());
+                                           [name_search](const Room &room)
+                                           {
+                                               return !containsName(room, name_search);
+                                           }),
+                            roomsFiltered.end());
         response.body.rooms = roomsFiltered;
     }
     if (response.body.rooms.empty())
     {
         response.status = FAILURE;
         response.body.message = "No matching rooms found";
-    } else
+    }
+    else
     {
         response.status = SUCCESS;
         response.body.message = "Get list rooms success.";
     }
-    
+
     sendToClient(clientfd, response.toJson().dump().c_str());
 }
 
@@ -210,13 +219,15 @@ void RoomController::ready(json request, int clientfd)
         response.body.message = "Room is full";
 
         sendToClient(clientfd, response.toJson().dump().c_str());
-    } else if (room.status != ROOM_LOBBY_STATUS)
+    }
+    else if (room.status != ROOM_LOBBY_STATUS)
     {
         response.status = FAILURE;
         response.body.message = "Room isnot lobby status";
 
         sendToClient(clientfd, response.toJson().dump().c_str());
-    } else
+    }
+    else
     {
         if (it == usersReady.end())
         {
@@ -281,7 +292,6 @@ void RoomController::ready(json request, int clientfd)
         }
     }
     pthread_mutex_unlock(&ServerManager::mutex);
-
 }
 
 void RoomController::unready(json request, int clientfd)
@@ -414,11 +424,11 @@ void RoomController::start(json request, int clientfd)
 
     //     questionsExam.push_back(qc);
     // }
-    
+
     // Start Clock thread
     std::thread clockThread(countdownClock, r.time_limit, room_id);
     clockThread.detach();
-    
+
     ResponseStartRoom response;
     response.body.room = r;
     // response.body.questions = questionsExam;
@@ -487,7 +497,8 @@ void RoomController::create(json request, int clientfd)
     {
         std::string passRequest = request["body"]["password"];
         password = sha256(passRequest);
-    }else
+    }
+    else
     {
         password = "";
     }
@@ -501,25 +512,28 @@ void RoomController::create(json request, int clientfd)
 
     std::vector<Question> filtered_questions;
     std::copy_if(questions.begin(), questions.end(), std::back_inserter(filtered_questions),
-                 [category_id](const Question& q) { return q.category_id == category_id; });
+                 [category_id](const Question &q)
+                 { return q.category_id == category_id; });
 
     std::vector<Question> selected_questions;
 
     int max_score = 0;
-    for (size_t i = 0; i < question_config.size(); ++i) {
+    for (size_t i = 0; i < question_config.size(); ++i)
+    {
         int level = i + 1;
         int num_questions = question_config[i];
-        max_score += num_questions*level;
+        max_score += num_questions * level;
 
         std::vector<Question> filtered_by_level;
         std::copy_if(filtered_questions.begin(), filtered_questions.end(), std::back_inserter(filtered_by_level),
-                     [level](const Question& q) { return q.level == level; });
+                     [level](const Question &q)
+                     { return q.level == level; });
 
         std::random_shuffle(filtered_by_level.begin(), filtered_by_level.end());
         std::copy_n(filtered_by_level.begin(), static_cast<std::size_t>(std::min(static_cast<int>(num_questions), static_cast<int>(filtered_by_level.size()))), std::back_inserter(selected_questions));
     }
 
-    for (const auto& q: selected_questions)
+    for (const auto &q : selected_questions)
     {
         RoomQuestion rq;
         rq.question_id = q.id;
@@ -554,14 +568,57 @@ void RoomController::detail(json request, int clientfd)
     bool checkOwner = false;
 
     checkOwner = std::any_of(User_Room.begin(), User_Room.end(),
-                             [auth_id, room_id](const UserRoom& item) {
+                             [auth_id, room_id](const UserRoom &item)
+                             {
                                  return item.user_id == auth_id &&
                                         item.room_id == room_id &&
                                         item.is_owner;
                              });
+
+    std::vector<RoomQuestion> room_questions = relationsRoomQuestion();
+    std::vector<RoomQuestion> filtered_room_questions;
+    std::copy_if(room_questions.begin(), room_questions.end(), std::back_inserter(filtered_room_questions),
+                 [room_id](const RoomQuestion &room_question)
+                 { return room_question.room_id == room_id; });
+
+    int level1 = 0, level2 = 0, level3 = 0, level4 = 0, level5 = 0;
+    for (auto &item : filtered_room_questions)
+    {
+        Question q = Question::findById(item.question_id);
+        switch (q.level)
+        {
+        case 1:
+            level1++;
+            break;
+        case 2:
+            level2++;
+            break;
+        case 3:
+            level3++;
+            break;
+        case 4:
+            level4++;
+            break;
+        case 5:
+            level5++;
+            break;
+        default:
+            break;
+        }
+    }
+    std::vector<int> q_config;
+    q_config.push_back(level1);
+    q_config.push_back(level2);
+    q_config.push_back(level3);
+    q_config.push_back(level4);
+    q_config.push_back(level5);
+
     ResponseDetailRoom response;
+    response.status = SUCCESS;
     response.body.is_owner = checkOwner;
     response.body.room = Room::findById(room_id);
+    response.body.question_config = q_config;
+    response.body.message = "Get room detail success";
 
     sendToClient(clientfd, response.toJson().dump().c_str());
 }
@@ -577,8 +634,8 @@ void countdownClock(int minutes, int room_id)
     std::this_thread::sleep_for(duration);
 
     pthread_mutex_lock(&ServerManager::mutex);
-    ServerManager::roomsActiveClock.erase(std::remove(ServerManager::roomsActiveClock.begin(), ServerManager::roomsActiveClock.end(),room_id),
-                                        ServerManager::roomsActiveClock.end());
+    ServerManager::roomsActiveClock.erase(std::remove(ServerManager::roomsActiveClock.begin(), ServerManager::roomsActiveClock.end(), room_id),
+                                          ServerManager::roomsActiveClock.end());
     pthread_mutex_unlock(&ServerManager::mutex);
 
     auto now = std::chrono::system_clock::now();
@@ -592,6 +649,7 @@ void countdownClock(int minutes, int room_id)
     Room::edit(room);
 }
 
-bool containsName(const Room& room, const std::string& searchTerm) {
+bool containsName(const Room &room, const std::string &searchTerm)
+{
     return room.name.find(searchTerm) != std::string::npos;
 }

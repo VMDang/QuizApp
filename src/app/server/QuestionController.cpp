@@ -19,14 +19,20 @@
 
 QuestionController::QuestionController() = default;
 
-void QuestionController::redirect(json request, int clientfd) {
+void QuestionController::redirect(json request, int clientfd)
+{
     std::string url = request["url"];
     if (url == RequestCreateRoomRouter)
     {
         create(request, clientfd);
     }
-    else if (url == RequestGetQuestionRouter) {
-        get(request, clientfd);
+    else if (url == RequestGetQuestionByRoomRouter)
+    {
+        getByRoom(request, clientfd);
+    }
+    else if (url == RequestGetQuestionByCategoryRouter)
+    {
+        getByCategory(request, clientfd);
     }
     else if (url == RequestUpdateQuestionRouter)
     {
@@ -36,9 +42,14 @@ void QuestionController::redirect(json request, int clientfd) {
     {
         Delete(request, clientfd);
     }
+    else if (url == RequestConfigQuestionRouter)
+    {
+        config(request, clientfd);
+    }
 }
 
-void QuestionController::create(json request, int clientfd) {
+void QuestionController::create(json request, int clientfd)
+{
     std::string title = request["body"]["title"];
     int category_id = request["body"]["category_id"];
     int level = request["body"]["level"];
@@ -46,8 +57,8 @@ void QuestionController::create(json request, int clientfd) {
     // create new with auto increase id and save to database
     Question newQues = Question(title, level, category_id);
     Question::create(newQues);
-    
-    for (const auto& o : request["body"]["options"])
+
+    for (const auto &o : request["body"]["options"])
     {
         std::string content = o[0];
         bool correct = o[1];
@@ -61,7 +72,8 @@ void QuestionController::create(json request, int clientfd) {
     sendToClient(clientfd, response.toJson().dump().c_str());
 }
 
-void QuestionController::get(json request, int clientfd) {
+void QuestionController::getByRoom(json request, int clientfd)
+{
     int room_id = request["room_id"];
 
     std::vector<RoomQuestion> relationsRQ = relationsRoomQuestion();
@@ -92,35 +104,61 @@ void QuestionController::get(json request, int clientfd) {
         questionsExam.push_back(qc);
     }
 
-    ResponseGetQuestion response;
+    ResponseGetQuestionByRoom response;
     response.status = SUCCESS;
     response.body.questions = questionsExam;
+    response.body.message = "Get list question by room success.";
 
     sendToClient(clientfd, response.toJson().dump().c_str());
 }
 
-void QuestionController::update(json request, int clientfd) {
-    int question_id = request["body"]["question_id"];
-    std::string title = request["body"]["title"];
-    int category_id = request["body"]["category_id"];
-    int level = request["body"]["level"];
+void QuestionController::getByCategory(json request, int clientfd)
+{
+    int category_id = request["category_id"];
 
-    // create new with auto increase id and save to database
-    Question ques = Question::findById(question_id);
-    ques.category_id = category_id;
-    ques.level = level;
-    ques.title = title;
-    Question::edit(ques);
+    std::vector<Question> questions = Question::getAll();
+    std::vector<Option> options = Option::getAll();
 
-    // Update option of question
-    // .... 
-    // Đoạn này em chưa biết update kiểu gì, bởi vì nếu mà trong
-    // request chỉ có cặp content với correct thì update không 
-    // đúng id của option. Nếu find option theo content thì
-    // không ổn bởi nó đã bị thay đổi rồi
+    questions.erase(std::remove_if(questions.begin(), questions.end(),
+                               [category_id](Question &question)
+                               { return question.category_id != category_id; }),
+                questions.end());
+
+    std::vector<QuestionContent> questionsContents;
+    for (auto &q : questions)
+    {
+        int question_id = q.id;
+        std::vector<Option> filtered_options;
+        std::copy_if(options.begin(), options.end(), std::back_inserter(filtered_options),
+                    [question_id](const Option& o) { return o.question_id == question_id; });
+    
+        QuestionContent qc;
+        qc.question = q;
+        qc.options = filtered_options;
+        questionsContents.push_back(qc);
+    }
+    
+    ResponseGetQuestionByCategory response;
+    response.body.questions = questionsContents;
+    if (questionsContents.empty())
+    {
+        response.status = FAILURE;
+        response.body.message = "No questions data available.";
+    } else
+    {
+        response.status = SUCCESS;
+        response.body.message = "Get list question by category success.";
+    }
+    
+    sendToClient(clientfd, response.toJson().dump().c_str());
 }
 
-void QuestionController::Delete(json request, int clientfd) {
+void QuestionController::update(json request, int clientfd)
+{
+}
+
+void QuestionController::Delete(json request, int clientfd)
+{
     int question_id = request["question_id"];
     Question ques = Question::findById(question_id);
     Question::Delete(ques);
@@ -129,5 +167,85 @@ void QuestionController::Delete(json request, int clientfd) {
     response.status = SUCCESS;
     response.body.message = "Delete question success!";
 
+    sendToClient(clientfd, response.toJson().dump().c_str());
+}
+
+void QuestionController::config(json request, int clientfd)
+{
+    int auth_id = request["header"]["id"];
+
+    std::vector<RoomQuestion> room_questions = relationsRoomQuestion();
+    std::vector<UserRoom> user_rooms = relationsUserRoom();
+
+    user_rooms.erase(std::remove_if(user_rooms.begin(), user_rooms.end(),
+                                    [auth_id](const UserRoom &room)
+                                    {
+                                        return !(room.user_id == auth_id && room.is_owner);
+                                    }),
+                     user_rooms.end());
+
+    std::vector<RoomConfigQuestion> roomConfigQuestions;
+    for (auto &u_r : user_rooms)
+    {
+        Room room = Room::findById(u_r.room_id);
+        int room_id = room.id;
+
+        std::vector<RoomQuestion> filtered_room_questions;
+        std::copy_if(room_questions.begin(), room_questions.end(), std::back_inserter(filtered_room_questions),
+                     [room_id](const RoomQuestion &room_question)
+                     { return room_question.room_id == room_id; });
+
+        int level1 = 0, level2 = 0, level3 = 0, level4 = 0, level5 = 0;
+        for (auto &item : filtered_room_questions)
+        {
+            Question q = Question::findById(item.question_id);
+            switch (q.level)
+            {
+            case 1:
+                level1++;
+                break;
+            case 2:
+                level2++;
+                break;
+            case 3:
+                level3++;
+                break;
+            case 4:
+                level4++;
+                break;
+            case 5:
+                level5++;
+                break;
+            default:
+                break;
+            }
+        }
+        std::vector<int> q_config;
+        q_config.push_back(level1);
+        q_config.push_back(level2);
+        q_config.push_back(level3);
+        q_config.push_back(level4);
+        q_config.push_back(level5);
+
+        RoomConfigQuestion rcq;
+        rcq.room_id = room_id;
+        rcq.room_name = room.name;
+        rcq.question_config = q_config;
+
+        roomConfigQuestions.push_back(rcq);
+    }
+
+    ResponseConfigQuestion response;
+    response.body.room_questions = roomConfigQuestions;
+    if (roomConfigQuestions.empty())
+    {
+        response.status = FAILURE;
+        response.body.message = "No rooms were created in the past.";
+    } else
+    {
+        response.status = SUCCESS;
+        response.body.message = "Get list rooms config questiosn success.";
+    }
+    
     sendToClient(clientfd, response.toJson().dump().c_str());
 }

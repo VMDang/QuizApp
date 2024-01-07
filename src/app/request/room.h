@@ -414,11 +414,15 @@ typedef struct
 {
     Room room;
     bool is_owner;
+    std::vector<int> question_config;
+    std::string message;
 
     json toJson() {
         return json{
             {"room", room.toJson()},
-            {"is_owner", is_owner}
+            {"is_owner", is_owner},
+            {"question_config", question_config},
+            {"message", message}
         };
     };
 } ResponseDetailRoomBody;
@@ -428,6 +432,7 @@ typedef struct
     std::string code = RESPONSE_GET_RESOURCE;
     json header;
     std::string url = ResponseRoomDetailRouter;
+    std::string status;
     ResponseDetailRoomBody body;
 
     json toJson() {
