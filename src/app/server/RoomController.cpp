@@ -19,6 +19,7 @@
 
 RoomController::RoomController() = default;
 void countdownClock(int minutes, int room_id);
+bool containsName(const Room& room, const std::string& searchTerm);
 
 std::unordered_map<int, std::vector<int>> usersReady;
 
@@ -56,20 +57,89 @@ void RoomController::redriect(json request, int clientfd)
 
 void RoomController::list(json request, int clientfd)
 {
+    int category_id = request["body"]["category_id"];
+    std::string name_search = request["body"]["name_search"];
+
     std::vector<Room> rooms = Room::getAll();
-
-    std::vector<Room> roomsLobby;
-
     rooms.erase(std::remove_if(rooms.begin(), rooms.end(),
                                [](Room &room)
                                { return room.status != ROOM_LOBBY_STATUS || room.type != ROOM_EXAM_TYPE; }),
                 rooms.end());
 
-    ResponseListRoomBody body;
-    body.rooms = rooms;
     ResponseListRoom response;
-    response.status = SUCCESS;
-    response.body = body;
+    
+    if (category_id == 0 && name_search == "")
+    {
+        response.body.rooms = rooms;
+    }
+
+    if (category_id == 0 && name_search != "")
+    {
+        rooms.erase(std::remove_if(rooms.begin(), rooms.end(),
+                               [name_search](const Room& room) {
+                                   return !containsName(room, name_search);
+                               }),
+                rooms.end());
+        response.body.rooms = rooms;
+    }
+    
+    std::vector<RoomQuestion> room_questions = relationsRoomQuestion();
+    if (category_id != 0 && name_search == "")
+    {
+        std::vector<Room> roomsFiltered;
+        for (auto& room : rooms)
+        {
+            RoomQuestion rqFirst;
+            for ( auto& rq : room_questions) {
+                if (rq.room_id == room.id) {
+                    rqFirst = rq;
+                    break;
+                }
+            }
+            Question question = Question::findById(rqFirst.question_id);
+            if (question.category_id == category_id)
+            {
+                roomsFiltered.push_back(room);
+            }
+        }
+        response.body.rooms = roomsFiltered;
+    }
+
+    if (category_id != 0 && name_search != "")
+    {
+        std::vector<Room> roomsFiltered;
+        for (auto& room : rooms)
+        {
+            RoomQuestion rqFirst;
+            for ( auto& rq : room_questions) {
+                if (rq.room_id == room.id) {
+                    rqFirst = rq;
+                    break;
+                }
+            }
+            Question question = Question::findById(rqFirst.question_id);
+            if (question.category_id == category_id)
+            {
+                roomsFiltered.push_back(room);
+            }
+        }
+        roomsFiltered.erase(std::remove_if(roomsFiltered.begin(), roomsFiltered.end(),
+                               [name_search](const Room& room) {
+                                   return !containsName(room, name_search);
+                               }),
+                roomsFiltered.end());
+        response.body.rooms = roomsFiltered;
+    }
+    if (response.body.rooms.empty())
+    {
+        response.status = FAILURE;
+        response.body.message = "No matching rooms found";
+    } else
+    {
+        response.status = SUCCESS;
+        response.body.message = "Get list rooms success.";
+    }
+    
     sendToClient(clientfd, response.toJson().dump().c_str());
 }
 
@@ -520,4 +590,8 @@ void countdownClock(int minutes, int room_id)
     room.status = ROOM_CLOSE_STATUS;
     room.close_time = formattedTime.str();
     Room::edit(room);
+}
+
+bool containsName(const Room& room, const std::string& searchTerm) {
+    return room.name.find(searchTerm) != std::string::npos;
 }

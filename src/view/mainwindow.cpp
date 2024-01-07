@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     RoomHandler roomHandler;
-    roomHandler.requestListRoom();
+    roomHandler.requestListRoom(2, "");
 
     json responseListRoom = roomHandler.responseListRoom();
 

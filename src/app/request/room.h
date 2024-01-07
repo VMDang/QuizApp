@@ -12,12 +12,25 @@
 
 using json = nlohmann::json;
 
+typedef struct 
+{
+    int category_id = 0;
+    std::string name_search = "";
+    
+    json toJson() {
+        return json{
+            {"category_id", category_id},
+            {"name_search", name_search}
+        };
+    }
+} RequestListRoomBody;
+
 typedef struct
 {
     std::string code = REQUEST_GET_RESOURCE;
     json header;
     std::string url = RequestRoomListRouter;
-    std::string params;
+    RequestListRoomBody body;
 
     json toJson()
     {
@@ -25,13 +38,15 @@ typedef struct
             {"code", code},
             {"url", url},
             {"header", header},
-            {"params", params}};
+            {"body", body.toJson()}};
     }
 } RequestListRoom;
 
 typedef struct
 {
     std::vector<Room> rooms;
+    std::string message;
+
     json toJson()
     {
         json result;
@@ -39,6 +54,7 @@ typedef struct
         {
             result["rooms"].push_back(room.toJson());
         }
+        result["message"] = message;
         return result;
     }
 } ResponseListRoomBody;
