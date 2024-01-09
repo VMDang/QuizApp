@@ -51,8 +51,14 @@
 
 #define RequestCreatePracticeRouter "request/practice/create"
 #define ResponseCreatePracticeRouter "response/practice/create"
-
 #define RequestStartPracticeRouter "request/practice/start"
 #define ResponseStartPracticeRouter "response/practice/start"
+
+#define RequestListUserRouter "request/user/list"
+#define ResponseListUserRouter "response/user/list"
+#define RequestActiveUserRouter "request/user/active"
+#define ResponseActiveUserRouter "response/user/active"
+#define RequestDeleteUserRouter "request/user/delete"
+#define ResponseDeleteUserRouter "response/user/delete"
 
 #endif

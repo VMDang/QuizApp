@@ -20,6 +20,7 @@
 #include "QuestionController.hpp"
 #include "ResultController.hpp"
 #include "PracticeController.hpp"
+#include "UserController.hpp"
 #include "../comunicate/server.h"
 #include "../request/route.h"
 #include "ServerManager.hpp"
@@ -87,6 +88,7 @@ void *client_handler(void *arg)
                 QuestionController questionController;
                 questionController.redirect(request, clientfd);
             }
+            
             if (url.find("/result/") != std::string::npos)
             {
                 ResultController resultController;
@@ -98,6 +100,13 @@ void *client_handler(void *arg)
                 PracticeController practiceController;
                 practiceController.redriect(request, clientfd);
             }
+
+            if (url.find("/user/") != std::string::npos)
+            {
+                UserController userController;
+                userController.redriect(request, clientfd);
+            }
+    
         }     
     
     }

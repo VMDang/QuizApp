@@ -25,6 +25,7 @@ SOURCES += \
     roomhandler.cpp \
     roomitem.cpp \
     styles.cpp \
+    userhandler.cpp \
     utils.cpp
 
 HEADERS += \
@@ -46,6 +47,7 @@ HEADERS += \
     roomhandler.h \
     roomitem.h \
     styles.h \
+    userhandler.h \
     utils.h
 
 FORMS += \
