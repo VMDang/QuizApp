@@ -13,6 +13,7 @@
 #include "../../Model/RoomQuestion.hpp"
 #include "../../Model/UserRoom.hpp"
 
+void calculateSpectrumScore(const std::vector<RoomResult>& roomResults, std::vector<std::pair<int, int>>& spectrum_score);
 ResultController::ResultController() = default;
 
 void ResultController::redriect(json request, int clientfd)
@@ -87,7 +88,8 @@ void ResultController::room(json request, int clientfd)
         }
         r_r.score = score;
         r_r.number_question_correct = number_correct;
-
+        double score_scale1 = static_cast<double>(score) / static_cast<double>(max_score);
+        r_r.score_scale10 = score_scale1 * 10;
         roomResults.push_back(r_r);
     }
 
@@ -98,11 +100,16 @@ void ResultController::room(json request, int clientfd)
 
     std::sort(roomResults.begin(), roomResults.end(), compareByScore);
 
+    std::vector<std::pair<int, int>> spectrum_score;
+    calculateSpectrumScore(roomResults, spectrum_score);
+
     ResponseRoomResult response;
     response.status = SUCCESS;
     response.body.max_score = max_score;
     response.body.roomResults = roomResults;
     response.body.total_question = room_questions.size();
+    response.body.spectrum_score = spectrum_score;
+    response.body.message = "Get result in room exam success";
 
     sendToClient(clientfd, response.toJson().dump().c_str());
 }
@@ -168,6 +175,8 @@ void ResultController::history(json request, int clientfd)
         hr.number_question_correct = number_correct;
         hr.max_score = max_score;
         hr.number_question = filteredRoomQuestions.size();
+        double average_score_1 = static_cast<double>(score) / static_cast<double>(max_score);
+        hr.average_score = average_score_1 * 10;
         historyResults.push_back(hr);
     }
     std::sort(historyResults.begin(), historyResults.end(), 
@@ -180,4 +189,22 @@ void ResultController::history(json request, int clientfd)
     response.status = SUCCESS;
 
     sendToClient(clientfd, response.toJson().dump().c_str());
+}
+
+void calculateSpectrumScore(const std::vector<RoomResult>& roomResults, std::vector<std::pair<int, int>>& spectrum_score)
+{
+    int numBuckets;
+    for (int i = 1; i <= 10; i++)
+    {
+        spectrum_score.push_back({i, 0});
+    }
+
+    for (const auto& result : roomResults)
+    {
+        int bucket = static_cast<int>(ceil(result.score_scale10));
+        if (bucket >= 1 && bucket <= numBuckets)
+        {
+            spectrum_score[bucket - 1].second++;
+        } 
+    }
 }

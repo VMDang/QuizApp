@@ -32,17 +32,20 @@
 #define ResponseCreateQuestionRouter "response/question/create"
 #define RequestUpdateQuestionRouter "request/question/update"
 #define ResponseUpdateQuestionRouter "response/questions/update"
-#define RequestGetQuestionRouter "request/question/get"
-#define ResponseGetQuestionRouter "response/question/get"
+#define RequestGetQuestionByRoomRouter "request/question/get/room"
+#define ResponseGetQuestionByRoomRouter "response/question/get/room"
+#define RequestGetQuestionByCategoryRouter "request/question/get/category"
+#define ResponseGetQuestionByCategoryRouter "response/question/get/category"
 #define RequestDeleteQuestionRouter "request/question/delete"
 #define ResponseDeleteQuestionRouter "response/question/delete"
+#define RequestConfigQuestionRouter "request/question/config"
+#define ResponseConfigQuestionRouter "response/question/config"
 
 #define RequestRegistrationRouter "request/registration"
 #define ResponseRegistrationRouter "response/registration"
 
 #define RequestRoomResultRouter "request/result/room"
 #define ResponseRoomResultRouter "response/result/room"
-
 #define RequestHistoryResultRouter "request/result/history"
 #define ResponseHistoryResultRouter "response/result/history"
 

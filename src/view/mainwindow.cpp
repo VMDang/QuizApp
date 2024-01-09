@@ -36,9 +36,8 @@ MainWindow::MainWindow(QWidget *parent)
     if(user_id == 5) {
         ui->readyButton->setText("START");
     }
-
     RoomHandler roomHandler;
-    roomHandler.requestListRoom();
+    roomHandler.requestListRoom(2, "");
 
     json responseListRoom = roomHandler.responseListRoom();
 

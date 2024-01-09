@@ -10,7 +10,7 @@ class RoomHandler
 {
 public:
     RoomHandler();
-    void requestListRoom();
+    void requestListRoom(int category_id, std::string name_search);
     json responseListRoom();
 
     void requestJoinRoom(int room_id, bool is_private, std::string password);
