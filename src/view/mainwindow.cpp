@@ -36,7 +36,6 @@ MainWindow::MainWindow(QWidget *parent)
     if(user_id == 5) {
         ui->readyButton->setText("START");
     }
-
     RoomHandler roomHandler;
     roomHandler.requestListRoom(2, "");
 

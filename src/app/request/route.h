@@ -46,7 +46,6 @@
 
 #define RequestRoomResultRouter "request/result/room"
 #define ResponseRoomResultRouter "response/result/room"
-
 #define RequestHistoryResultRouter "request/result/history"
 #define ResponseHistoryResultRouter "response/result/history"
 

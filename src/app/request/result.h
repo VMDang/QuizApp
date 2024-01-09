@@ -31,12 +31,14 @@ typedef struct
     std::string username;
     int score;
     int number_question_correct;
+    double score_scale10;
 
     json toJson() {
         return json{
             {"username", username},
             {"score", score},
             {"number_question_correct", number_question_correct},
+            {"score_scale10", score_scale10},
         };
     }
 }RoomResult;
@@ -46,6 +48,8 @@ typedef struct
     std::vector<RoomResult> roomResults;
     int max_score;
     int total_question;
+    std::vector<std::pair<int, int>> spectrum_score;
+    std::string message;
 
     json toJson()
     {
@@ -56,6 +60,11 @@ typedef struct
         }
         result["max_score"] = max_score;
         result["total_question"] = total_question;
+        for (const auto& range : spectrum_score)
+        {
+            result["spectrum_score"].push_back({{"score_range", range.first}, {"frequency", range.second}});
+        }
+        result["message"] = message;
         return result;
     }
 } ResponseRoomResultBody;
@@ -106,6 +115,7 @@ typedef struct
     int number_question_correct;
     int max_score;
     int number_question;
+    double average_score;
 
     json toJson() {
         return json{
@@ -115,7 +125,8 @@ typedef struct
             {"score", score},
             {"number_question_correct", number_question_correct},
             {"max_score", max_score},
-            {"number_question", number_question}
+            {"number_question", number_question},
+            {"average_score", average_score}
         };
     }
 }HistoryResult;
