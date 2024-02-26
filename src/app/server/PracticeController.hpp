@@ -13,6 +13,7 @@ public:
     void redriect(json request, int clientfd);
     void create(json request, int clientfd);
     void start(json request, int clientfd);
+    void end(json request, int clientfd);
 };
 
 #endif

@@ -3,6 +3,7 @@
 #include "../app/request/result.h"
 #include "clientmanager.h"
 
+
 ResultHandler::ResultHandler() {}
 
 void ResultHandler::requestRoomResult(int room_id)

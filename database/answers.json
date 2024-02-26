@@ -175,6 +175,78 @@
             "result": 3,
             "room_id": 4,
             "user_id": 6
+        },
+        {
+            "id": 23,
+            "option_id": 61,
+            "question_id": 16,
+            "result": 1,
+            "room_id": 7,
+            "user_id": 6
+        },
+        {
+            "id": 24,
+            "option_id": 73,
+            "question_id": 19,
+            "result": 2,
+            "room_id": 7,
+            "user_id": 6
+        },
+        {
+            "id": 25,
+            "option_id": 86,
+            "question_id": 22,
+            "result": 0,
+            "room_id": 7,
+            "user_id": 6
+        },
+        {
+            "id": 26,
+            "option_id": 107,
+            "question_id": 27,
+            "result": 0,
+            "room_id": 7,
+            "user_id": 6
+        },
+        {
+            "id": 27,
+            "option_id": 61,
+            "question_id": 16,
+            "result": 1,
+            "room_id": 8,
+            "user_id": 6
+        },
+        {
+            "id": 28,
+            "option_id": 73,
+            "question_id": 19,
+            "result": 2,
+            "room_id": 8,
+            "user_id": 6
+        },
+        {
+            "id": 29,
+            "option_id": 88,
+            "question_id": 22,
+            "result": 0,
+            "room_id": 8,
+            "user_id": 6
+        },
+        {
+            "id": 30,
+            "option_id": 107,
+            "question_id": 27,
+            "result": 0,
+            "room_id": 8,
+            "user_id": 6
+        },
+        {
+            "id": 31,
+            "option_id": 111,
+            "question_id": 28,
+            "result": 0,
+            "room_id": 8,
+            "user_id": 6
         }
     ]
 }

@@ -38,7 +38,7 @@ public:
             {"id", id},
             {"question_id", question_id},
             {"content", content},
-            // {"correct", correct},
+            {"correct", correct},
         };
     }
 };

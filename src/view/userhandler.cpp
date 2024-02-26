@@ -1,17 +1,19 @@
 #include "userhandler.h"
-
 #include "../app/comunicate/client.h"
 #include "../app/request/user.h"
+#include "../../library/json.hpp"
 #include "clientmanager.h"
 
-UserHandler::UserHandler() {}
+UserHandler::UserHandler()
+{
+
+}
 
 void UserHandler::requestListUser()
 {
-    RequestListUser request;
-    request.header = ClientManager::authUser;
-
-    sendToServer(request.toJson().dump().c_str());
+    RequestListUser requestListUser;
+    requestListUser.header = ClientManager::authUser;
+    sendToServer(requestListUser.toJson().dump().c_str());
 }
 
 json UserHandler::responseListUser()
@@ -22,17 +24,15 @@ json UserHandler::responseListUser()
     return json::parse(buff);
 }
 
-void UserHandler::requestActiveUser(int user_id, bool active)
+void UserHandler::requestDeleteUser(int userId)
 {
-    RequestActiveUser request;
-    request.header = ClientManager::authUser;
-    request.param = user_id;
-    request.active = active;
-
-    sendToServer(request.toJson().dump().c_str());
+    RequestDeleteUser requestDeleteUser;
+    requestDeleteUser.param = userId;
+    requestDeleteUser.header = ClientManager::authUser;
+    sendToServer(requestDeleteUser.toJson().dump().c_str());
 }
 
-json UserHandler::responseActiveUser()
+json UserHandler::responseDeleteUser()
 {
     char buff[BUFF_SIZE];
     recvFromServer(buff);
@@ -40,16 +40,16 @@ json UserHandler::responseActiveUser()
     return json::parse(buff);
 }
 
-void UserHandler::requestDeleteUser(int user_id)
+void UserHandler::requestActiveUser(int userId, bool active)
 {
-    RequestListUser request;
-    request.header = ClientManager::authUser;
-    request.param = user_id;
-
-    sendToServer(request.toJson().dump().c_str());
+    RequestActiveUser requestActiveUser;
+    requestActiveUser.param = userId;
+    requestActiveUser.active = active;
+    requestActiveUser.header = ClientManager::authUser;
+    sendToServer(requestActiveUser.toJson().dump().c_str());
 }
 
-json UserHandler::responseDeleteUser()
+json UserHandler::responseActiveUser()
 {
     char buff[BUFF_SIZE];
     recvFromServer(buff);

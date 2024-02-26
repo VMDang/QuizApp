@@ -1,25 +1,36 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "roomitem.h"
-#include "lobbywindow.h"
+#include "examwindow.h"
 #include "createroomdialog.h"
 #include "passworddialog.h"
 #include "styles.h"
-#include "examwindow.h"
 #include "component.h"
-#include "roomhandler.h"
-#include "resulthandler.h"
+#include "createpracticedialog.h"
+#include "practiceitem.h"
 #include "clientmanager.h"
-#include "practicehandler.h"
 #include "../app/comunicate/client.h"
-
+#include "resulthandler.h"
+#include "practicehandler.h"
+#include "categoryhandler.h"
+#include "createroomdialog.h"
+#include "ui_createroomdialog.h"
+#include "../app/request/room.h"
+#include "roomhandler.h"
+#include "serverlistener.h"
+#include "resulthandler.h"
 #include <iostream>
 #include <pthread.h>
 #include <QWidget>
 #include <QDebug>
 #include <QString>
+#include <QtCharts>
+#include <QThread>
+#include <QVariant>
+#include <QLayoutItem>
+#include <QCheckBox>
 
-void* onlyReceiveThread(void* arg);
+using json = nlohmann::json;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -28,45 +39,98 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     ui->waitingLabel->hide();
     ui->userList->setAlignment(Qt::AlignTop);
-    ui->resultList->layout()->setAlignment(Qt::AlignTop);
-    ui->resultList->layout()->setSpacing(12);
+    ui->roomResultList->layout()->setAlignment(Qt::AlignTop);
+    ui->roomResultList->layout()->setSpacing(12);
+    ui->historyList->layout()->setAlignment(Qt::AlignTop);
+    ui->historyList->layout()->setSpacing(12);
+    ui->historyChart->layout()->setAlignment(Qt::AlignHCenter);
+    ui->roomList->layout()->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
+    ui->roomList->layout()->setSpacing(20);
+    ui->praticeList->layout()->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
+    ui->praticeList->layout()->setSpacing(12);
+    ui->categoryFilterList->setAlignment(Qt::AlignTop);
+    ui->categoryFilterList->setSpacing(12);
+    ui->cannotFoundLabel->hide();
 
-    json userLogged = ClientManager::authUser;
-    int user_id = userLogged["id"];
-    if(user_id == 5) {
-        ui->readyButton->setText("START");
-    }
+    getCategoryList();
+    getRoomList();
+
+    json currentUser = ClientManager::authUser;
+    ui->nameInfoLabel->setText(QString::fromStdString(currentUser["name"]));
+    ui->emailInfoLabel->setText(QString::fromStdString(currentUser["email"]));
+
     RoomHandler roomHandler;
-    roomHandler.requestListRoom(2, "");
+    roomHandler.requestDetailRoom(roomId);
+    roomHandler.responseDetailRoom();
 
-    json responseListRoom = roomHandler.responseListRoom();
+    // lấy room list mà user làm owner
+    roomHandler.requestListRoomOwner();
+    json res = roomHandler.responseListRoomOwner();
+    json rooms = res["body"]["rooms"];
 
-    std::cout << responseListRoom.dump(4) << std::endl;
-    for(auto& jObject : responseListRoom["body"]["rooms"]) {
-        std::cout << jObject["status"] << " -- " << jObject["capacity"] << std::endl;
+    for(auto room : rooms){
+        QString roomName = QString::fromStdString(room["name"]);
+        int roomOwnerId = room["id"];
+        roomListOwnerIds->append(roomOwnerId);
+        ui->roomOwnerComboBox->addItem(roomName);
     }
-    QVBoxLayout *roomList = new QVBoxLayout(ui->roomList);
+    connect(ui->roomOwnerComboBox , QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::handleOwnerRoomChange);
+}
 
+void MainWindow::handleServerResponse(const QString &response, const QVariant &data) {
+    // Xử lý phản hồi từ server
+    if (response.toLower() == "start") {
+        serverListenerThread->terminate();
 
-    // Thêm các item vào roomList
-    RoomItem *item1 = new RoomItem(this, "123456", true, "123");
+        while(!serverListenerThread->isFinished()){}
 
-    roomList->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
-    roomList->addWidget(item1);
+        if(!serverListenerThread->isRunning())
+            qDebug() << "thread is stopped";
 
-    // Kết nối tới signal joinPushButton_clicked của room item
-    connect(item1, &RoomItem::joinPushButton_clicked, this, &MainWindow::checkRoomAcceptPms);
+        if(!isRoomOwner) {
+            ui->sidebar->hide();
+            ExamWindow *examWindow = new ExamWindow(this, roomId);
+            connect(examWindow, &ExamWindow::submitButton_clicked, this, &MainWindow::redirectToMain);
+            ui->stackedWidget->addWidget(examWindow);
+            ui->stackedWidget->setCurrentWidget(examWindow);
+        }
+    }
+
+    if(response.toLower() == "userready" || response.toLower() == "userunready") {
+        // empty list
+        QLayoutItem *item;
+        while((item = ui->userList->takeAt(0)) != nullptr){
+            delete item;
+        }
+
+        if(!data.isNull() && data.canConvert<QVector<QPair<QString, QString>>>()) {
+             QVector<QPair<QString, QString>> userList = data.value<QVector<QPair<QString, QString>>>();
+             for (int i = 0; i < userList.size(); i++) {
+                 QPair<QString, QString> user = userList.at(i);
+                 QWidget *userWidget = Component::userInRoomItem(user.first, user.second);
+                 ui->userList->addWidget(userWidget);
+             }
+        }
+    }
 }
 
 // kiểm tra mật khẩu của room
-void MainWindow::checkRoomAcceptPms(const QString& room_id, bool isPrivate, const QString& password)
+void MainWindow::checkRoomAcceptPms(int room_id, bool isPrivate)
 {
     if(!isPrivate){
-        redirectToWaittingRoom();
+        RoomHandler roomHandler;
+        roomHandler.requestJoinRoom(roomId, isPrivate, "");
+
+        json joinRes = roomHandler.responseJoinRoom();
+        if(joinRes == SUCCESS) {
+            roomId = room_id;
+            redirectToWaittingRoom();
+        }
     } else {
-        PasswordDialog *pd = new PasswordDialog(this, password);
+        PasswordDialog *pd = new PasswordDialog(this, room_id, isPrivate);
         pd->show();
         if(pd->exec() == QDialog::Accepted) {
+            roomId = room_id;
             redirectToWaittingRoom();
         }
     }
@@ -76,23 +140,51 @@ void MainWindow::checkRoomAcceptPms(const QString& room_id, bool isPrivate, cons
 void MainWindow::redirectToWaittingRoom() {
     ui->stackedWidget->setCurrentIndex(1);
 
-    // Thiết lập giao diện của waiting room
-    QWidget *user1 = Component::userInRoomItem();
-    ui->userList->addWidget(user1);
+    RoomHandler roomHandler;
+    roomHandler.requestDetailRoom(roomId);
+    json res = roomHandler.responseDetailRoom();
+    isRoomOwner = res["body"]["is_owner"];
+    if(isRoomOwner) {
+            ui->readyButton->setText("START");
+    }
+
+    if(isRoomOwner) {
+        serverListenerThread = new QThread(this);
+        serverListener = new ServerListener();
+        serverListener->moveToThread(serverListenerThread);
+
+        connect(serverListenerThread, &QThread::started, serverListener, &ServerListener::startListening);
+        connect(serverListenerThread, &QThread::finished, serverListenerThread, &QThread::deleteLater);
+        connect(serverListener, &ServerListener::serverResponse, this, &MainWindow::handleServerResponse);
+
+        serverListenerThread->start();
+    }
+    json room = res["body"]["room"];
+    std::string status = room["status"];
+    if(status == ROOM_CLOSE_STATUS) ui->readyButton->setText("VIEW RESULT");
+}
+
+void MainWindow::redirectToMain(){
+    PracticeHandler practiceHandler;
+    practiceHandler.requestEndPractice(roomId);
+    json res = practiceHandler.responseEndPractice();
+    ui->stackedWidget->setCurrentIndex(0);
+    ui->sidebar->show();
 }
 
 // open model tạo exam
 void MainWindow::on_createExamButton_clicked()
 {
-    createRoomDialog *crd = new createRoomDialog(this);
+    CreateRoomDiaLog *crd = new CreateRoomDiaLog(this);
     crd->show();
+    if(crd->exec() == QDialog::Accepted) {
+        getRoomList();
+    }
 }
 
 // handle leave room
 void MainWindow::on_leaveButton_clicked()
 {
-    // xử lý xóa user khỏi danh sách nếu user đã ready
-
     // chuyển về page room list
     ui->stackedWidget->setCurrentIndex(0);
 }
@@ -106,106 +198,294 @@ void MainWindow::on_readyButton_clicked()
         Styles::unReadyButton(ui->readyButton);
 
         RoomHandler roomHandler;
-        roomHandler.requestReadyRoom(4);     // get room id run owner before
-        json response = roomHandler.responseReadyRoom();
-        std::cout << response.dump() << std::endl;
+        roomHandler.requestReadyRoom(roomId);     // get room id run owner before
+        roomHandler.responseReadyRoom();
 
-        pthread_t tid;
-        pthread_create(&tid, NULL, &onlyReceiveThread, (void*)ClientManager::client_sock);
+        serverListenerThread = new QThread(this);
+        serverListener = new ServerListener();
+        serverListener->moveToThread(serverListenerThread);
+
+        connect(serverListenerThread, &QThread::started, serverListener, &ServerListener::startListening);
+        connect(serverListenerThread, &QThread::finished, serverListenerThread, &QThread::deleteLater);
+        connect(serverListener, &ServerListener::serverResponse, this, &MainWindow::handleServerResponse);
+
+        serverListenerThread->start();
+
     } else if(buttonText == "UNREADY"){
         ui->readyButton->setText("READY");
         ui->waitingLabel->hide();
-        Styles::readyButton(ui->readyButton);
 
         RoomHandler roomHandler;
-        roomHandler.requestUnReadyRoom(4);     // get room id run owner before
+        roomHandler.requestUnReadyRoom(roomId);
         json response = roomHandler.responseUnReadyRoom();
-        std::cout << response.dump() << std::endl;
-    } else {
+    } else if(buttonText == "START") {
         RoomHandler roomHandler;
-        roomHandler.requestStartRoom(4);
+        roomHandler.requestStartRoom(roomId);
+    }
+}
+
+void MainWindow::on_createPracticeButton_clicked()
+{
+    CreatePracticeDiaLog *cpd = new CreatePracticeDiaLog(this);
+    cpd->show();
+    if(cpd->exec() == QDialog::Accepted) {
+        roomId = cpd->getRoomId();
+        ui->sidebar->hide();
+        ExamWindow *examWindow = new ExamWindow(this, roomId);
+        connect(examWindow, &ExamWindow::submitButton_clicked, this, &MainWindow::redirectToMain);
+        ui->stackedWidget->addWidget(examWindow);
+        ui->stackedWidget->setCurrentWidget(examWindow);
+    }
+}
+
+void MainWindow::getRoomList(QVector<int> categoryIds, const QString& searchText)
+{
+    QLayoutItem *item;
+    while((item = ui->roomList->layout()->takeAt(0)) != nullptr){
+        delete item->widget();
+        delete item;
+    }
+
+    RoomHandler roomHandler;
+    roomHandler.requestListRoom(categoryIds.toStdVector(), "");
+    json res = roomHandler.responseListRoom();
+    json roomsRes = res["body"]["rooms"];
+
+    if(res["status"] == FAILURE){
+        ui->cannotFoundLabel->show();
+    } else {
+        ui->cannotFoundLabel->hide();
+        for(auto roomItem : roomsRes) {
+            QString name = QString::fromStdString(roomItem["name"]);
+            qDebug() << name;
+            int capacity = roomItem["capacity"];
+            QString start_time = QString::fromStdString(roomItem["start_time"]);
+            int time_limit = roomItem["time_limit"];
+            bool is_private = roomItem["is_private"];
+            int roomId = roomItem["id"];
+            RoomItem *item = new RoomItem(this, roomId, name, capacity, time_limit, start_time, is_private);
+
+            // Kết nối tới signal joinPushButton_clicked của room item
+            connect(item, &RoomItem::joinPushButton_clicked, this, &MainWindow::checkRoomAcceptPms);
+            ui->roomList->layout()->addWidget(item);
+        }
+    };
+}
+
+void MainWindow::getCategoryList()
+{
+    CategoryHandler categoryHandler;
+    categoryHandler.requestListCategory();
+    json res = categoryHandler.responseListCategory();
+
+    json categories = res["body"]["categories"];
+    int i = 0;
+    for(auto category : categories){
+        int id = category["id"];
+        QString name = QString::fromStdString(category["name"]);
+        QCheckBox *checkbox = new QCheckBox(name);
+        checkbox->setProperty("categoryId", id);
+        checkbox->setCursor(Qt::PointingHandCursor);
+        Styles::checkBoxStyles(checkbox);
+        connect(checkbox, &QCheckBox::stateChanged, this, &MainWindow::handleCheckboxChangeState);
+        ui->categoryFilterList->addWidget(checkbox);
+        i++;
     }
 }
 
 
-// xử lý click vào sidbar item
+void MainWindow::handleCheckboxChangeState(int state)
+{
+    QCheckBox *checkbox = qobject_cast<QCheckBox*>(sender());
+    int categoryId = checkbox->property("categoryId").toInt();
+    if(state == Qt::Checked){
+        selectedCategoryIds->append(categoryId);
+        getRoomList(*selectedCategoryIds, ui->searchLineEdit->text());
+    } else {
+        selectedCategoryIds->removeAll(categoryId);
+        getRoomList(*selectedCategoryIds, ui->searchLineEdit->text());
+    }
+}
+
+
+
+void MainWindow::handleOwnerRoomChange(int index)
+{
+    qDebug() << "Owner Room: " << index;
+}
+
+// xử lý click vào sidebar item
 void MainWindow::on_examPushButton_clicked()
 {
     Styles::activeSidebarItem(ui->examPushButton);
     Styles::disableSidebarItem(ui->practicePushButton);
     Styles::disableSidebarItem(ui->historyPushButton);
-    Styles::disableSidebarItem(ui->dashboardButton);
+    Styles::disableSidebarItem(ui->statisticButton);
+    ui->stackedWidget->setCurrentIndex(0);
 }
 
 void MainWindow::on_practicePushButton_clicked()
 {
-    // Styles::activeSidebarItem(ui->practicePushButton);
-    // Styles::disableSidebarItem(ui->examPushButton);
-    // Styles::disableSidebarItem(ui->historyPushButton);
-    // Styles::disableSidebarItem(ui->dashboardButton);
+    Styles::activeSidebarItem(ui->practicePushButton);
+    Styles::disableSidebarItem(ui->examPushButton);
+    Styles::disableSidebarItem(ui->historyPushButton);
+    Styles::disableSidebarItem(ui->statisticButton);
+    ui->stackedWidget->setCurrentIndex(2);
 
-    PracticeHandler practiceHandler;
-    practiceHandler.requestCreatePractice();
-
-    json response1 = practiceHandler.responseCreatePractice();
-    std::cout << response1.dump() << std::endl;
-
-    practiceHandler.requestStartPractice(7);
-
-    json response2 = practiceHandler.responseCreatePractice();
-    std::cout << response2.dump() << std::endl;
+    QWidget *item = new PracticeItem(this, 1, "Test Practice", "Math", 20, 50, 100);
+    ui->praticeList->layout()->addWidget(item);
 }
 
 void MainWindow::on_historyPushButton_clicked()
 {
-    // Styles::activeSidebarItem(ui->historyPushButton);
-    // Styles::disableSidebarItem(ui->examPushButton);
-    // Styles::disableSidebarItem(ui->practicePushButton);
-    // Styles::disableSidebarItem(ui->dashboardButton);
+    QLayoutItem *item;
+    while((item = ui->historyChart->layout()->takeAt(0)) != nullptr){
+        delete item;
+    }
+    while((item = ui->historyList->layout()->takeAt(0)) != nullptr){
+        delete item;
+    }
 
-    ResultHandler resulttHandler;
-    resulttHandler.requestHistoryResult();
-    json response = resulttHandler.responseHistoryResult();
+    Styles::activeSidebarItem(ui->historyPushButton);
+    Styles::disableSidebarItem(ui->examPushButton);
+    Styles::disableSidebarItem(ui->practicePushButton);
+    Styles::disableSidebarItem(ui->statisticButton);
+    ui->stackedWidget->setCurrentIndex(4);
 
-    std::cout << response.dump(4) << std::endl;
+    ResultHandler resultHandler;
+    resultHandler.requestHistoryResult();
+    json res = resultHandler.responseHistoryResult();
+    json results = res["body"]["historyResults"];
+
+    int i = 1;
+    QVector<QPair<QString, double>> userResult;
+    for(auto result : results) {
+        QString examName = QString::fromStdString(result["exam_name"]);
+        QString type = QString::fromStdString(result["type"]);
+        QString time = QString::fromStdString(result["start_time"]);
+        int correctNum = result["number_question_correct"];
+        int score = result["score"];
+        double average_score = result["average_score"];
+
+        QWidget *item = Component::historyItem(i, examName, type, time, correctNum, score);
+        ui->historyList->layout()->addWidget(item);
+        userResult.append(qMakePair(time, average_score));
+        i++;
+    }
+    std::reverse(userResult.begin(), userResult.end());
+    createBarChart(userResult);
 }
 
-void MainWindow::on_dashboardButton_clicked()
+void MainWindow::on_statisticButton_clicked()
 {
-    Styles::activeSidebarItem(ui->dashboardButton);
+    QLayoutItem *item;
+    while((item = ui->roomResultList->layout()->takeAt(0)) != nullptr){
+        delete item;
+    }
+    while((item = ui->spectrumChart->layout()->takeAt(0)) != nullptr){
+        delete item;
+    }
+
+    Styles::activeSidebarItem(ui->statisticButton);
     Styles::disableSidebarItem(ui->examPushButton);
     Styles::disableSidebarItem(ui->practicePushButton);
     Styles::disableSidebarItem(ui->historyPushButton);
+    ui->stackedWidget->setCurrentIndex(5);
+
+    if(!roomListOwnerIds->isEmpty()){
+        ResultHandler resultHandler;
+        resultHandler.requestRoomResult(roomListOwnerIds->at(0));
+        json roomResultRes = resultHandler.responseRoomResult();
+        json userOfRoom = roomResultRes["body"]["roomResults"];
+        int totalQuestion = roomResultRes["body"]["total_question"];
+        json spectrum_scores = roomResultRes["body"]["spectrum_score"];
+
+        int i = 1;
+        for(auto user : userOfRoom){
+            QString username = QString::fromStdString(user["username"]);
+            QString email = QString::fromStdString(user["email"]);
+            int correctQuestion = user["number_question_correct"];
+            double finalScore = user["score_scale10"];
+            QWidget *userItem = Component::userResultItem(i, username, email, totalQuestion, correctQuestion, finalScore);
+            ui->roomResultList->layout()->addWidget(userItem);
+            i++;
+        }
+        QVector<QPair<int, int>> spectrumScore;
+        for(auto spectrum_score : spectrum_scores) {
+            int score_range = spectrum_score["score_range"];
+            int frequency = spectrum_score["frequency"];
+            spectrumScore.append(qMakePair(score_range, frequency));
+        }
+        createSpectrumChart(spectrumScore);
+    }
+}
+
+void MainWindow::createBarChart(QVector<QPair<QString, double>> results) {
+    QtCharts::QBarSeries *series = new QtCharts::QBarSeries();
+    QtCharts::QBarSet *set = new QtCharts::QBarSet("Score");
+
+    QBarCategoryAxis *axisX = new QBarCategoryAxis();
+    for(const auto& result : results) {
+        *set << result.second;
+        axisX->append(result.first.left(10));
+        set->setColor("#00bf9a");
+    }
+    series->append(set);
+    // Tạo biểu đồ cột
+    QtCharts::QChart *chart = new QtCharts::QChart();
+    chart->addSeries(series);
+
+    QValueAxis *axisY = new QValueAxis();
+    axisY->setLabelFormat("%d");
+    chart->addAxis(axisX, Qt::AlignBottom);
+    chart->addAxis(axisY, Qt::AlignLeft);
+
+    series->setBarWidth(0.1);
+    series->attachAxis(axisX);
+    series->attachAxis(axisY);
+
+    // Tạo QChartView và thiết lập biểu đồ
+    QChartView *chartView = new QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+
+    chart->setMargins(QMargins(0, 0, 0, 0));
+    chart->setBackgroundRoundness(0);
+    ui->historyChart->layout()->addWidget(chartView);
+}
+
+void MainWindow::createSpectrumChart(QVector<QPair<int, int>> results) {
+    QtCharts::QBarSeries *series = new QtCharts::QBarSeries();
+    QtCharts::QBarSet *set = new QtCharts::QBarSet("Spectrum score");
+
+    QBarCategoryAxis *axisX = new QBarCategoryAxis();
+    for(const auto& result : results) {
+        *set << result.second;
+        axisX->append(QString::number(result.first));
+    }
+    set->setColor("#00bf9a");
+    series->append(set);
+    // Tạo biểu đồ cột
+    QtCharts::QChart *chart = new QtCharts::QChart();
+    chart->addSeries(series);
+
+    QValueAxis *axisY = new QValueAxis();
+    chart->addAxis(axisX, Qt::AlignBottom);
+    chart->addAxis(axisY, Qt::AlignLeft);
+
+    series->setBarWidth(0.5);
+    series->attachAxis(axisX);
+    series->attachAxis(axisY);
+
+    // Tạo QChartView và thiết lập biểu đồ
+    QChartView *chartView = new QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+
+    chart->setMargins(QMargins(0, 0, 0, 0));
+    chart->setBackgroundRoundness(0);
+    ui->spectrumChart->layout()->addWidget(chartView);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-void* onlyReceiveThread(void* arg) {
-    char buff[BUFF_SIZE];
-
-    json response;
-    while (1) {
-        recvFromServer(buff);
-        response = json::parse(buff);
-        std::cout << response.dump()  << std::endl;
-        if (response["url"] == ResponseReadyRoomRouter)     // Have a person ready
-        {
-            // std::cout << response.dump()  << std::endl;   // List users ready in here (if donot have participate, response["usersReady"] = null)
-        }else if (response["url"] == ResponseUnReadyRoomRouter ) {     // Have a person unready
-            // std::cout << response.dump()  << std::endl;   // List users ready in here --> update table participants
-        } else if (response["url"] == ResponseStartRoomRouter) {    // Break if ownner start
-            std::cout << " -----Start Room ---- "  << std::endl;
-            // std::cout << response.dump()  << std::endl;          // List question& option and room information
-            // Change view to examwindow
-            break;
-        }
-    }
-
-    json reponseStartRoom = response;
-    ExamWindow *ew = new ExamWindow();
-    ew->show();
-    pthread_exit(NULL);
 }

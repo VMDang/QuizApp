@@ -3,7 +3,17 @@
 #include "questionbutton.h"
 #include "questionclient.h"
 #include "utils.h"
+#include "mainwindow.h"
 
+#include "createroomdialog.h"
+#include "ui_createroomdialog.h"
+#include "../app/request/room.h"
+
+#include "clientmanager.h"
+#include "answerhandler.h"
+#include "questionhandler.h"
+
+#include <iostream>
 #include <math.h>
 #include <QPushButton>
 #include <QRadioButton>
@@ -11,8 +21,11 @@
 #include <QTextStream>
 #include <QDebug>
 
-ExamWindow::ExamWindow(QWidget *parent) :
+using json = nlohmann::json;
+
+ExamWindow::ExamWindow(QWidget *parent, int roomId) :
     QMainWindow(parent),
+    roomId(roomId),
     ui(new Ui::ExamWindow)
 {
     // load danh sách question
@@ -62,6 +75,7 @@ void ExamWindow::on_questionButton_clicked(int index){
 
 // Hiển thị question text và danh sách anwser
 void ExamWindow::setupQuestion(QuestionClient question){
+
     // reset ui danh sách option
     QLayoutItem *item;
     while((item = ui->optionList->takeAt(0))){
@@ -81,7 +95,11 @@ void ExamWindow::setupQuestion(QuestionClient question){
         // set property index cho radiobutton
         radioButton->setProperty("index", option.optionId);
 
-        // connect radiobutton với hàm xử lý clicked
+        if(option.optionId == question.selectedOptionId) {
+            radioButton->setChecked(true);
+        }
+
+        // connect radiobutton với hàm xử lý click
         connect(radioButton, &QRadioButton::clicked, this, &ExamWindow::handleSelectOption);
         ui->optionList->addWidget(radioButton);
     }
@@ -92,27 +110,43 @@ void ExamWindow::setupQuestion(QuestionClient question){
 
 // cập nhật đồng hồ đếm ngược
 void ExamWindow::updateCountdown(){
-    remainingTime--;
+    if(remainingTime > 0) remainingTime--;
     ui->countdownLabel->setText(Utils::formatTime(remainingTime));
+    if(remainingTime == 0 && !isReturned) {
+        countdownTimer->stop();
+        MainWindow *mainWindow = new MainWindow(this);
+        mainWindow->show();
+    }
 }
-
 
 /*
  * Xử lý các sự kiện
 */
 // active question button khi select option
 void ExamWindow::handleSelectOption(){
+    QRadioButton *clickedRadioButton = qobject_cast<QRadioButton*>(sender());
     QuestionButton *currentQuestionButton = questionButtons[currentIndex];
+    QuestionClient question = questions[currentIndex];
+
     currentQuestionButton->active();
+    int optionId = clickedRadioButton->property("index").toInt();
+    questions[currentIndex].selectedOptionId = optionId;
+
+    // xử lý gửi lên server
+    AnswerHandler answerHandler;
+    answerHandler.requestSubmitAnswer(roomId, question.questionId, optionId);
+    answerHandler.responseSubmitAnswer();
 }
 
 // handle sự kiện xóa câu trả lời đã chọn
 void ExamWindow::on_clearButton_clicked()
 {
-
+    QuestionClient currentQuestion = questions[currentIndex];
+    currentQuestion.selectedOptionId = -1;
+    setupQuestion(currentQuestion);
 }
 
-// handel sự kiện next question button click
+// handle sự kiện next question button click
 void ExamWindow::on_nextButton_clicked()
 {
     QuestionClient nextQuestion;
@@ -140,35 +174,63 @@ void ExamWindow::on_gobackButton_clicked()
     ui->questionNumber->setText(QString::number(currentIndex + 1));
 }
 
+
 /*
  * Xử lý dữ liệu
 */
 // load danh sách câu hỏi nhận từ server
 void ExamWindow::loadQuestions()
 {
-    QuestionClient myQuestion(1, "What is your favorite color?", QVector<OptionClient>{
-                                                                     OptionClient(1, "Red"),
-                                                                     OptionClient(2, "Blue"),
-                                                                     OptionClient(3, "Green")
-                                                                 });
-    QuestionClient myQuestion2(2, "What is your favorite animal?", QVector<OptionClient>{
-                                                                       OptionClient(1, "Dog"),
-                                                                       OptionClient(2, "Cat"),
-                                                                       OptionClient(3, "Bird")
-                                                                   });
-    QuestionClient myQuestion3(3, "What is your favorite subject?", QVector<OptionClient>{
-                                                                        OptionClient(1, "Math"),
-                                                                        OptionClient(2, "Physic"),
-                                                                        OptionClient(3, "Chemistry")
-                                                                    });
-    questions.append(myQuestion);
-    questions.append(myQuestion2);
-    questions.append(myQuestion3);
+//    QuestionClient myQuestion(10, "What is your favorite color?", QVector<OptionClient>{
+//                            OptionClient(1, "Red"),
+//                            OptionClient(2, "Blue"),
+//                            OptionClient(3, "Green")
+//                        });
+//    QuestionClient myQuestion2(20, "What is your favorite animal?", QVector<OptionClient>{
+//                            OptionClient(1, "Dog"),
+//                            OptionClient(2, "Cat"),
+//                            OptionClient(3, "Bird")
+//                        });
+//    QuestionClient myQuestion3(30, "What is your favorite subject?", QVector<OptionClient>{
+//                            OptionClient(1, "Math"),
+//                            OptionClient(2, "Physic"),
+//                            OptionClient(3, "Chemistry")
+//                        });
+//    questions.append(myQuestion);
+//    questions.append(myQuestion2);
+//    questions.append(myQuestion3);
 
+    QuestionHandler questionHandler;
+    questionHandler.requestGetQuestionByRoom(roomId);
+    json res = questionHandler.responseGetQuestionByRoom();
+    json questionList = res["body"]["questions"];
+    for(auto question : questionList) {
+        QString title = QString::fromStdString(question["question"]["title"]);
+        int questionId = question["question"]["id"];
+
+        json options = question["options"];
+        QVector<OptionClient> optionList;
+        for(auto option : options) {
+            int id = option["id"];
+            QString text = QString::fromStdString(option["content"]);
+            OptionClient opt = OptionClient(id, text);
+                optionList.push_back(opt);
+        }
+        QuestionClient questionItem(questionId, title, optionList);
+        questions.append(questionItem);
+    }
 }
+
+void ExamWindow::on_submitButton_clicked(){
+    isReturned = true;
+    emit submitButton_clicked();
+}
+
 
 ExamWindow::~ExamWindow()
 {
     delete ui;
 }
+
+
 

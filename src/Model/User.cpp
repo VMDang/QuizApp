@@ -56,6 +56,7 @@ std::vector<User> User::getAll()
         User user;
         user.id = userData["id"];
         user.name = userData["name"];
+        user.email = userData["email"];
         user.password = userData["password"];
         user.role = userData["role"];
         user.status = userData["status"];

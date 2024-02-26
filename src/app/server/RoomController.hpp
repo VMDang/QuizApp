@@ -18,6 +18,7 @@ public:
     void start(json request, int clientfd);
     void create(json request, int clientfd);
     void detail(json request, int clientfd);
+    void listOwner(json request, int clientfd);
 };
 
 #endif

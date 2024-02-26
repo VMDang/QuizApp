@@ -26,16 +26,18 @@ typedef struct
     }
 } RequestRoomResult;
 
-typedef struct 
+typedef struct
 {
     std::string username;
     int score;
     int number_question_correct;
     double score_scale10;
+    std::string email;
 
     json toJson() {
         return json{
             {"username", username},
+            {"email", email},
             {"score", score},
             {"number_question_correct", number_question_correct},
             {"score_scale10", score_scale10},
@@ -43,7 +45,7 @@ typedef struct
     }
 }RoomResult;
 
-typedef struct 
+typedef struct
 {
     std::vector<RoomResult> roomResults;
     int max_score;
@@ -106,7 +108,7 @@ typedef struct
     }
 } RequestHistoryResult;
 
-typedef struct 
+typedef struct
 {
     std::string exam_name;
     std::string type;

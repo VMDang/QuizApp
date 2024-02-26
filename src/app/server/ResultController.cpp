@@ -65,6 +65,7 @@ void ResultController::room(json request, int clientfd)
     {
         RoomResult r_r;
         User user = User::findById(u_r.user_id);
+        r_r.email = user.email;
         r_r.username = user.name;
         int u_id = user.id;
 
@@ -125,7 +126,7 @@ void ResultController::history(json request, int clientfd)
     user_rooms.erase(std::remove_if(user_rooms.begin(), user_rooms.end(),
                                     [auth_id](const UserRoom &u_r)
                                     {
-                                        return u_r.user_id != auth_id;
+                                        return u_r.user_id != auth_id || u_r.is_owner == true;
                                     }),
                      user_rooms.end());
 
@@ -179,7 +180,7 @@ void ResultController::history(json request, int clientfd)
         hr.average_score = average_score_1 * 10;
         historyResults.push_back(hr);
     }
-    std::sort(historyResults.begin(), historyResults.end(), 
+    std::sort(historyResults.begin(), historyResults.end(),
                     [](const HistoryResult& a, const HistoryResult& b){
                         return a.start_time > b.start_time;
                     });
@@ -205,6 +206,6 @@ void calculateSpectrumScore(const std::vector<RoomResult>& roomResults, std::vec
         if (bucket >= 1 && bucket <= numBuckets)
         {
             spectrum_score[bucket - 1].second++;
-        } 
+        }
     }
 }

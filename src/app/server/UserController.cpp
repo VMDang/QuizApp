@@ -27,6 +27,7 @@ void UserController::redriect(json request, int clientfd)
 void UserController::list(json request, int clientfd)
 {
     std::vector<User> users = User::getAll();
+    users.erase(std::remove_if(users.begin(), users.end(),[](const User& user) { return user.role == "Admin"; }), users.end());
 
     ResponseListUser response;
     response.status = SUCCESS;

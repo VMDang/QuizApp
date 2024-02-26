@@ -4,6 +4,8 @@
 
 #include <QPushButton>
 #include <QLabel>
+#include <QWidget>
+#include <QCheckBox>
 
 class Styles
 {
@@ -17,6 +19,10 @@ public:
     static void unReadyButton(QPushButton *button);
     static void readyButton(QPushButton *button);
     static void tableHead(QLabel *thead, int hStretch);
+    static void tableHeadButton(QWidget *thead, int hStretch);
+    static void activeStatus(QLabel *label);
+    static void blockStatus(QLabel *label);
+    static void checkBoxStyles(QCheckBox *checkbox);
 };
 
 #endif // STYLES_H

@@ -1,16 +1,23 @@
 #include "passworddialog.h"
 #include "ui_passworddialog.h"
 #include "animations.h"
+
+#include "createroomdialog.h"
+#include "ui_createroomdialog.h"
+#include "../app/request/room.h"
 #include "roomhandler.h"
-#include "../app/request/type.h"
 
 #include <QString>
+#include <QDialog>
+#include <QDebug>
 #include <iostream>
 
-PasswordDialog::PasswordDialog(QWidget *parent, const QString& correctPassword) :
+PasswordDialog::PasswordDialog(QWidget *parent, int roomId,
+                               bool is_private) :
     QDialog(parent),
     ui(new Ui::PasswordDialog),
-    correctPassword(correctPassword)
+    roomId(roomId),
+    isPrivate(is_private)
 {
     setModal(true);
     ui->setupUi(this);
@@ -20,15 +27,18 @@ PasswordDialog::PasswordDialog(QWidget *parent, const QString& correctPassword) 
 void PasswordDialog::on_submitPushButton_clicked()
 {
     QString enteredPassword = ui->passwordLineEdit->text();
-    RoomHandler roomHandler;
-    roomHandler.requestJoinRoom(6, true, "1234");
-    json response = roomHandler.responseJoinRoom();
-    std::cout << response.dump(4) << std::endl;
-    std::string status = response["status"];
-    // if (status == SUCCESS)
 
-    if(enteredPassword == correctPassword) {
-        accept();
+    if(!enteredPassword.isEmpty()) {
+        RoomHandler roomHandler;
+        roomHandler.requestJoinRoom(roomId, isPrivate, enteredPassword.toStdString());
+
+        json joinRes = roomHandler.responseJoinRoom();
+
+        if(joinRes["status"] == SUCCESS) {
+            accept();
+        } else {
+            Animations::moveBothX(ui->lockIcon, 50, 20);
+        }
     } else {
         Animations::moveBothX(ui->lockIcon, 50, 20);
     }

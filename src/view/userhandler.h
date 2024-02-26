@@ -12,12 +12,11 @@ public:
 
     void requestListUser();
     json responseListUser();
-
-    void requestActiveUser(int user_id, bool active);
-    json responseActiveUser();
-
-    void requestDeleteUser(int user_id);
+    void requestDeleteUser(int userId);
     json responseDeleteUser();
+    void requestActiveUser(int userId, bool active);
+    json responseActiveUser();
 };
 
 #endif // USERHANDLER_H
+

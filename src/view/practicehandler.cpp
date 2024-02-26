@@ -6,13 +6,13 @@
 
 PracticeHandler::PracticeHandler() {}
 
-void PracticeHandler::requestCreatePractice()
+void PracticeHandler::requestCreatePractice(int category_id, std::string name, int time_limit)
 {
     RequestCreatePractice request;
     request.header = ClientManager::authUser;
-    request.body.category_id = 2;
-    request.body.name = "Room Practice";
-    request.body.time_limit = 2;
+    request.body.category_id = category_id;
+    request.body.name = name;
+    request.body.time_limit = time_limit;
 
     sendToServer(request.toJson().dump().c_str());
 }
@@ -41,3 +41,21 @@ json PracticeHandler::responseStartPractice()
 
     return json::parse(buff);
 }
+
+void PracticeHandler::requestEndPractice(int room_id)
+{
+    RequestEndPractice request;
+    request.header = ClientManager::authUser;
+    request.param = room_id;
+
+    sendToServer(request.toJson().dump().c_str());
+}
+
+json PracticeHandler::responseEndPractice()
+{
+    char buff[BUFF_SIZE];
+    recvFromServer(buff);
+
+    return json::parse(buff);
+}
+

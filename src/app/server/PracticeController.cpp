@@ -32,6 +32,10 @@ void PracticeController::redriect(json request, int clientfd)
     {
         start(request, clientfd);
     }
+    else if (url == RequestEndPracticeRouter)
+    {
+        end(request, clientfd);
+    }
 }
 
 void PracticeController::create(json request, int clientfd)
@@ -248,6 +252,28 @@ void PracticeController::start(json request, int clientfd)
 
     sendToClient(clientfd, response.toJson().dump().c_str());
 
+}
+
+void PracticeController::end(json request, int clientfd)
+{
+    int room_id = request["param"];
+
+    auto now = std::chrono::system_clock::now();
+    std::time_t convertTime = std::chrono::system_clock::to_time_t(now);
+    std::stringstream formattedTime;
+    formattedTime << std::put_time(std::localtime(&convertTime), "%Y-%m-%d %H:%M:%S");
+
+    Room room = Room::findById(room_id);
+    ResponseEndPractice response;
+    if(room.type == ROOM_PRACTICE_TYPE) {
+        room.status = ROOM_CLOSE_STATUS;
+        room.close_time = formattedTime.str();
+        Room::edit(room);
+
+        response.status = SUCCESS;
+        response.message = "Submit practice room success";
+    }
+    sendToClient(clientfd, response.toJson().dump().c_str());
 }
 
 void countdownClockPractice(int minutes, int room_id)

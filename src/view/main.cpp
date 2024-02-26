@@ -1,11 +1,10 @@
 #include "loginwindow.h"
 #include "mainwindow.h"
-#include "examwindow.h"
-#include "lobbywindow.h"
-#include "createroom.h"
-#include "passworddialog.h"
 #include "createroomdialog.h"
 #include "clientmanager.h"
+#include "examwindow.h"
+#include "addquestiondialog.h"
+#include "adminwindow.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -42,21 +41,26 @@ int main(int argc, char *argv[])
     }
 
     ClientManager::client_sock = client_sock;
-
-   LoginWindow l;
-    // MainWindow m;
+    LoginWindow l;
+//    MainWindow m;
 //    ExamWindow e;
-//    LobbyWindow lb;
 //      CreateRoom cr;
 //    PasswordDialog pd;
-//    createRoomDialog crd;
+//    CreateRoomDiaLog crd;
+//      AdminWindow aw;
+//    AddQuestionDiaLog aqd;
+//    CreatePracticeDiaLog cpd;
 
-    // m.show();
-    l.show();
+//    m.show();
+     l.show();
 //    e.show();
 //    lb.show();
 //      cr.show();
 //    crd.show();
 //    pd.show();
+//      aw.show();
+//    aqd.show();
+//    cpd.show();
+
     return a.exec();
 }

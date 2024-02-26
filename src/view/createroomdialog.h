@@ -1,19 +1,22 @@
-#ifndef CREATEROOMDIALOG_H
-#define CREATEROOMDIALOG_H
+#ifndef CreateRoomDiaLog_H
+#define CreateRoomDiaLog_H
 
 #include <QDialog>
+#include <QVariant>
+#include <QMessageBox>
 
 namespace Ui {
-class createRoomDialog;
+class CreateRoomDiaLog;
 }
 
-class createRoomDialog : public QDialog
+class CreateRoomDiaLog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit createRoomDialog(QWidget *parent = nullptr);
-    ~createRoomDialog();
+    explicit CreateRoomDiaLog(QWidget *parent = nullptr);
+    ~CreateRoomDiaLog();
+    bool validate(const QString& field, const QVariant& value);
 
 private slots:
     void on_nextButton_clicked();
@@ -24,8 +27,11 @@ private slots:
 
     void on_privateRadioButton_clicked();
 
+    void on_spinBox_valueChanged(int value);
+
 private:
-    Ui::createRoomDialog *ui;
+    Ui::CreateRoomDiaLog *ui;
+    int totalScore = 0;
 };
 
-#endif // CREATEROOMDIALOG_H
+#endif // CreateRoomDiaLog_H

@@ -13,7 +13,8 @@ class PasswordDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit PasswordDialog(QWidget *parent = nullptr, const QString& correctPassword = "");
+    explicit PasswordDialog(QWidget *parent = nullptr, int roomId = 0,
+                            bool is_private = false);
     ~PasswordDialog();
 
 private slots:
@@ -21,7 +22,9 @@ private slots:
 
 private:
     Ui::PasswordDialog *ui;
-    QString correctPassword;
+    int roomId;
+    bool isPrivate;
+    bool isRoomOwner;
 };
 
 #endif // PASSWORDDIALOG_H
