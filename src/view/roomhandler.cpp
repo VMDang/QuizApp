@@ -8,11 +8,11 @@ using json = nlohmann::json;
 
 RoomHandler::RoomHandler() {}
 
-void RoomHandler::requestListRoom(int category_id, std::string name_search)
+void RoomHandler::requestListRoom(std::vector<int> categories, std::string name_search)
 {
     RequestListRoom requestListRoom;
     requestListRoom.header = ClientManager::authUser;
-    requestListRoom.body.category_id = category_id;
+    requestListRoom.body.categories = categories;
     requestListRoom.body.name_search = name_search;
     sendToServer(requestListRoom.toJson().dump().c_str());
 }
@@ -124,3 +124,20 @@ json RoomHandler::responseDetailRoom()
 
     return json::parse(buff);
 }
+
+void RoomHandler::requestListRoomOwner()
+{
+    RequestListRoomOwner request;
+    request.header = ClientManager::authUser;
+    sendToServer(request.toJson().dump().c_str());
+}
+
+json RoomHandler::responseListRoomOwner()
+{
+    char buff[BUFF_SIZE];
+    recvFromServer(buff);
+
+    return json::parse(buff);
+}
+
+

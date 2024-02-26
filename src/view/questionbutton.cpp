@@ -52,3 +52,4 @@ void QuestionButton::disable()
                   "font-weight: bold; "
                   "color: #67758D; ");
 }
+

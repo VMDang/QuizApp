@@ -26,7 +26,7 @@ void logServer(int clientfd, const char *buff, bool flag)
     std::stringstream formattedTime;
     formattedTime << std::put_time(std::localtime(&convertTime), "%Y-%m-%d %H:%M:%S");
     std::string nowTime = formattedTime.str();
-    
+
     std::ofstream logFile("../comunicate/server_log.txt", std::ios::app);
     if (!logFile.is_open())
     {
@@ -105,6 +105,7 @@ int recvFromClient(int client_fd, char *buff)
         logServer(client_fd, "Error: Cannot received data from client!", false);
         perror("Error: Cannot received data from client!");
         close(client_fd);
+        return -1;
     }
     buff[rcvBytes] = '\0';
     logServer(client_fd, buff, true);

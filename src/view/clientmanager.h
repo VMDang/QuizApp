@@ -10,6 +10,7 @@ public:
     static int client_sock;
     static json authUser;
     static void close_client_sock();
+    static json responseStartRoom;
 };
 
 inline void ClientManager::close_client_sock()

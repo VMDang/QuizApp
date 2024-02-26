@@ -20,6 +20,7 @@
 #include "QuestionController.hpp"
 #include "ResultController.hpp"
 #include "PracticeController.hpp"
+#include "UserController.hpp"
 #include "../comunicate/server.h"
 #include "../request/route.h"
 #include "ServerManager.hpp"
@@ -28,13 +29,13 @@
 
 std::vector<int> listClientFd;
 
-void *client_handler(void *arg) 
+void *client_handler(void *arg)
 {
     int clientfd;
 
     pthread_detach(pthread_self());
     clientfd = *((int *)arg);
-    
+
     pthread_mutex_lock(&ServerManager::mutex);
     pthread_mutex_unlock(&ServerManager::mutex);
 
@@ -43,8 +44,10 @@ void *client_handler(void *arg)
     while (1)
     {
         char buff[BUFF_SIZE];
+
+        int recvBytes = recvFromClient(clientfd, buff);
+        if(recvBytes == -1) break;
         
-        recvFromClient(clientfd, buff);
         if (strcmp(buff, "\0") == 0) {
             break;
         }
@@ -64,7 +67,7 @@ void *client_handler(void *arg)
                 AuthController logout = AuthController();
                 logout.logout(request, clientfd);
             }
-            
+
             if (url.find("/room/") != std::string::npos)
             {
                 RoomController roomController;
@@ -87,6 +90,7 @@ void *client_handler(void *arg)
                 QuestionController questionController;
                 questionController.redirect(request, clientfd);
             }
+
             if (url.find("/result/") != std::string::npos)
             {
                 ResultController resultController;
@@ -98,8 +102,15 @@ void *client_handler(void *arg)
                 PracticeController practiceController;
                 practiceController.redriect(request, clientfd);
             }
-        }     
-    
+
+            if (url.find("/user/") != std::string::npos)
+            {
+                UserController userController;
+                userController.redriect(request, clientfd);
+            }
+
+        }
+
     }
     pthread_mutex_lock(&ServerManager::mutex);
     ServerManager::client_auth.erase(std::remove_if(ServerManager::client_auth.begin(), ServerManager::client_auth.end(),

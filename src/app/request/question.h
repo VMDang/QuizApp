@@ -50,12 +50,14 @@ typedef struct
 
     json toJson()
     {
-        return json{
-            {"title", title},
-            {"category_id", category_id},
-            {"level", level},
-            {"options", options}
-        };
+        json result;
+        result["title"] = title;
+        result["category_id"] = category_id;
+        result["level"] = level;
+        for (const auto& option : options){
+            result["options"].push_back({{"content", option.first}, {"correct", option.second}});
+        }
+        return result;
     }
 
 } RequestCreateQuestionBody;
@@ -160,7 +162,7 @@ typedef struct {
 
     json toJson() {
         return json{
-            {"code", code}, 
+            {"code", code},
             {"header", header},
             {"url", url},
             {"room_id", room_id}
@@ -169,7 +171,7 @@ typedef struct {
 } RequesGetQuestionByRoom;
 
 
-typedef struct 
+typedef struct
 {
     std::vector<QuestionContent> questions;
     std::string message;
@@ -280,7 +282,7 @@ typedef struct
     }
 }RoomConfigQuestion;
 
-typedef struct 
+typedef struct
 {
     std::string message;
     std::vector<RoomConfigQuestion> room_questions;
@@ -324,7 +326,7 @@ typedef struct {
 
     json toJson() {
         return json{
-            {"code", code}, 
+            {"code", code},
             {"header", header},
             {"url", url},
             {"category_id", category_id}
@@ -332,7 +334,7 @@ typedef struct {
     }
 } RequestGetQuestionByCategory;
 
-typedef struct 
+typedef struct
 {
     std::vector<QuestionContent> questions;
     std::string message;

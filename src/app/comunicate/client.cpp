@@ -19,7 +19,7 @@ void logClient(const char *buff, bool flag)
     std::stringstream formattedTime;
     formattedTime << std::put_time(std::localtime(&convertTime), "%Y-%m-%d %H:%M:%S");
     std::string nowTime = formattedTime.str();
-    
+
     std::ofstream logFile("../app/comunicate/client_log.txt", std::ios::app);
     if (!logFile.is_open())
     {
@@ -83,6 +83,7 @@ int recvFromServer(char *buff)
         logClient("Error: Cannot received data from server!", false);
         perror("Error: Cannot received data from server!");
         close(ClientManager::client_sock);
+        exit(0);
     }
     buff[rcvBytes] = '\0';
     logClient(buff, true);

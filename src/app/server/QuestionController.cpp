@@ -22,7 +22,7 @@ QuestionController::QuestionController() = default;
 void QuestionController::redirect(json request, int clientfd)
 {
     std::string url = request["url"];
-    if (url == RequestCreateRoomRouter)
+    if (url == RequestCreateQuestionRouter)
     {
         create(request, clientfd);
     }
@@ -60,8 +60,8 @@ void QuestionController::create(json request, int clientfd)
 
     for (const auto &o : request["body"]["options"])
     {
-        std::string content = o[0];
-        bool correct = o[1];
+        std::string content = o["content"];
+        bool correct = o["correct"];
         Option option = Option(newQues.id, content, correct);
         Option::create(option);
     }
@@ -131,13 +131,13 @@ void QuestionController::getByCategory(json request, int clientfd)
         std::vector<Option> filtered_options;
         std::copy_if(options.begin(), options.end(), std::back_inserter(filtered_options),
                     [question_id](const Option& o) { return o.question_id == question_id; });
-    
+
         QuestionContent qc;
         qc.question = q;
         qc.options = filtered_options;
         questionsContents.push_back(qc);
     }
-    
+    std::reverse(questionsContents.begin(), questionsContents.end());
     ResponseGetQuestionByCategory response;
     response.body.questions = questionsContents;
     if (questionsContents.empty())
@@ -149,7 +149,7 @@ void QuestionController::getByCategory(json request, int clientfd)
         response.status = SUCCESS;
         response.body.message = "Get list question by category success.";
     }
-    
+
     sendToClient(clientfd, response.toJson().dump().c_str());
 }
 
@@ -246,6 +246,6 @@ void QuestionController::config(json request, int clientfd)
         response.status = SUCCESS;
         response.body.message = "Get list rooms config questiosn success.";
     }
-    
+
     sendToClient(clientfd, response.toJson().dump().c_str());
 }

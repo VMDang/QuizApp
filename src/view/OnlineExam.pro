@@ -1,4 +1,4 @@
-QT += core gui
+QT += core gui charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -18,14 +18,23 @@ SOURCES += \
     mainwindow.cpp \
     passworddialog.cpp \
     practicehandler.cpp \
+    practiceitem.cpp \
     questionbutton.cpp \
     questionclient.cpp \
     questionhandler.cpp \
     resulthandler.cpp \
     roomhandler.cpp \
     roomitem.cpp \
+    serverlistener.cpp \
     styles.cpp \
-    utils.cpp
+    userhandler.cpp \
+    useritem.cpp \
+    utils.cpp \
+    addquestiondialog.cpp \
+    adminwindow.cpp \
+    categoryitem.cpp \
+    createpracticedialog.cpp \
+    questionbankitem.cpp \
 
 HEADERS += \
     animations.h \
@@ -39,14 +48,23 @@ HEADERS += \
     mainwindow.h \
     passworddialog.h \
     practicehandler.h \
+    practiceitem.h \
     questionbutton.h \
     questionclient.h \
     questionhandler.h \
     resulthandler.h \
     roomhandler.h \
     roomitem.h \
+    serverlistener.h \
     styles.h \
-    utils.h
+    userhandler.h \
+    useritem.h \
+    utils.h \
+    addquestiondialog.h \
+    adminwindow.h \
+    categoryitem.h \
+    createpracticedialog.h \
+    questionbankitem.h \
 
 FORMS += \
     createroomdialog.ui \
@@ -54,7 +72,14 @@ FORMS += \
     loginwindow.ui \
     mainwindow.ui \
     passworddialog.ui \
-    roomitem.ui
+    practiceitem.ui \
+    roomitem.ui \
+    addquestiondialog.ui \
+    adminwindow.ui \
+    categoryitem.ui \
+    createpracticedialog.ui \
+    questionbankitem.ui \
+    useritem.ui \
 
 RESOURCES += \
     resource.qrc

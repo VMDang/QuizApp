@@ -9,10 +9,20 @@
         <file>img/clock.svg</file>
         <file>img/calendar.svg</file>
         <file>img/question.svg</file>
-        <file>img/right-arrow.svg</file>
         <file>img/user.svg</file>
         <file>img/clock-history.svg</file>
         <file>img/pen.svg</file>
         <file>img/exam.png</file>
+        <file>img/view.svg</file>
+        <file>img/delete.svg</file>
+        <file>img/right-arrow.svg</file>
+        <file>img/tick.svg</file>
+        <file>img/question-sidebar.svg</file>
+        <file>img/users-sidebar.svg</file>
+        <file>img/chart-line.svg</file>
+        <file>img/block.svg</file>
+        <file>img/unblock.svg</file>
+        <file>img/search.svg</file>
+        <file>img/double-right-arrow.svg</file>
     </qresource>
 </RCC>

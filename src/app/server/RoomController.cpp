@@ -35,6 +35,10 @@ void RoomController::redriect(json request, int clientfd)
     {
         join(request, clientfd);
     }
+    else if (url == RequestRoomOwnerListRouter)
+    {
+        listOwner(request, clientfd);
+    }
     else if (url == RequestReadyRoomRouter)
     {
         ready(request, clientfd);
@@ -59,23 +63,19 @@ void RoomController::redriect(json request, int clientfd)
 
 void RoomController::list(json request, int clientfd)
 {
-    int category_id = request["body"]["category_id"];
+    std::vector<int> categories = request["body"]["categories"];
     std::string name_search = request["body"]["name_search"];
-
     std::vector<Room> rooms = Room::getAll();
     rooms.erase(std::remove_if(rooms.begin(), rooms.end(),
                                [](Room &room)
                                { return room.status != ROOM_LOBBY_STATUS || room.type != ROOM_EXAM_TYPE; }),
                 rooms.end());
-
     ResponseListRoom response;
-
-    if (category_id == 0 && name_search == "")
+    if (categories.size() == 0 && name_search == "")
     {
         response.body.rooms = rooms;
     }
-
-    if (category_id == 0 && name_search != "")
+    if (categories.size() == 0 && name_search != "")
     {
         rooms.erase(std::remove_if(rooms.begin(), rooms.end(),
                                    [name_search](const Room &room)
@@ -85,9 +85,8 @@ void RoomController::list(json request, int clientfd)
                     rooms.end());
         response.body.rooms = rooms;
     }
-
     std::vector<RoomQuestion> room_questions = relationsRoomQuestion();
-    if (category_id != 0 && name_search == "")
+    if (categories.size()!= 0 && name_search == "")
     {
         std::vector<Room> roomsFiltered;
         for (auto &room : rooms)
@@ -102,15 +101,14 @@ void RoomController::list(json request, int clientfd)
                 }
             }
             Question question = Question::findById(rqFirst.question_id);
-            if (question.category_id == category_id)
+            if (std::find(categories.begin(), categories.end(), question.category_id) != categories.end())
             {
                 roomsFiltered.push_back(room);
             }
         }
         response.body.rooms = roomsFiltered;
     }
-
-    if (category_id != 0 && name_search != "")
+    if (categories.size() != 0 && name_search != "")
     {
         std::vector<Room> roomsFiltered;
         for (auto &room : rooms)
@@ -125,7 +123,7 @@ void RoomController::list(json request, int clientfd)
                 }
             }
             Question question = Question::findById(rqFirst.question_id);
-            if (question.category_id == category_id)
+            if (std::find(categories.begin(), categories.end(), question.category_id) != categories.end())
             {
                 roomsFiltered.push_back(room);
             }
@@ -147,6 +145,44 @@ void RoomController::list(json request, int clientfd)
     {
         response.status = SUCCESS;
         response.body.message = "Get list rooms success.";
+    }
+    sendToClient(clientfd, response.toJson().dump().c_str());
+}
+
+void RoomController::listOwner(json request, int clientfd)
+{
+    int auth_id = request["header"]["id"];
+    std::vector<Room> rooms;
+    std::vector<UserRoom> user_rooms = relationsUserRoom();
+
+    user_rooms.erase(std::remove_if(user_rooms.begin(), user_rooms.end(),
+                                    [auth_id](UserRoom &ur)
+                                    { return ur.user_id != auth_id || ur.is_owner != true; }),
+                     user_rooms.end());
+
+    std::vector<Room> roomsOwner;
+    for (const auto &u_r : user_rooms)
+    {
+        Room r = Room::findById(u_r.room_id);
+        rooms.push_back(r);
+    }
+
+    rooms.erase(std::remove_if(rooms.begin(), rooms.end(),
+                               [](Room &room)
+                               { return room.status != ROOM_CLOSE_STATUS || room.type != ROOM_EXAM_TYPE; }),
+                rooms.end());
+
+    ResponseListRoomOwner response;
+    if (rooms.empty())
+    {
+        response.status = FAILURE;
+        response.body.message = "No matching rooms found";
+    }
+    else
+    {
+        response.status = SUCCESS;
+        response.body.rooms = rooms;
+        response.body.message = "Get list rooms owner success";
     }
 
     sendToClient(clientfd, response.toJson().dump().c_str());

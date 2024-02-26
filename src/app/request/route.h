@@ -9,6 +9,8 @@
 
 #define RequestRoomListRouter "request/room/list"
 #define ResponseRoomListRouter "response/room/list"
+#define RequestRoomOwnerListRouter "request/room/list/owner"
+#define ResponseRoomOwnerListRouter "response/room/list/owner"
 #define RequestJoinRoomRouter "request/room/join"
 #define ResponseJoinRoomRouter "response/room/join"
 #define RequestReadyRoomRouter "request/room/ready"
@@ -51,8 +53,15 @@
 
 #define RequestCreatePracticeRouter "request/practice/create"
 #define ResponseCreatePracticeRouter "response/practice/create"
-
 #define RequestStartPracticeRouter "request/practice/start"
 #define ResponseStartPracticeRouter "response/practice/start"
+#define RequestEndPracticeRouter "request/practice/end"
+#define ResponseEndPracticeRouter "response/practice/end"
 
+#define RequestListUserRouter "request/user/list"
+#define ResponseListUserRouter "response/user/list"
+#define RequestActiveUserRouter "request/user/active"
+#define ResponseActiveUserRouter "response/user/active"
+#define RequestDeleteUserRouter "request/user/delete"
+#define ResponseDeleteUserRouter "response/user/delete"
 #endif

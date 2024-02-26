@@ -135,4 +135,45 @@ typedef struct
         };
     }
 } ResponseStartPractice;
+
+typedef struct
+{
+    std::string code = REQUEST_EDIT_RESOURCE;
+    json header;
+    std::string url = RequestEndPracticeRouter;
+    int param;
+
+    json toJson()
+    {
+        return json{
+            {"code", code},
+            {"url", url},
+            {"header", header},
+            {"param", param}
+        };
+    }
+}RequestEndPractice;
+
+typedef struct
+{
+    std::string code = RESPONSE_EDIT_RESOURCE;
+    json header;
+    std::string url = ResponseEndPracticeRouter;
+    std::string status;
+    std::string message;
+    
+    json toJson()
+    {
+        json result;
+
+        result["code"] = code;
+        result["header"] = header;
+        result["url"] = url;
+        result["status"] = status;
+        result["body"]["meessage"] = message;
+
+        return result;
+    }
+}ResponseEndPractice;
+
 #endif

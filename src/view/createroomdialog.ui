@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>createRoomDialog</class>
- <widget class="QDialog" name="createRoomDialog">
+ <class>CreateRoomDiaLog</class>
+ <widget class="QDialog" name="CreateRoomDiaLog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -12,6 +12,9 @@
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: #fff;</string>
   </property>
   <widget class="QLabel" name="label">
    <property name="geometry">
@@ -157,6 +160,9 @@ padding-left: 10px;
       <font>
        <family>Source Sans 3 SemiBold</family>
       </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
      </property>
      <property name="styleSheet">
       <string notr="true">#nextButton {
@@ -412,6 +418,9 @@ padding-left: 10px;
        <family>Source Sans 3</family>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true">color: #000;</string>
+     </property>
      <property name="text">
       <string>Level 1:</string>
      </property>
@@ -448,6 +457,9 @@ padding-left: 10px;
        <family>Source Sans 3</family>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true">color: #000;</string>
+     </property>
      <property name="text">
       <string>Level 2:</string>
      </property>
@@ -465,6 +477,9 @@ padding-left: 10px;
       <font>
        <family>Source Sans 3</family>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #000;</string>
      </property>
      <property name="text">
       <string>Level 4:</string>
@@ -514,11 +529,14 @@ padding-left: 10px;
        <family>Source Sans 3</family>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true">color: #000;</string>
+     </property>
      <property name="text">
       <string>Max score:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_13">
+    <widget class="QLabel" name="totalScoreLabel">
      <property name="geometry">
       <rect>
        <x>110</x>
@@ -535,7 +553,7 @@ padding-left: 10px;
       </font>
      </property>
      <property name="text">
-      <string>100</string>
+      <string>0</string>
      </property>
     </widget>
     <widget class="QPushButton" name="createButton">
@@ -551,6 +569,9 @@ padding-left: 10px;
       <font>
        <family>Source Sans 3 SemiBold</family>
       </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
      </property>
      <property name="styleSheet">
       <string notr="true">#createButton {
@@ -601,7 +622,7 @@ color: #fff</string>
      <widget class="QLabel" name="label_21">
       <property name="geometry">
        <rect>
-        <x>40</x>
+        <x>48</x>
         <y>40</y>
         <width>81</width>
         <height>22</height>
@@ -613,7 +634,7 @@ color: #fff</string>
        </font>
       </property>
       <property name="text">
-       <string>Room Info</string>
+       <string>General</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_22">
@@ -686,6 +707,9 @@ color: #fff; </string>
        <family>Source Sans 3 SemiBold</family>
       </font>
      </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
      <property name="styleSheet">
       <string notr="true">#backButton {
 	color: rgb(9, 44, 76);
@@ -745,6 +769,10 @@ color: #fff; </string>
        <family>Source Sans 3</family>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true">color: #000;
+</string>
+     </property>
      <property name="text">
       <string>Level 3:</string>
      </property>
@@ -762,6 +790,9 @@ color: #fff; </string>
       <font>
        <family>Source Sans 3</family>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #000;</string>
      </property>
      <property name="text">
       <string>Level 5:</string>

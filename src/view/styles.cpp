@@ -88,3 +88,33 @@ void Styles::tableHead(QLabel *thead, int hStretch)
     policy.setHorizontalStretch(hStretch);
     thead->setSizePolicy(policy);
 }
+
+void Styles::tableHeadButton(QWidget *thead, int hStretch)
+{
+    QSizePolicy policy = thead->sizePolicy();
+    policy.setHorizontalStretch(hStretch);
+    thead->setSizePolicy(policy);
+}
+
+void Styles::activeStatus(QLabel *label)
+{
+    label->setStyleSheet("color: #00bf9a");
+}
+
+void Styles::blockStatus(QLabel *label)
+{
+    label->setStyleSheet("color: #ff0000");
+}
+
+void Styles::checkBoxStyles(QCheckBox *checkbox)
+{
+    QString styleSheet = "QCheckBox {"
+                         "    font-family: Source Sans 3;"
+                         "    border: none;"
+                         "}"
+                         "QCheckBox::indicator {"
+                         "    width: 20px;"
+                         "    height: 20px;"
+                         "}";
+    checkbox->setStyleSheet(styleSheet);
+}

@@ -87,6 +87,46 @@
         {
             "question_id": 28,
             "room_id": 6
+        },
+        {
+            "question_id": 16,
+            "room_id": 7
+        },
+        {
+            "question_id": 19,
+            "room_id": 7
+        },
+        {
+            "question_id": 22,
+            "room_id": 7
+        },
+        {
+            "question_id": 27,
+            "room_id": 7
+        },
+        {
+            "question_id": 28,
+            "room_id": 7
+        },
+        {
+            "question_id": 16,
+            "room_id": 8
+        },
+        {
+            "question_id": 19,
+            "room_id": 8
+        },
+        {
+            "question_id": 22,
+            "room_id": 8
+        },
+        {
+            "question_id": 27,
+            "room_id": 8
+        },
+        {
+            "question_id": 28,
+            "room_id": 8
         }
     ]
 }
